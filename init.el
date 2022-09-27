@@ -1,29 +1,20 @@
-;; If you use `org' and don't want your org files in the default location below,
-;; change `org-directory'. It must be set before org loads!
 (defvar not-win (eq system-type 'gnu/linux)
 	"If NOT-WIN is non-nil, then we're not in MS-Windows.")
 
 (defvar at-work (not not-win)
 	"Smyrno is the machine at work.")
 
-;; They all accept either a font-spec, font string ("Input Mono-12"), or xlfd
-;; font string. You generally only need these two:
-
 (defvar kc/vp-font (if not-win
 											 "IBM Plex Serif Text"
 										 "Calibri")
 	"My variable pitch font varies based on my OS.")
-
-																				;(setq doom-font (font-spec :family "Cascadia Code" :size 16 :weight 'semilight)
-(setq doom-font (font-spec :family "Victor Mono" :size 16 :weight 'bold)
-			doom-variable-pitch-font (font-spec :family kc/vp-font :size 16))
 
 (defvar org-directory-root (if at-work
 															 "D:/OneDrive/org/"
 														 "~/Dropbox/org/")
 	"The root upon which to build my org directory")
 
-(load-file "~/.doom.d/roman-numerals.el")
+(load-file "~/.emacs.d/roman-numerals.el")
 
 (setq org-directory
 			(if not-win
@@ -71,13 +62,12 @@
 	(add-to-list 'default-frame-alist '(width . 80))
 	(message "kc/set-up-emacs has been executed"))
 
-;; (setq org-agenda-file-regexp "\\`[^.].*\\.org\\'")
-
 (defun kc/set-up-org ()
 	(setq-default
 	 org-agenda-file-regexp "\\`[^.].*\\.org\\'"
-	 kc/org-all-agenda-files (directory-files
-														(expand-file-name org-directory) t org-agenda-file-regexp)
+	 kc/org-all-agenda-files
+	 (directory-files
+		(expand-file-name org-directory) t org-agenda-file-regexp)
 	 org-startup-folded t
 	 org-startup-indented t
 	 org-indent-mode t
@@ -90,11 +80,13 @@
 	 org-clock-continuously t
 	 org-clock-out-remove-zero-time-clocks t
 	 org-log-done 'time
-	 org-refile-targets (quote ((nil :maxlevel . 1) (kc/org-all-agenda-files :maxlevel . 2)))
+	 org-refile-targets
+	 (quote ((nil :maxlevel . 1) (kc/org-all-agenda-files :maxlevel . 2)))
 	 org-catch-invisible-edits 'smart
 	 org-agenda-clockreport-parameter-plist
 	 '(:link t :maxlevel 4 :fileskip0 t
-					 :properties ("ClientAccount" "TradingPartnerAccount" "Request" "Phase" "Task"))
+					 :properties
+					 ("ClientAccount" "TradingPartnerAccount" "Request" "Phase" "Task"))
 	 org-deadline-warning-days 45
 	 org-agenda-window-setup 'current-window
 	 org-agenda-skip-scheduled-if-done t
@@ -107,7 +99,8 @@
 	 (quote (("Effort_ALL" . "0:15 0:30 0:45 1:00 2:00 3:00 4:00 5:00 6:00 0:00")
 					 ("STYLE_ALL" . "habit")))
 	 org-todo-keywords
-	 (quote ((sequence "TODO(t)" "WIP(n)" "|" "DELEGATED(g)" "DONE(d)" "CANCELLED(c/!)")
+	 (quote ((sequence "TODO(t)" "WIP(n)" "|"
+										 "DELEGATED(g)" "DONE(d)" "CANCELLED(c/!)")
 					 (sequence "WAITING(w@/!)" "HOLD(h@/!)" "|"
 										 "CANCELLED(c/!)" "PHONE" "MEETING")))
 	 org-todo-keyword-faces
@@ -219,7 +212,8 @@
 ;; This is here so PLINK can find my private key.
 (eval-after-load "tramp"
 	'(setf (cadr (assq 'tramp-login-args (cdr (assoc "plink" tramp-methods))))
-				 '(("-l" "%u") ("-P" "%p") ("-i ~/.ssh/id_rsa.ppk") ("-ssh") ("-t") ("%h") ("\"")
+				 '(("-l" "%u") ("-P" "%p") ("-i ~/.ssh/id_rsa.ppk")
+					 ("-ssh") ("-t") ("%h") ("\"")
 					 ("env 'TERM=dumb' 'PROMPT_COMMAND=' 'PS1=#$ '") ("/bin/sh") ("\""))))
 (require 'package)
 (add-to-list 'package-archives
@@ -304,7 +298,10 @@ re-downloaded in order to locate PACKAGE."
 (require 'company)
 (add-hook 'prog-mode-hook 'company-mode)
 
-(setq org-roam-directory "D:/Dropbox/Dropbox/roam")
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;; magit
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+(require-package 'magit)
 
 (defun kc/org-check-agenda ()
 	"Peek at agenda."
@@ -333,8 +330,9 @@ re-downloaded in order to locate PACKAGE."
 (kc/set-up-emacs)
 (kc/set-up-org)
 (kc/set-up-swiper)
-(load-file (file-truename "~/.doom.d/abbrevs.el"))
-;; (load-file (concat (file-truename "~/.doom.d/york-mode.el")))
+(load-file (file-truename "~/.emacs.d/abbrevs.el"))
+(if at-work 
+		(load-file (concat (file-truename "~/.emacs.d/york-mode.el"))))
 ;; (load-theme 'leuven-dark)
 (require-package 'gruvbox-theme)
 (load-theme 'gruvbox-dark-medium t)
