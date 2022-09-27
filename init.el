@@ -48,7 +48,7 @@
 								show-paren-delay 0
 								make-backup-files nil
 								auto-save-default nil
-								tool-bar-mode nil
+								tool-bar-mode -1
 								menu-bar-mode t
 								inhibit-startup-screen t)
 	(blink-cursor-mode)
@@ -253,6 +253,9 @@ re-downloaded in order to locate PACKAGE."
 (require 'which-key)
 (which-key-mode)
 
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;; ivy
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 (require-package 'ivy)
 (require 'ivy)
 (ivy-mode 1)
