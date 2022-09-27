@@ -61,6 +61,8 @@
 	(set-language-environment 'utf-8)
 	(add-to-list 'default-frame-alist '(height . 40))
 	(add-to-list 'default-frame-alist '(width . 80))
+	(add-hook 'prog-mode-hook 'linum-mode)
+	(add-hook 'text-mode-hook 'flyspell-mode)
 	(message "kc/set-up-emacs has been executed"))
 
 (defun kc/set-up-org ()
@@ -308,6 +310,16 @@ re-downloaded in order to locate PACKAGE."
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 (require-package 'magit)
 
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;; cobol-mode
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+(when at-work
+	(require-package 'cobol-mode)
+	(require 'cobol-mode)
+	(add-to-list 'auto-mode-alist '("\\.cbl\\'" . cobol-mode))
+	(add-to-list 'auto-mode-alist '("\\.cpy\\'" . cobol-mode))
+	(add-hook 'cobol-mode-hook 'ruler-mode))
+
 (defun kc/org-check-agenda ()
 	"Peek at agenda."
 	(interactive)
@@ -328,7 +340,7 @@ re-downloaded in order to locate PACKAGE."
 	(let ((expanded-filename (expand-file-name filename)))
 		(if (not (file-exists-p expanded-filename))
 				(eval `(,func (format "`%s' does not exist." ,filename)))
-			(message "Loading %s..." filename)
+			(message "(KC) Loading %s..." filename)
 			(load-file expanded-filename))))
 
 (kc/set-up-emacs)
