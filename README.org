@@ -1,0 +1,28 @@
+#+title: .emacs.d
+
+* Prehistory
+In the olden days, I only ever made my own emacs config. I didn't know there
+were "distributions" or whatever.
+* Prelude
+Prelude was great. But it wasn't long before I wanted to have a lean config
+again.
+* Spacemacs
+Once upon a time, I thought [[https://github.com/kcjuntunen/emacs-config/commit/6a70a23d0711e9c9c567721d6e6184d4156af03a][Spacemacs]] was pretty cool. Since I'm forced to be
+in a Windows environment for work, I got tired of the really long startup
+times. Anything Linux can do in 2 seconds, Windows can do in 20 seconds. As a
+consequence of that I went rogue, and produced my own ~init.el~.
+* Doom
+Doom was great. Fast startup, lots of features. There was always some annoying
+behavior or other that wouldn't go away. For instance, intermittently not
+being in capture mode when I capture. Or, org-agenda displays a random day
+from last week by default. Or magit just doesn't work in Windows. Every time I
+did a ~doom upgrade && doom sync~ there was a better than 80% chance emacs
+wouldn't work afterward. Usually, I could hack away and fix or, or just delete
+some cache. Last time around, we started getting exceptions, and it offered me
+a chance to attach GDB. No thanks. I tried tweaking stuff, but to no avail.
+Bye, Doom.
+* init.el
+Anyway, I'm running lean again. At least I learned what I like. I've got ivy,
+swiper, evil, which-key, etc. I do like use-package, but I can get along just
+fine without it. I don't have a need for a great number of packages.
+
