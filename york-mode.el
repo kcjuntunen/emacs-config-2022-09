@@ -17,134 +17,134 @@
 
 ;;;###autoload
 (define-minor-mode york-mode
-  "A container for handy, York-related functions."
-  :lighter " ☥"
-  :keymap (let ((map (make-sparse-keymap)))
-            (define-key map (kbd "C-c r") 'york-get-request-data)
-			(define-key map (kbd "C-c q") 'york-copy-queue-to-workarea)
-            (define-key map (kbd "C-c s") 'york-store-repo-name)
-            (define-key map (kbd "C-c g") 'york-open-local-repo-name)
-            (define-key map (kbd "C-c G") 'york-open-remote-repo-name)
-            map)
-  (if york-mode
-      (message "york-mode activated")
-    (message "york-mode deactivated")))
+	"A container for handy, York-related functions."
+	:lighter " ☥"
+	:keymap (let ((map (make-sparse-keymap)))
+						(define-key map (kbd "C-c r") 'york-get-request-data)
+						(define-key map (kbd "C-c q") 'york-copy-queue-to-workarea)
+						(define-key map (kbd "C-c s") 'york-store-repo-name)
+						(define-key map (kbd "C-c g") 'york-open-local-repo-name)
+						(define-key map (kbd "C-c G") 'york-open-remote-repo-name)
+						map)
+	(if york-mode
+			(message "york-mode activated")
+		(message "york-mode deactivated")))
 
 (defcustom york-production-queue-path
-  "//poppins/ProductionQueues/"
-  "Path to prduction queue root folder."
-  :type 'string
-  :group 'york)
+	"//poppins/ProductionQueues/"
+	"Path to prduction queue root folder."
+	:type 'string
+	:group 'york)
 
 (defcustom york-workarea
-  "C:/fastrack/workarea/"
-  "Path to workarea."
-  :type 'string
-  :group 'york)
+	"C:/fastrack/workarea/"
+	"Path to workarea."
+	:type 'string
+	:group 'york)
 
 (defcustom york-request-looker-upper-path
-  "C:/Users/k.c.juntunen/source/repos/Viewer.Etc/Experimental/bin/Debug/Experimental.exe"
-  ;; "D:/Source/Repos/Viewer.Etc/Experimental/bin/Debug/Experimental.exe"
-  ;; "D:/Source/C#-Production/Viewer/Experimental/bin/Debug/Experimental.exe"
-  "The program that pulls in Projects/Phases/Tasks in Org format."
-  :type 'string
-  :group 'york)
+	"C:/Users/k.c.juntunen/source/repos/Viewer.Etc/Experimental/bin/Debug/Experimental.exe"
+	;; "D:/Source/Repos/Viewer.Etc/Experimental/bin/Debug/Experimental.exe"
+	;; "D:/Source/C#-Production/Viewer/Experimental/bin/Debug/Experimental.exe"
+	"The program that pulls in Projects/Phases/Tasks in Org format."
+	:type 'string
+	:group 'york)
 
 (defcustom york-remote-repo-path
-  "G:/"
-  "The location of remote git repos."
-  :type 'string
-  :group 'york)
+	"G:/"
+	"The location of remote git repos."
+	:type 'string
+	:group 'york)
 
 (defcustom york-local-repo-path
-  "D:/Source/Repos/"
-  "The location of local git repos."
-  :type 'string
-  :group 'york)
+	"D:/Source/Repos/"
+	"The location of local git repos."
+	:type 'string
+	:group 'york)
 
 (defcustom york--repo-name-property-name
-  "Source"
-  "The property under which we store and retrieve repo names."
-  :type 'string
-  :group 'york)
+	"Source"
+	"The property under which we store and retrieve repo names."
+	:type 'string
+	:group 'york)
 
 (defgroup york nil
-  "Settings for `york-mode'."
-  :prefix "york-"
-  :group york-mode)
+	"Settings for `york-mode'."
+	:prefix "york-"
+	:group york-mode)
 
 (defun york-store-repo-name (repo-name)
-  "Store repo-name under the property name in `repo-name-property-name'."
-  (interactive "sRepo Name: ")
-  (org-entry-put (point) york--repo-name-property-name repo-name))
+	"Store repo-name under the property name in `repo-name-property-name'."
+	(interactive "sRepo Name: ")
+	(org-entry-put (point) york--repo-name-property-name repo-name))
 
 (defun york-get-request-data (request-number)
-  "Insert Project/Phase/Task data into buffer in Org format."
-  (interactive "sRequestNbr: ")
-  (insert (shell-command-to-string
-           (format "%s %s"
-                   york-request-looker-upper-path request-number))))
+	"Insert Project/Phase/Task data into buffer in Org format."
+	(interactive "sRequestNbr: ")
+	(insert (shell-command-to-string
+					 (format "%s %s"
+									 york-request-looker-upper-path request-number))))
 
 (defun york--get-inputq-path ()
-  "Get the path to production input queues"
-    (concat  york-production-queue-path "incomeq/"))
+	"Get the path to production input queues"
+	(concat  york-production-queue-path "incomeq/"))
 
 (defun york--get-processq-path ()
-  "Get the path to production process queues"
-    (concat  york-production-queue-path "processq/"))
+	"Get the path to production process queues"
+	(concat  york-production-queue-path "processq/"))
 
 (defun york--get-reprocessq-path ()
-  "Get the path to production reprocess queues"
-    (concat  york-production-queue-path "reprocessq/"))
+	"Get the path to production reprocess queues"
+	(concat  york-production-queue-path "reprocessq/"))
 
 (defun york--get-outputq-path ()
-  "Get the path to production output queues"
-    (concat  york-production-queue-path "outputq/"))
+	"Get the path to production output queues"
+	(concat  york-production-queue-path "outputq/"))
 
 (defun york--get-queue-path (queuekey)
-  ""
-  (let ((qpath (cond ((string-equal (substring queuekey 0 1) "I") (york--get-inputq-path))
-					 ((string-equal (substring queuekey 0 1) "P") (york--get-processq-path))
-					 ((string-equal (substring queuekey 0 1) "R") (york--get-reprocessq-path))
-					 ((string-equal (substring queuekey 0 1) "O") (york--get-outputq-path)))))
-	(concat qpath queuekey ".dat")))
+	""
+	(let ((qpath (cond ((string-equal (substring queuekey 0 1) "I") (york--get-inputq-path))
+										 ((string-equal (substring queuekey 0 1) "P") (york--get-processq-path))
+										 ((string-equal (substring queuekey 0 1) "R") (york--get-reprocessq-path))
+										 ((string-equal (substring queuekey 0 1) "O") (york--get-outputq-path)))))
+		(concat qpath queuekey ".dat")))
 
 (defun york--get-local-repo-name ()
-  "Get the local repo for the associated code."
-  (let ((repo-name (org-entry-get (point) york--repo-name-property-name t)))
-    (concat york-local-repo-path repo-name "/" repo-name ".sln")))
+	"Get the local repo for the associated code."
+	(let ((repo-name (org-entry-get (point) york--repo-name-property-name t)))
+		(concat york-local-repo-path repo-name "/" repo-name ".sln")))
 
 (defun york--get-remote-repo-name ()
-  "Get the remote repo for the associated code."
-  (let ((repo-name (org-entry-get (point) york--repo-name-property-name t)))
-    (concat york-remote-repo-path repo-name ".git")))
+	"Get the remote repo for the associated code."
+	(let ((repo-name (org-entry-get (point) york--repo-name-property-name t)))
+		(concat york-remote-repo-path repo-name ".git")))
 
 (defun york-open-local-repo-name ()
-  "Open thing in the property named `york--repo-name-property-name'."
-  (interactive)
-  (let ((thing-to-open (york--get-local-repo-name)))
-    (if (not (file-exists-p thing-to-open))
-        (error (format "File `%s' not found" thing-to-open))
-      (org-open-file thing-to-open nil))))
+	"Open thing in the property named `york--repo-name-property-name'."
+	(interactive)
+	(let ((thing-to-open (york--get-local-repo-name)))
+		(if (not (file-exists-p thing-to-open))
+				(error (format "File `%s' not found" thing-to-open))
+			(org-open-file thing-to-open nil))))
 
 (defun york-open-remote-repo-name ()
-  "Open thing in the property named `york--repo-name-property-name'."
-  (interactive)
-  (let ((here default-directory)
-        (thing-to-open (york--get-remote-repo-name)))
-    (if (not (file-exists-p thing-to-open))
-        (error (format "Directory `%s' not found" thing-to-open))
-      (save-excursion
-        (cd thing-to-open)
-        (magit-status)))
-    (cd here)))
+	"Open thing in the property named `york--repo-name-property-name'."
+	(interactive)
+	(let ((here default-directory)
+				(thing-to-open (york--get-remote-repo-name)))
+		(if (not (file-exists-p thing-to-open))
+				(error (format "Directory `%s' not found" thing-to-open))
+			(save-excursion
+				(cd thing-to-open)
+				(magit-status)))
+		(cd here)))
 
 (defun york-copy-queue-to-workarea (queuekey)
-  "Copy payload indicated by QUEUEKEY to workarea."
-  (interactive "sQueue Key: ")
-  (let ((file-to-copy (york--get-queue-path queuekey)))
-	(message "Copying %s to %s" file-to-copy york-workarea)
-	(copy-file file-to-copy york-workarea)))
+	"Copy payload indicated by QUEUEKEY to workarea."
+	(interactive "sQueue Key: ")
+	(let ((file-to-copy (york--get-queue-path queuekey)))
+		(message "Copying %s to %s" file-to-copy york-workarea)
+		(copy-file file-to-copy york-workarea)))
 
 ;; Bindings
 

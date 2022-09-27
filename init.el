@@ -1,3 +1,4 @@
+;;; init.el --- My init file. -*- lexical-binding: t; coding: utf-8-unix; -*-
 (defvar not-win (eq system-type 'gnu/linux)
 	"If NOT-WIN is non-nil, then we're not in MS-Windows.")
 
@@ -343,6 +344,5 @@ re-downloaded in order to locate PACKAGE."
 		(kc/load-file "~/.emacs.d/york-mode.el" 'error))
 (kc/load-file (file-truename "~/.emacs.d/customize.el") 'message)
 (server-start)
-
 
 (message "init.el has been eval'd")
