@@ -333,6 +333,7 @@ re-downloaded in order to locate PACKAGE."
 (define-key global-map (kbd "C-<f5>") 'org-agenda)
 (define-key global-map (kbd "<f5>") 'kc/org-check-agenda)
 (define-key global-map (kbd "<f6>") 'org-capture)
+(define-key dired-mode-map (kbd "C-c C-w") 'wdired-change-to-wdired-mode)
 
 (defun kc/load-file (filename func)
 	"Try to load FILENAME. Execute FUNC on error."
