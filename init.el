@@ -63,7 +63,28 @@
 	(add-to-list 'default-frame-alist '(width . 80))
 	(if (version< emacs-version "29")
 			(add-hook 'prog-mode-hook 'linum-mode)
-		(add-hook 'prog-mode-hook 'display-line-numbers-mode))
+		(add-hook 'prog-mode-hook 'display-line-numbers-mode)
+		(load-file "~/git/ligature.el/ligature.el")
+		(require 'ligature)
+		(ligature-set-ligatures 't '("www"))
+		;; Enable traditional ligature support in eww-mode, if the
+		;; `variable-pitch' face supports it
+		(ligature-set-ligatures 'eww-mode '("ff" "fi" "ffi"))
+		;; Enable all Cascadia Code ligatures in programming modes
+		(ligature-set-ligatures 'prog-mode '("|||>" "<|||" "<==>" "<!--" "####" "~~>" "***" "||=" "||>"
+																				 ":::" "::=" "=:=" "===" "==>" "=!=" "=>>" "=<<" "=/=" "!=="
+																				 "!!." ">=>" ">>=" ">>>" ">>-" ">->" "->>" "-->" "---" "-<<"
+																				 "<~~" "<~>" "<*>" "<||" "<|>" "<$>" "<==" "<=>" "<=<" "<->"
+																				 "<--" "<-<" "<<=" "<<-" "<<<" "<+>" "</>" "###" "#_(" "..<"
+																				 "..." "+++" "/==" "///" "_|_" "www" "&&" "^=" "~~" "~@" "~="
+																				 "~>" "~-" "**" "*>" "*/" "||" "|}" "|]" "|=" "|>" "|-" "{|"
+																				 "[|" "]#" "::" ":=" ":>" ":<" "$>" "==" "=>" "!=" "!!" ">:"
+																				 ">=" ">>" ">-" "-~" "-|" "->" "--" "-<" "<~" "<*" "<|" "<:"
+																				 "<$" "<=" "<>" "<-" "<<" "<+" "</" "#{" "#[" "#:" "#=" "#!"
+																				 "##" "#(" "#?" "#_" "%%" ".=" ".-" ".." ".?" "+>" "++" "?:"
+																				 "?=" "?." "??" ";;" "/*" "/=" "/>" "//" "__" "~~" "(*" "*)"
+																				 "\\\\" "://"))
+		(global-ligature-mode 1))
 	(add-hook 'text-mode-hook 'flyspell-mode)
 	(message "kc/set-up-emacs has been executed"))
 
@@ -357,7 +378,7 @@ re-downloaded in order to locate PACKAGE."
 (kc/load-file "~/.emacs.d/abbrevs.el" 'message)
 (if at-work 
 		(kc/load-file "~/.emacs.d/york-mode.el" 'error))
-(kc/load-file (file-truename "~/.emacs.d/customize.el") 'message)
 (server-start)
 
+(kc/load-file (file-truename "~/.emacs.d/customize.el") 'message)
 (message "init.el has been eval'd")
