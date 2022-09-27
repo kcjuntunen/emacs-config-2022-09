@@ -207,6 +207,7 @@
 				 kw)))))
 	(setq org-agenda-files kc/org-all-agenda-files)
 	(require 'time-stamp)
+	(add-hook 'org-mode-hook 'flyspell-mode)
 	(message "kc/set-up-org has been executed"))
 
 ;; This is here so PLINK can find my private key.
