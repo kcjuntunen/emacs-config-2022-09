@@ -321,26 +321,28 @@ re-downloaded in order to locate PACKAGE."
 (define-key global-map (kbd "<f5>") 'kc/org-check-agenda)
 (define-key global-map (kbd "<f6>") 'org-capture)
 
-(defun load-personal-file ()
-	"Load stuff I don't want on Github."
+(defun kc/load-file (filename func)
+	"Try to load FILENAME. Execute FUNC on error."
 	(interactive)
-	(let ((personal-file (expand-file-name "~/.personal.el")))
-		(if (not (file-exists-p personal-file))
-				(error (format "`%s' does not exist." personal-file))
-			(message "Loading %s..." personal-file)
-			(load-file personal-file))))
+	(let ((expanded-filename (expand-file-name filename)))
+		(if (not (file-exists-p expanded-filename))
+				(eval `(,func (format "`%s' does not exist." ,filename)))
+			(message "Loading %s..." filename)
+			(load-file expanded-filename))))
 
-(load-personal-file)
 (kc/set-up-emacs)
 (kc/set-up-org)
 (kc/set-up-swiper)
-(load-file (file-truename "~/.emacs.d/abbrevs.el"))
-(if at-work 
-		(load-file (concat (file-truename "~/.emacs.d/york-mode.el"))))
 ;; (load-theme 'leuven-dark)
 (require-package 'gruvbox-theme)
 (load-theme 'gruvbox-dark-medium t)
 
+(kc/load-file "~/.personal.el" 'error)
+(kc/load-file "~/.emacs.d/abbrevs.el" 'message)
+(if at-work 
+		(kc/load-file "~/.emacs.d/york-mode.el" 'error))
+(kc/load-file (file-truename "~/.emacs.d/customize.el") 'message)
 (server-start)
 
-(message "config.el has been eval'd")
+
+(message "init.el has been eval'd")
