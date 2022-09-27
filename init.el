@@ -61,7 +61,9 @@
 	(set-language-environment 'utf-8)
 	(add-to-list 'default-frame-alist '(height . 40))
 	(add-to-list 'default-frame-alist '(width . 80))
-	(add-hook 'prog-mode-hook 'linum-mode)
+	(if (version< emacs-version "29")
+			(add-hook 'prog-mode-hook 'linum-mode)
+		(add-hook 'prog-mode-hook 'display-line-numbers-mode))
 	(add-hook 'text-mode-hook 'flyspell-mode)
 	(message "kc/set-up-emacs has been executed"))
 
