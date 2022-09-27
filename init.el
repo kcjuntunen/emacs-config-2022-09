@@ -10,7 +10,7 @@
 	"My variable pitch font varies based on my OS.")
 
 (defvar org-directory-root (if at-work
-															 "D:/OneDrive/org/"
+															 "C:/Users/k.c.juntunen/OneDrive/org/"
 														 "~/Dropbox/org/")
 	"The root upon which to build my org directory")
 
@@ -23,7 +23,7 @@
 
 (setq org-personal-root
 			(if at-work
-					"D:/Dropbox/Dropbox/org/"
+					"C:/Users/k.c.juntunen/Documents/org"
 				"~/Dropbox/org/"))
 
 (setq org-personal-directory
