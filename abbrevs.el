@@ -1,12 +1,11 @@
 ;;; abbrevs.el -*- lexical-binding: t; -*-
 
 (define-abbrev-table 'global-abbrev-table
-  '(
-    ("rrr" "→")
+  '(("rrr" "→")
     ("lll" "←")
     ("tu" "👍")
     ("td" "👎")
-    ))
+		("chm", "✓")))
 
 (set-default 'abbrev-mode t)
 
