@@ -5,7 +5,7 @@
 ;; Author   : K. C. Juntunen <juntunen.kc@gmail.com>
 ;; URL      :
 ;; Package-Version:
-;; Version  : 0.1
+;; Version  : 0.2
 ;; Keywords :
 
 ;; This file is NOT part of GNU Emacs.
@@ -21,6 +21,7 @@
   :lighter " ☥"
   :keymap (let ((map (make-sparse-keymap)))
             (define-key map (kbd "C-c r") 'york-get-request-data)
+			(define-key map (kbd "C-c q") 'york-copy-queue-to-workarea)
             (define-key map (kbd "C-c s") 'york-store-repo-name)
             (define-key map (kbd "C-c g") 'york-open-local-repo-name)
             (define-key map (kbd "C-c G") 'york-open-remote-repo-name)
@@ -29,9 +30,21 @@
       (message "york-mode activated")
     (message "york-mode deactivated")))
 
+(defcustom york-production-queue-path
+  "//poppins/ProductionQueues/"
+  "Path to prduction queue root folder."
+  :type 'string
+  :group 'york)
+
+(defcustom york-workarea
+  "C:/fastrack/workarea/"
+  "Path to workarea."
+  :type 'string
+  :group 'york)
 
 (defcustom york-request-looker-upper-path
-  "D:/Source/Repos/Viewer.Etc/Experimental/bin/Debug/Experimental.exe"
+  "C:/Users/k.c.juntunen/source/repos/Viewer.Etc/Experimental/bin/Debug/Experimental.exe"
+  ;; "D:/Source/Repos/Viewer.Etc/Experimental/bin/Debug/Experimental.exe"
   ;; "D:/Source/C#-Production/Viewer/Experimental/bin/Debug/Experimental.exe"
   "The program that pulls in Projects/Phases/Tasks in Org format."
   :type 'string
@@ -60,8 +73,6 @@
   :prefix "york-"
   :group york-mode)
 
-;;
-
 (defun york-store-repo-name (repo-name)
   "Store repo-name under the property name in `repo-name-property-name'."
   (interactive "sRepo Name: ")
@@ -73,6 +84,30 @@
   (insert (shell-command-to-string
            (format "%s %s"
                    york-request-looker-upper-path request-number))))
+
+(defun york--get-inputq-path ()
+  "Get the path to production input queues"
+    (concat  york-production-queue-path "incomeq/"))
+
+(defun york--get-processq-path ()
+  "Get the path to production process queues"
+    (concat  york-production-queue-path "processq/"))
+
+(defun york--get-reprocessq-path ()
+  "Get the path to production reprocess queues"
+    (concat  york-production-queue-path "reprocessq/"))
+
+(defun york--get-outputq-path ()
+  "Get the path to production output queues"
+    (concat  york-production-queue-path "outputq/"))
+
+(defun york--get-queue-path (queuekey)
+  ""
+  (let ((qpath (cond ((string-equal (substring queuekey 0 1) "I") (york--get-inputq-path))
+					 ((string-equal (substring queuekey 0 1) "P") (york--get-processq-path))
+					 ((string-equal (substring queuekey 0 1) "R") (york--get-reprocessq-path))
+					 ((string-equal (substring queuekey 0 1) "O") (york--get-outputq-path)))))
+	(concat qpath queuekey ".dat")))
 
 (defun york--get-local-repo-name ()
   "Get the local repo for the associated code."
@@ -103,6 +138,13 @@
         (cd thing-to-open)
         (magit-status)))
     (cd here)))
+
+(defun york-copy-queue-to-workarea (queuekey)
+  "Copy payload indicated by QUEUEKEY to workarea."
+  (interactive "sQueue Key: ")
+  (let ((file-to-copy (york--get-queue-path queuekey)))
+	(message "Copying %s to %s" file-to-copy york-workarea)
+	(copy-file file-to-copy york-workarea)))
 
 ;; Bindings
 
