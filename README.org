@@ -7,7 +7,7 @@ were "distributions" or whatever.
 Prelude was great. But it wasn't long before I wanted to have a lean config
 again.
 * Spacemacs
-Once upon a time, I thought [[https://github.com/kcjuntunen/emacs-config/commit/6a70a23d0711e9c9c567721d6e6184d4156af03a][Spacemacs]] was pretty cool. Since I'm forced to be
+Once upon a time, I thought [[https://github.com/kcjuntunen/emacs-config][Spacemacs]] was pretty cool. Since I'm forced to be
 in a Windows environment for work, I got tired of the really long startup
 times. Anything Linux can do in 2 seconds, Windows can do in 20 seconds. As a
 consequence of that I went rogue, and produced my own ~init.el~.
