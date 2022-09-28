@@ -5,7 +5,7 @@
 		("lll" "←")
 		("tu" "👍")
 		("td" "👎")
-		("chm", "✓")))
+		("chm" "✓")))
 
 (set-default 'abbrev-mode t)
 
