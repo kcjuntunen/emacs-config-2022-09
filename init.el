@@ -179,7 +179,6 @@
 :Captured: %U
 :ClientAccount: %^{ClientAccount}
 :TradingPartnerAccount: %^{TradingPartnerAccount}
-:Prev_Loc: %K
 :END:
 :CLIPBOARD:\n%x\n:END:\n" :clock-in t :clock-resume t)
 		 ("s" "Source Note" entry
@@ -206,7 +205,6 @@
 :PROPERTIES:
 :CUSTOM_ID: %(time-stamp--format \"%Y%m%d%H%M\" (org-read-date nil t \"+0d\"))
 :Captured: %U
-:Prev_Loc: %K
 :END:" :clock-in t :clock-resume t)
 		 ("m" "Meeting" entry
 			(file kc/meetings-file)
@@ -217,7 +215,6 @@
 :ClientAccount: %^{ClientAccount}
 :TradingPartnerAccount: n/a
 :Captured: %U
-:Prev_Loc: %K
 :END:" :clock-in t :clock-resume t)
 		 ("b" "Bookmark" entry
 			(file+headline kc/personal-notes-file "Bookmarks")
