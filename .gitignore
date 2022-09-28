@@ -4,6 +4,7 @@ customize.el
 eln-cache/
 elpa/
 eshell/
+eudc-options
 history
 recentf
 server/
