@@ -343,6 +343,11 @@ re-downloaded in order to locate PACKAGE."
 	(add-to-list 'auto-mode-alist '("\\.cpy\\'" . cobol-mode))
 	(add-hook 'cobol-mode-hook 'ruler-mode))
 
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;; savehist-mode
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+(savehist-mode 1)
+
 (defun kc/org-check-agenda ()
 	"Peek at agenda."
 	(interactive)
