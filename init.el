@@ -38,6 +38,7 @@
 								tab-width 2
 								fill-column 78
 								column-number-mode t
+								delete-by-moving-to-trash t
 								vc-follow-symlinks t
 								ring-bell-function 'ignore
 								indent-tabs-mode t
@@ -358,6 +359,8 @@ re-downloaded in order to locate PACKAGE."
 (define-key global-map (kbd "C-<f5>") 'org-agenda)
 (define-key global-map (kbd "<f5>") 'kc/org-check-agenda)
 (define-key global-map (kbd "<f6>") 'org-capture)
+(define-key global-map (kbd "C-x E") 'eshell)
+(define-key global-map (kbd "C-x p") 'proced)
 (define-key dired-mode-map (kbd "C-c C-w") 'wdired-change-to-wdired-mode)
 
 (defun kc/load-file (filename func)
