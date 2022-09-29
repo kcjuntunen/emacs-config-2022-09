@@ -36,9 +36,9 @@
 
 (defun kc/set-up-emacs ()
 	(setq-default blink-cursor-delay .2
-								custom-file "~/.emacs.d/customize.el"
 								blink-cursor-interval .2
 								blink-cursor-blinks 10000
+								custom-file "~/.emacs.d/customize.el"
 								tab-width 2
 								fill-column 78
 								column-number-mode t
@@ -102,11 +102,11 @@
 (require 'package)
 
 (unless (assoc-default "melpa" package-archives)
-				(add-to-list 'package-archives
-										 '("melpa" . "https://stable.melpa.org/packages/") t))
+	(add-to-list 'package-archives
+							 '("melpa" . "https://stable.melpa.org/packages/") t))
 (unless (assoc-default "nognu" package-archives)
-				(add-to-list 'package-archives
-										 '("nognu" . "https://elpa.nongnu.org/nongnu/") t))
+	(add-to-list 'package-archives
+							 '("nognu" . "https://elpa.nongnu.org/nongnu/") t))
 
 ;;; from purcell/emacs.d
 (defun require-package (package &optional min-version no-refresh)
