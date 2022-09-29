@@ -90,6 +90,8 @@
 	(message "kc/set-up-emacs has been executed"))
 
 (defun kc/set-up-org ()
+	(if (not (file-exists-p org-directory))
+			(message "Skipping org setup. '%s' does not exixst" org-directory)
 	(setq-default
 	 org-agenda-file-regexp "\\`[^.].*\\.org\\'"
 	 kc/org-all-agenda-files
@@ -232,7 +234,7 @@
 	(setq org-agenda-files kc/org-all-agenda-files)
 	(require 'time-stamp)
 	(add-hook 'org-mode-hook 'flyspell-mode)
-	(message "kc/set-up-org has been executed"))
+	(message "kc/set-up-org has been executed")))
 
 ;; This is here so PLINK can find my private key.
 (eval-after-load "tramp"
