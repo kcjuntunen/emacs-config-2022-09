@@ -21,7 +21,7 @@
 (require-package 'gruvbox-theme)
 (load-theme 'gruvbox-dark-medium t)
 
-(kc/load-file "~/.emacs.d/customize.el" 'message)
+(kc/load-file custom-file 'message)
 
 (server-start)
 (message "init.el has been eval'd")
