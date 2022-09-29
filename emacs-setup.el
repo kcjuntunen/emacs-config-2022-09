@@ -100,8 +100,13 @@
 					 ("-ssh") ("-t") ("%h") ("\"")
 					 ("env 'TERM=dumb' 'PROMPT_COMMAND=' 'PS1=#$ '") ("/bin/sh") ("\""))))
 (require 'package)
-(add-to-list 'package-archives
-						 '("melpa" . "https://stable.melpa.org/packages/") t)
+
+(unless (assoc-default "melpa" package-archives)
+				(add-to-list 'package-archives
+										 '("melpa" . "https://stable.melpa.org/packages/") t))
+(unless (assoc-default "nognu" package-archives)
+				(add-to-list 'package-archives
+										 '("nognu" . "https://elpa.nongnu.org/nongnu/") t))
 
 ;;; from purcell/emacs.d
 (defun require-package (package &optional min-version no-refresh)
