@@ -155,73 +155,7 @@
 	 kc/personal-notes-file (concat org-personal-directory "/notes.org")
 	 kc/notes-file (concat org-directory "/notes.org")
 	 kc/meetings-file (concat org-directory "/meetings.org")
-	 org-capture-templates
-	 '(("t" "todo" entry
-			(file kc/refile-file)
-			"* TODO %?
-:PROPERTIES:
-:CUSTOM_ID: %(time-stamp--format \"%Y%m%d%H%M\" (org-read-date nil t \"+0d\"))
-:Captured: %U
-:ClientAccount: %^{ClientAccount}
-:TradingPartnerAccount: %^{TradingPartnerAccount}
-:END:\n  SCHEDULED: %(org-insert-time-stamp (org-read-date nil t \"+0d\"))\n"
-			:clock-in t :clock-resume t :prepend t)
-		 ("p" "Phone call" entry
-			(file kc/refile-file)
-			"* PHONE %?
-:PROPERTIES:
-:CUSTOM_ID: %(time-stamp--format \"%Y%m%d%H%M\" (org-read-date nil t \"+0d\"))
-:Captured: %U
-:Prev_Loc: %K
-:END:" :clock-in t :clock-resume t)
-		 ("i" "Interuption" entry
-			(file kc/interruption-file)
-			"* %? %T
-:PROPERTIES:
-:CUSTOM_ID: %(time-stamp--format \"%Y%m%d%H%M\" (org-read-date nil t \"+0d\"))
-:Captured: %U
-:ClientAccount: %^{ClientAccount}
-:TradingPartnerAccount: %^{TradingPartnerAccount}
-:END:
-:CLIPBOARD:\n%x\n:END:\n" :clock-in t :clock-resume t)
-		 ("s" "Source Note" entry
-			(file kc/refile-file)
-			"* %?
-:PROPERTIES:
-:CUSTOM_ID: %(time-stamp--format \"%Y%m%d%H%M\" (org-read-date nil t \"+0d\"))
-:Captured: %U
-:Prev_Loc: %K
-:END:
-#+begin_source %^{Language|conf|csharp|powershell|sgml|shell|sql}\n%x\n#+end_source\n" :clock-in t :clock-resume t)
-		 ("j" "Journal" entry
-			(file+olp+datetree kc/diary-file)
-			"* %? %T
-:PROPERTIES:
-:CUSTOM_ID: %(time-stamp--format \"%Y%m%d%H%M\" (org-read-date nil t \"+0d\"))
-:Captured: %U
-:Category: %^{Entry type|Bible|Note|Journal}
-:END:
-" :clock-in t :clock-resume t)
-		 ("n" "Note" entry
-			(file kc/personal-notes-file)
-			"* %? :NOTE:
-:PROPERTIES:
-:CUSTOM_ID: %(time-stamp--format \"%Y%m%d%H%M\" (org-read-date nil t \"+0d\"))
-:Captured: %U
-:END:" :clock-in t :clock-resume t)
-		 ("m" "Meeting" entry
-			(file kc/meetings-file)
-			"* MEETING %? %T
-:PROPERTIES:
-:CUSTOM_ID: %(time-stamp--format \"%Y%m%d%H%M\" (org-read-date nil t \"+0d\"))
-:Request: Not billable
-:ClientAccount: %^{ClientAccount}
-:TradingPartnerAccount: n/a
-:Captured: %U
-:END:" :clock-in t :clock-resume t)
-		 ("b" "Bookmark" entry
-			(file+headline kc/personal-notes-file "Bookmarks")
-			"* %?\n:PROPERTIES:\n:Captured: %U\n:END:\n\n" :empty-lines 1))
+	 org-capture-templates '()
 	 org-clock-in-switch-to-state
 	 (defun kc/clock-in-to-wip (kw)
 		 "Switch from TODO to WIP when clocking in."
@@ -233,6 +167,7 @@
 				 kw)))))
 	(setq org-agenda-files kc/org-all-agenda-files)
 	(require 'time-stamp)
+	(mapc #'load-file (directory-files "~/.emacs.d/org-capture.d/" t ".*el$"))
 	(add-hook 'org-mode-hook 'flyspell-mode)
 	(message "kc/set-up-org has been executed")))
 
@@ -361,6 +296,7 @@ re-downloaded in order to locate PACKAGE."
 (define-key global-map (kbd "C-<f5>") 'org-agenda)
 (define-key global-map (kbd "<f5>") 'kc/org-check-agenda)
 (define-key global-map (kbd "<f6>") 'org-capture)
+(define-key global-map (kbd "C-x c") 'calc)
 (define-key global-map (kbd "C-x E") 'eshell)
 (define-key global-map (kbd "C-x p") 'proced)
 (define-key dired-mode-map (kbd "C-c C-w") 'wdired-change-to-wdired-mode)
