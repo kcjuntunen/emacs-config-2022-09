@@ -9,11 +9,11 @@
 	(kc/set-up-org))
 
 (when at-work 
-	(kc/load-file "~/.emacs.d/york-mode.el" 'error))
+	(load "~/.emacs.d/york-mode.el" nil nil))
 
-(kc/load-file "~/.personal.el" 'error)
-(kc/load-file "~/.emacs.d/keybindings.el" 'error)
-(kc/load-file "~/.emacs.d/abbrevs.el" 'message)
+(load "~/.personal.el" nil nil)
+(load "~/.emacs.d/keybindings.el" nil nil)
+(load "~/.emacs.d/abbrevs.el" t nil)
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;; Theme
