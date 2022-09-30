@@ -28,7 +28,7 @@
 														 "~/Dropbox/org/")
 	"The root upon which to build my org directory")
 
-(load-file "~/.emacs.d/roman-numerals.el")
+(load "~/.emacs.d/roman-numerals.el" kc/quiet-errors kc/quiet-message)
 
 (setq org-directory
 			(if not-win
@@ -124,9 +124,10 @@
 				 kw)))))
 	(setq org-agenda-files kc/org-all-agenda-files)
 	(require 'time-stamp)
-	(mapc #'load-file (directory-files "~/.emacs.d/org-capture.d/" t ".*el$"))
+	(mapc #'(lambda (f) (load f kc/quiet-errors kc/quiet-message)) (directory-files "~/.emacs.d/org-capture.d/" t "[a-z].*el$"))
 	(add-hook 'org-mode-hook 'flyspell-mode)
-	(message "kc/set-up-org has been executed")))
+	(if (not kc/quiet-message)
+			(message "kc/set-up-org has been executed"))))
 
 (provide 'org-setup)
 ;;; org-setup.el ends here

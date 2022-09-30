@@ -25,7 +25,7 @@
 ;;; Code:
 (if (version< emacs-version "29")
 		(message "ligature-mode not supported by %s" emacs-version)
-	(load-file "~/git/ligature.el/ligature.el")
+	(load "~/git/ligature.el/ligature.el" kc/quiet-errors kc/quiet-message)
 	(require 'ligature)
 	(ligature-set-ligatures 't '("www"))
 	;; Enable traditional ligature support in eww-mode, if the

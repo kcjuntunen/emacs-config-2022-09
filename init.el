@@ -1,19 +1,25 @@
 ;;; init.el --- My init file. -*- lexical-binding: t; coding: utf-8-unix; -*-
-(add-hook 'after-init-hook '(lambda () (load custom-file)))
+(add-hook 'after-init-hook '(lambda () (load custom-file kc/quiet-errors kc/quiet-message)))
 
-(when (load-file "~/.emacs.d/emacs-setup.el")
+(defvar kc/quiet-message t
+	"So I can control how noisy (load) is.")
+
+(defvar kc/quiet-errors t
+	"So I can control how noisy (load) is.")
+
+(when (load "~/.emacs.d/emacs-setup.el" kc/quiet-errors kc/quiet-message)
 	(kc/set-up-emacs)
 	(kc/set-up-swiper))
 
-(when (load-file "~/.emacs.d/org-setup.el")
+(when (load "~/.emacs.d/org-setup.el" kc/quiet-errors kc/quiet-message)
 	(kc/set-up-org))
 
 (when at-work 
-	(load "~/.emacs.d/york-mode.el" nil nil))
+	(load "~/.emacs.d/york-mode.el" kc/quiet-errors kc/quiet-message))
 
-(load "~/.personal.el" nil nil)
-(load "~/.emacs.d/keybindings.el" nil nil)
-(load "~/.emacs.d/abbrevs.el" t nil)
+(load "~/.personal.el" kc/quiet-errors kc/quiet-message)
+(load "~/.emacs.d/keybindings.el" kc/quiet-errors kc/quiet-message)
+(load "~/.emacs.d/abbrevs.el" kc/quiet-errors kc/quiet-message)
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;; Theme
@@ -23,4 +29,5 @@
 (load-theme 'gruvbox-dark-medium t)
 
 (server-start)
-(message "init.el has been eval'd")
+(if (not kc/quiet-message)
+		(message "init.el has been eval'd"))

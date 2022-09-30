@@ -72,7 +72,8 @@
 		(add-hook 'prog-mode-hook 'display-line-numbers-mode))
 
 	(add-hook 'text-mode-hook 'flyspell-mode)
-	(message "kc/set-up-emacs has been executed"))
+	(if (not kc/quiet-message)
+			(message "kc/set-up-emacs has been executed")))
 
 ;; This is here so PLINK can find my private key.
 (eval-after-load "tramp"
@@ -84,8 +85,8 @@
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;; load package config
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-(mapc #'(lambda (f) (load f nil nil))
-			(directory-files "~/.emacs.d/package-config.d" t ".*el$" nil))
+(mapc #'(lambda (f) (load f kc/quiet-errors kc/quiet-message))
+			(directory-files "~/.emacs.d/package-config.d" t "[0-9]\\{2\\}\\..*el$" nil))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;; magit
