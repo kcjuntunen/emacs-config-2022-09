@@ -102,11 +102,12 @@
 	(concat  york-production-queue-path "outputq/"))
 
 (defun york--get-queue-path (queuekey)
-	""
-	(let ((qpath (cond ((string-equal (substring queuekey 0 1) "I") (york--get-inputq-path))
-										 ((string-equal (substring queuekey 0 1) "P") (york--get-processq-path))
-										 ((string-equal (substring queuekey 0 1) "R") (york--get-reprocessq-path))
-										 ((string-equal (substring queuekey 0 1) "O") (york--get-outputq-path)))))
+	"Convert queue key to queue path."
+	(let* ((queue-type (substring queuekey 0 1))
+				 (qpath (cond ((string-equal queue-type "I") (york--get-inputq-path))
+											((string-equal queue-type "P") (york--get-processq-path))
+											((string-equal queue-type "R") (york--get-reprocessq-path))
+											((string-equal queue-type "O") (york--get-outputq-path)))))
 		(concat qpath queuekey ".dat")))
 
 (defun york--get-local-repo-name ()
