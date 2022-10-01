@@ -38,7 +38,7 @@
 	(setq-default blink-cursor-delay .2
 								blink-cursor-interval .2
 								blink-cursor-blinks 10000
-								custom-file "~/.emacs.d/customize.el"
+								custom-file "~/.personal.el"
 								tab-width 2
 								fill-column 78
 								column-number-mode t

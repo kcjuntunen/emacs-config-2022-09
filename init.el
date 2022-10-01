@@ -1,6 +1,4 @@
 ;;; init.el --- My init file. -*- lexical-binding: t; coding: utf-8-unix; -*-
-(add-hook 'after-init-hook '(lambda () (load custom-file kc/quiet-errors kc/quiet-message)))
-
 (defvar kc/quiet-message t
 	"So I can control how noisy (load) is.")
 
@@ -10,6 +8,8 @@
 (when (load "~/.emacs.d/emacs-setup.el" kc/quiet-errors kc/quiet-message)
 	(kc/set-up-emacs)
 	(kc/set-up-swiper))
+
+(add-hook 'after-init-hook '(lambda () (load custom-file kc/quiet-errors kc/quiet-message)))
 
 (when (load "~/.emacs.d/org-setup.el" kc/quiet-errors kc/quiet-message)
 	(kc/set-up-org))
