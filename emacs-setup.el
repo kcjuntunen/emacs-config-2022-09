@@ -54,8 +54,6 @@
 								show-paren-delay 0
 								make-backup-files nil
 								auto-save-default nil
-								tool-bar-mode -1
-								menu-bar-mode t
 								inhibit-startup-screen t)
 	(blink-cursor-mode)
 	(savehist-mode t)
@@ -76,11 +74,12 @@
 			(message "kc/set-up-emacs has been executed")))
 
 ;; This is here so PLINK can find my private key.
-(eval-after-load "tramp"
-	'(setf (cadr (assq 'tramp-login-args (cdr (assoc "plink" tramp-methods))))
-				 '(("-l" "%u") ("-P" "%p") ("-i ~/.ssh/id_rsa.ppk")
-					 ("-ssh") ("-t") ("%h") ("\"")
-					 ("env 'TERM=dumb' 'PROMPT_COMMAND=' 'PS1=#$ '") ("/bin/sh") ("\""))))
+(when not-win
+	(eval-after-load "tramp"
+		'(setf (cadr (assq 'tramp-login-args (cdr (assoc "plink" tramp-methods))))
+					 '(("-l" "%u") ("-P" "%p") ("-i ~/.ssh/id_rsa.ppk")
+						 ("-ssh") ("-t") ("%h") ("\"")
+						 ("env 'TERM=dumb' 'PROMPT_COMMAND=' 'PS1=#$ '") ("/bin/sh") ("\"")))))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;; load package config
@@ -89,12 +88,7 @@
 			(directory-files "~/.emacs.d/package-config.d" t "[0-9]\\{2\\}\\..*el$" nil))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-;; magit
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-(require-package 'magit)
-
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-;; savehist-mode
+;; simple package config
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 (savehist-mode 1)
 

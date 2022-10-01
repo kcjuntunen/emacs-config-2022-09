@@ -1,6 +1,7 @@
 auto-save-list/
 bookmarks
 customize.el
+.cache/
 eln-cache/
 elpa/
 eshell/
@@ -10,3 +11,4 @@ recentf
 server/
 transient/
 url/
+.lsp-session-v1

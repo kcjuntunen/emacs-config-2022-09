@@ -62,7 +62,7 @@
 	 org-use-fast-todo-selection t
 	 org-hide-emphasis-markers nil
 	 org-treat-S-cursor-todo-selection-as-state-change nil
-	 org-ellipsis " ▼ "
+	 org-ellipsis "⤵"
 	 org-clock-continuously t
 	 org-clock-out-remove-zero-time-clocks t
 	 org-log-done 'time

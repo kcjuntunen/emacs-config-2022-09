@@ -48,6 +48,6 @@
 	(global-set-key (kbd "C-S-o") 'counsel-rhythmbox)
 	(define-key minibuffer-local-map (kbd "C-r") 'counsel-minibuffer-history))
 
-
+(kc/set-up-swiper)
 (provide 'swiper-config)
 ;;; swiper-config.el ends here
