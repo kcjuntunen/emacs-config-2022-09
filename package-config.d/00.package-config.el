@@ -28,9 +28,16 @@
 (unless (assoc-default "melpa" package-archives)
 	(add-to-list 'package-archives
 							 '("melpa" . "https://stable.melpa.org/packages/") t))
-(unless (assoc-default "nognu" package-archives)
+(unless (assoc-default "nongnu" package-archives)
 	(add-to-list 'package-archives
-							 '("nognu" . "https://elpa.nongnu.org/nongnu/") t))
+							 '("nongnu" . "https://elpa.nongnu.org/nongnu/") t))
+
+(unless (package-installed-p 'quelpa)
+  (with-temp-buffer
+    (url-insert-file-contents "https://raw.githubusercontent.com/quelpa/quelpa/master/quelpa.el")
+    (eval-buffer)
+    (quelpa-self-upgrade)))
+
 
 ;;; from purcell/emacs.d
 (defun require-package (package &optional min-version no-refresh)

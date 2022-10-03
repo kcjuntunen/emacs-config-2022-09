@@ -12,3 +12,4 @@ server/
 transient/
 url/
 .lsp-session-v1
+/quelpa/

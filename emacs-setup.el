@@ -95,7 +95,7 @@
 ;; Stolen from <https://pages.sachachua.com/.emacs.d/>
 (defun kc/org-check-agenda ()
 	"Peek at agenda."
-	(interactive)
+(interactive)
 	(cond
 	 ((derived-mode-p 'org-agenda-mode)
 		(if (window-parent) (delete-window) (bury-buffer)))
