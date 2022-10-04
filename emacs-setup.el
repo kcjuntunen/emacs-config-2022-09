@@ -62,12 +62,12 @@
 	(global-auto-revert-mode t)
 	(prefer-coding-system 'utf-8)
 	(set-language-environment 'utf-8)
-	(add-to-list 'default-frame-alist '(height . 40))
-	(add-to-list 'default-frame-alist '(width . 80))
-
 	(if (version< emacs-version "29")
 			(add-hook 'prog-mode-hook 'linum-mode)
 		(add-hook 'prog-mode-hook 'display-line-numbers-mode))
+
+	(add-to-list 'default-frame-alist '(height . 40))
+	(add-to-list 'default-frame-alist '(width . 80))
 
 	(add-hook 'text-mode-hook 'flyspell-mode)
 	(if (not kc/quiet-message)
@@ -95,7 +95,7 @@
 ;; Stolen from <https://pages.sachachua.com/.emacs.d/>
 (defun kc/org-check-agenda ()
 	"Peek at agenda."
-(interactive)
+	(interactive)
 	(cond
 	 ((derived-mode-p 'org-agenda-mode)
 		(if (window-parent) (delete-window) (bury-buffer)))
