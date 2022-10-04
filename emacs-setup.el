@@ -66,8 +66,8 @@
 			(add-hook 'prog-mode-hook 'linum-mode)
 		(add-hook 'prog-mode-hook 'display-line-numbers-mode))
 
-	(add-to-list 'default-frame-alist '(height . 40))
-	(add-to-list 'default-frame-alist '(width . 80))
+	(add-to-list 'initial-frame-alist '(height . 30))
+	(add-to-list 'initial-frame-alist '(width . 90))
 
 	(add-hook 'text-mode-hook 'flyspell-mode)
 	(if (not kc/quiet-message)
