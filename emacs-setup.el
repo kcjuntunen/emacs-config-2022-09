@@ -54,6 +54,8 @@
 								show-paren-delay 0
 								make-backup-files nil
 								auto-save-default nil
+								initial-frame-alist
+								'((top . 1) (left . -1920) (width . 85) (height . 55))
 								inhibit-startup-screen t)
 	(blink-cursor-mode)
 	(savehist-mode t)
@@ -65,10 +67,6 @@
 	(if (version< emacs-version "29")
 			(add-hook 'prog-mode-hook 'linum-mode)
 		(add-hook 'prog-mode-hook 'display-line-numbers-mode))
-
-	(add-to-list 'initial-frame-alist '(height . 30))
-	(add-to-list 'initial-frame-alist '(width . 90))
-
 	(add-hook 'text-mode-hook 'flyspell-mode)
 	(if (not kc/quiet-message)
 			(message "kc/set-up-emacs has been executed")))
