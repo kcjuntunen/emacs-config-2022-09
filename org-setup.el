@@ -56,7 +56,6 @@
 		(expand-file-name org-directory) t org-agenda-file-regexp)
 	 org-startup-folded t
 	 org-startup-indented t
-	 org-indent-mode t
 	 org-agenda-span 'day
 	 org-fontify-quote-and-verse-blocks t
 	 org-use-fast-todo-selection t
