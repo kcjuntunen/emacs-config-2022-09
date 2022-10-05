@@ -33,5 +33,8 @@
 
 (evil-define-key 'normal org-mode-map (kbd "<tab>") #'org-cycle)
 (evil-define-key 'normal helpful-mode-map (kbd "q") #'quit-window)
+
+(repeat-mode 1)
+
 (provide 'keybindings)
 ;;; keybindings.el ends here
