@@ -31,6 +31,7 @@
 (define-key global-map (kbd "C-x p") 'proced)
 (define-key dired-mode-map (kbd "C-c C-w") 'wdired-change-to-wdired-mode)
 
-
+(evil-define-key 'normal org-mode-map (kbd "<tab>") #'org-cycle)
+(evil-define-key 'normal helpful-mode-map (kbd "q") #'quit-window)
 (provide 'keybindings)
 ;;; keybindings.el ends here

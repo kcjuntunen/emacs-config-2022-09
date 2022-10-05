@@ -31,9 +31,6 @@
 
 (require 'evil)
 (evil-mode t)
-(evil-define-key 'normal org-mode-map (kbd "<tab>") #'org-cycle)
-
-
 
 (provide 'evil-config)
 ;;; evil.el ends here
