@@ -34,7 +34,9 @@
 (evil-define-key 'normal org-mode-map (kbd "<tab>") #'org-cycle)
 (evil-define-key 'normal helpful-mode-map (kbd "q") #'quit-window)
 
-(repeat-mode 1)
+(if (version< "28" emacs-version)
+		(repeat-mode 1)
+	(message "repeat-mode is not supported by emacs version %s" emacs-version))
 
 (provide 'keybindings)
 ;;; keybindings.el ends here
