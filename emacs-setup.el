@@ -98,7 +98,7 @@
 	 ((derived-mode-p 'org-agenda-mode)
 		(if (window-parent) (delete-window) (bury-buffer)))
 	 ((get-buffer "*Org Agenda*")
-		(switch-to-buffer "*Org Agenda*"))
+		(switch-to-buffer (get-buffer "*Org Agenda*")))
 	 (t (org-agenda nil "a"))))
 
 (provide 'emacs-setup)

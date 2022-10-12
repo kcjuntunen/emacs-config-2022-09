@@ -22,6 +22,7 @@
 	:keymap (let ((map (make-sparse-keymap)))
 						(define-key map (kbd "C-c r") 'york-get-request-data)
 						(define-key map (kbd "C-c q") 'york-copy-queue-to-workarea)
+						(define-key map (kbd "C-c Q") 'york-copy-queue-to-workarea-and-open)
 						(define-key map (kbd "C-c s") 'york-store-repo-name)
 						(define-key map (kbd "C-c g") 'york-open-local-repo-name)
 						(define-key map (kbd "C-c G") 'york-open-remote-repo-name)
@@ -143,9 +144,23 @@
 (defun york-copy-queue-to-workarea (queuekey)
 	"Copy payload indicated by QUEUEKEY to workarea."
 	(interactive "sQueue Key: ")
+	(let ((file-to-copy (york--get-queue-path queuekey))
+				(destination (concat york-workarea queuekey ".dat")))
+		(if (file-exists-p destination)
+				(message "%s already exists" destination)
+			(message "Copying %s to %s" file-to-copy york-workarea)
+			(copy-file file-to-copy york-workarea))))
+
+(defun york-copy-queue-to-workarea-and-open (queuekey)
+	"Copy payload indicated by QUEUEKEY to workarea."
+	(interactive "sQueue Key: ")
 	(let ((file-to-copy (york--get-queue-path queuekey)))
-		(message "Copying %s to %s" file-to-copy york-workarea)
-		(copy-file file-to-copy york-workarea)))
+		(york-copy-queue-to-workarea queuekey)
+		(find-file file-to-copy)))
+
+(defun york-copy-queues-to-workarea (queue-keys)
+	(cl-loop for queue-key in queue-keys
+					 do (york-copy-queue-to-workarea queue-key)))
 
 ;; Bindings
 

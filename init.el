@@ -20,11 +20,6 @@
 (load "~/.emacs.d/keybindings.el" kc/quiet-errors kc/quiet-message)
 (load "~/.emacs.d/abbrevs.el" kc/quiet-errors kc/quiet-message)
 
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-;; Theme
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-;; (load-theme 'leuven-dark)
-(load-theme 'gruvbox-dark-medium t)
 (server-start)
 (if (not kc/quiet-message)
 		(message "init.el has been eval'd"))
