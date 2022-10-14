@@ -32,10 +32,12 @@
 (define-key dired-mode-map (kbd "C-c C-w") 'wdired-change-to-wdired-mode)
 
 ;; I know these keys have handy default functions, but they just confuse me.
-(define-key org-agenda-mode-map (kbd "h") 'backward-char)
-(define-key org-agenda-mode-map (kbd "l") 'forward-char)
-(define-key org-agenda-mode-map (kbd "j") 'next-line)
-(define-key org-agenda-mode-map (kbd "k") 'previous-line)
+(add-hook 'org-mode-hook
+					#'(lambda ()
+							(define-key org-agenda-mode-map (kbd "h") 'backward-char)
+							(define-key org-agenda-mode-map (kbd "l") 'forward-char)
+							(define-key org-agenda-mode-map (kbd "j") 'next-line)
+							(define-key org-agenda-mode-map (kbd "k") 'previous-line)))
 
 (evil-define-key 'normal org-mode-map (kbd "<tab>") #'org-cycle)
 (evil-define-key 'normal helpful-mode-map (kbd "q") #'quit-window)
