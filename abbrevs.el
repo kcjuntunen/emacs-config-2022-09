@@ -5,7 +5,8 @@
 		("lll" "←")
 		("tu" "👍")
 		("td" "👎")
-		("chm" "✓")))
+		("chm" "✓")
+		("M-S" "Mid-States")))
 
 (set-default 'abbrev-mode t)
 
