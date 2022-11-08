@@ -12,7 +12,9 @@
 %?
 
 :CLIPBOARD:
+#+begin_src text
 %x
+#+end_src
 :END:"
 							 :clock-in t
 							 :clock-resume t))

@@ -37,7 +37,8 @@
 							(define-key org-agenda-mode-map (kbd "h") 'backward-char)
 							(define-key org-agenda-mode-map (kbd "l") 'forward-char)
 							(define-key org-agenda-mode-map (kbd "j") 'next-line)
-							(define-key org-agenda-mode-map (kbd "k") 'previous-line)))
+							(define-key org-agenda-mode-map (kbd "k") 'previous-line)
+							(define-key org-agenda-mode-map (kbd "L") 'org-agenda-log-mode)))
 
 (evil-define-key 'normal org-mode-map (kbd "<tab>") #'org-cycle)
 (evil-define-key 'normal helpful-mode-map (kbd "q") #'quit-window)
