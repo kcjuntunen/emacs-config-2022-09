@@ -37,6 +37,12 @@
 	:type 'string
 	:group 'york)
 
+(defcustom york-other-production-queue-path
+	"//192.168.250.223/f-drive/ProductionQueues/"
+	"Path to prduction queue root folder."
+	:type 'string
+	:group 'york)
+
 (defcustom york-workarea
 	"C:/fastrack/workarea/"
 	"Path to workarea."
@@ -88,19 +94,19 @@
 
 (defun york--get-inputq-path ()
 	"Get the path to production input queues"
-	(concat  york-production-queue-path "incomeq/"))
+	(concat york-other-production-queue-path "incomeq/"))
 
 (defun york--get-processq-path ()
 	"Get the path to production process queues"
-	(concat  york-production-queue-path "processq/"))
+	(concat york-production-queue-path "processq/"))
 
 (defun york--get-reprocessq-path ()
 	"Get the path to production reprocess queues"
-	(concat  york-production-queue-path "reprocessq/"))
+	(concat york-production-queue-path "reprocessq/"))
 
 (defun york--get-outputq-path ()
 	"Get the path to production output queues"
-	(concat  york-production-queue-path "outputq/"))
+	(concat york-production-queue-path "outputq/"))
 
 (defun york--get-queue-path (queuekey)
 	"Convert queue key to queue path."
