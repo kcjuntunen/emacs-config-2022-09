@@ -32,12 +32,6 @@
 		(message "york-mode deactivated")))
 
 (defcustom york-production-queue-path
-	"//poppins/ProductionQueues/"
-	"Path to prduction queue root folder."
-	:type 'string
-	:group 'york)
-
-(defcustom york-other-production-queue-path
 	"//192.168.250.223/f-drive/ProductionQueues/"
 	"Path to prduction queue root folder."
 	:type 'string
@@ -94,7 +88,7 @@
 
 (defun york--get-inputq-path ()
 	"Get the path to production input queues"
-	(concat york-other-production-queue-path "incomeq/"))
+	(concat york-production-queue-path "incomeq/"))
 
 (defun york--get-processq-path ()
 	"Get the path to production process queues"
@@ -162,7 +156,7 @@
 	(interactive "sQueue Key: ")
 	(let ((file-to-copy (york--get-queue-path queuekey)))
 		(york-copy-queue-to-workarea queuekey)
-		(find-file file-to-copy)))
+		(find-file (concat york-workarea queuekey ".dat"))))
 
 (defun york-copy-queues-to-workarea (queue-keys)
 	(cl-loop for queue-key in queue-keys
