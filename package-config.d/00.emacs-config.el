@@ -1,4 +1,4 @@
-;;; emacs-setup.el --- General GNU Emacs settings.   -*- lexical-binding: t; -*-
+;;; emacs-config.el --- General GNU Emacs settings.   -*- lexical-binding: t; -*-
 
 ;; Copyright (C) 2022  K. C. Juntunen
 
@@ -81,12 +81,6 @@
 						 ("env 'TERM=dumb' 'PROMPT_COMMAND=' 'PS1=#$ '") ("/bin/sh") ("\"")))))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-;; load package config
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-(mapc #'(lambda (f) (load f kc/quiet-errors kc/quiet-message))
-			(directory-files "~/.emacs.d/package-config.d" t "[0-9]\\{2\\}\\..*el$" nil))
-
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;; simple package config
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 (savehist-mode 1)
@@ -102,5 +96,7 @@
 		(switch-to-buffer (get-buffer "*Org Agenda*")))
 	 (t (org-agenda nil "a"))))
 
-(provide 'emacs-setup)
-;;; emacs-setup.el ends here
+(kc/set-up-emacs)
+
+(provide 'emacs-config)
+;;; emacs-config.el ends here

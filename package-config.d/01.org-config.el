@@ -128,5 +128,7 @@
 	(if (not kc/quiet-message)
 			(message "kc/set-up-org has been executed"))))
 
+(kc/set-up-org)
+
 (provide 'org-setup)
 ;;; org-setup.el ends here
