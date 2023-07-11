@@ -12,6 +12,7 @@
 %?
 
 :CLIPBOARD:
+#+caption: Clipboard Content
 #+begin_src text
 %x
 #+end_src

@@ -3,10 +3,15 @@
 (define-abbrev-table 'global-abbrev-table
 	'(("rrr" "→")
 		("lll" "←")
+		("uuu" "↑")
+		("ddd" "↓")
 		("tu" "👍")
 		("td" "👎")
 		("chm" "✓")
-		("M-S" "Mid-States")))
+		("MSD" "Mid-States")
+		("RK" "Rural King")
+		("xref" "cross reference")
+		("xdock" "cross dock")))
 
 (set-default 'abbrev-mode t)
 

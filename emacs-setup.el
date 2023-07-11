@@ -54,8 +54,8 @@
 								show-paren-delay 0
 								make-backup-files nil
 								auto-save-default nil
-								initial-frame-alist
-								'((top . 1) (left . -1920) (width . 85) (height . 55))
+								;; initial-frame-alist
+								;; '((top . 1) (left . -1920) (width . 85) (height . 55))
 								inhibit-startup-screen t)
 	(blink-cursor-mode)
 	(savehist-mode t)
