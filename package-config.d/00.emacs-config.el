@@ -69,6 +69,7 @@
 		(add-hook 'prog-mode-hook 'display-line-numbers-mode))
 	(add-hook 'text-mode-hook 'flyspell-mode)
 	(add-hook 'text-mode-hook 'auto-fill-mode)
+	(global-set-key (kbd "C-c d") 'ediff-buffers)
 	(if (not kc/quiet-message)
 			(message "kc/set-up-emacs has been executed")))
 
