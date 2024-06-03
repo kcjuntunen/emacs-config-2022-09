@@ -71,7 +71,7 @@
 	 org-agenda-clockreport-parameter-plist
 	 '(:link t :maxlevel 4 :fileskip0 t
 					 :properties
-					 ("ClientAccount" "TradingPartnerAccount" "Request" "Phase" "Task"))
+					 ("ClientAccount" "Request" "Phase" "Task"))
 	 org-deadline-warning-days 45
 	 org-agenda-window-setup 'current-window
 	 org-agenda-skip-scheduled-if-done t
@@ -125,6 +125,7 @@
 	(require 'time-stamp)
 	(mapc #'(lambda (f) (load f kc/quiet-errors kc/quiet-message)) (directory-files "~/.emacs.d/org-capture.d/" t "[a-z].*el$"))
 	(add-hook 'org-mode-hook 'flyspell-mode)
+	(add-hook 'org-mode-hook 'emojify-mode)
 	(if (not kc/quiet-message)
 			(message "kc/set-up-org has been executed"))))
 
