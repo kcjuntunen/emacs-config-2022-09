@@ -5,7 +5,7 @@
 (defvar kc/quiet-errors t 
 	"So I can control how noisy (load) is.")
 
-(add-hook 'after-init-hook '(lambda () (load custom-file kc/quiet-errors kc/quiet-message)))
+(add-hook 'after-init-hook #'(lambda () (load custom-file kc/quiet-errors kc/quiet-message)))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;; load package config
