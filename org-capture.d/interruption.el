@@ -1,7 +1,7 @@
 (add-to-list 'org-capture-templates
 						 '("i" "Interuption" entry
 							 (file kc/interruption-file)
-							 "* %^{Heading} %T
+							 "* %^{Heading} [%(churchhill-datetime)]
 :PROPERTIES:
 :CUSTOM_ID: %(time-stamp--format \"%Y%m%d%H%M\" (org-read-date nil t \"+0d\"))
 :Captured: %U

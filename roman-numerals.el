@@ -44,6 +44,12 @@
 	 (format "%%d.%s.%%y"
 					 (roman-month))))
 
+(defun churchhill-datetime ()
+	"The style of date I saw in `The Gathering Storm'."
+	(format-time-string
+	 (format "%%d.%s.%%y %%l:%%M %%p"
+					 (roman-month))))
+
 (defun cool-date ()
 	"Big, long old-timey style date."
 	(let* ((dom (nth 3 (decode-time (current-time))))
