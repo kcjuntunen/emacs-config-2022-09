@@ -21,6 +21,7 @@
 
 (load "~/.personal" kc/quiet-errors kc/quiet-message)
 
+(require 'server)
 (if (not (server-running-p))
 		(server-start))
 
