@@ -21,7 +21,9 @@
 
 (load "~/.personal" kc/quiet-errors kc/quiet-message)
 
-(server-start)
+(if (not (server-running-p))
+		(server-start))
+
 (if (not kc/quiet-message)
 		(message "init.el has been eval'd"))
 (message "Emacs started in %s seconds." (emacs-init-time))
