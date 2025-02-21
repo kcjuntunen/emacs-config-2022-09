@@ -25,7 +25,8 @@
 (if (not (server-running-p))
 		(server-start)
 	(with-current-buffer "*scratch*"
-		(insert (format "%s\n;; No emacs server" initial-scratch-message))))
+		(insert (format "%s\n;; No emacs server"
+						 (substitute-command-keys initial-scratch-message)))))
 
 (if (not kc/quiet-message)
 		(message "init.el has been eval'd"))
