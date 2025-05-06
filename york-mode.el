@@ -26,6 +26,7 @@
 						(define-key map (kbd "C-c s") 'york-store-repo-name)
 						(define-key map (kbd "C-c g") 'york-open-local-repo-name)
 						(define-key map (kbd "C-c G") 'york-open-remote-repo-name)
+						(define-key map (kbd "C-c i") 'york-org-insert-last-screenshot)
 						map)
 	(if york-mode
 			(message "york-mode activated")
@@ -40,6 +41,12 @@
 (defcustom york-workarea
 	"C:/fastrack/workarea/"
 	"Path to workarea."
+	:type 'string
+	:group 'york)
+
+(defcustom york-screenshot-searchpath
+	org-directory
+	"Where to search for screenshots to insert."
 	:type 'string
 	:group 'york)
 
@@ -161,6 +168,13 @@
 (defun york-copy-queues-to-workarea (queue-keys)
 	(cl-loop for queue-key in queue-keys
 					 do (york-copy-queue-to-workarea queue-key)))
+
+(defun york-org-insert-last-screenshot ()
+	"After saving a screenshot insert it as an inline image."
+	(interactive)
+	(let ((most-recent-screenshot-path
+				 (last (directory-files york-screenshot-searchpath t "^Screenshot.*png$" t))))
+				(insert (format "[[%s]]" (car most-recent-screenshot-path)))))
 
 ;; Bindings
 
