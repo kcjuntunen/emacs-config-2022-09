@@ -174,7 +174,7 @@
 	(interactive)
 	(let ((most-recent-screenshot-path
 				 (last (directory-files york-screenshot-searchpath t "^Screenshot.*png$" t))))
-				(insert (format "[[%s]]" (car most-recent-screenshot-path)))))
+				(insert (format "[[file:%s]]" (car most-recent-screenshot-path)))))
 
 ;; Bindings
 
