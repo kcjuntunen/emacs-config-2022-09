@@ -124,6 +124,9 @@
 	(setq org-agenda-files kc/org-all-agenda-files)
 	(require 'time-stamp)
 	(mapc #'(lambda (f) (load f kc/quiet-errors kc/quiet-message)) (directory-files "~/.emacs.d/org-capture.d/" t "[a-z].*el$"))
+	(org-babel-do-load-languages
+	 'org-babel-load-languages
+	 '((sql . t)))
 	(add-hook 'org-mode-hook 'flyspell-mode)
 	(add-hook 'org-mode-hook 'emojify-mode)
 	(if (not kc/quiet-message)
