@@ -5,17 +5,18 @@
 :PROPERTIES:
 :CUSTOM_ID: %(time-stamp--format \"%Y%m%d%H%M\" (org-read-date nil t \"+0d\"))
 :Captured: %U
+:header-args:sql: :engine mysql
+:header-args:sql+: :dbhost \"%^{Host}\"
+:header-args:sql+: :dbuser (kc/auth-get-key \"yorkdb\" :user)
+:header-args:sql+: :dbpassword (kc/auth-get-pwd \"yorkdb\")
+:header-args:sql+: :database \"%^{Database}\"
+:header-args:sql+: :exports results
 :END:
 
 
-
-:CLIPBOARD:
 #+caption: Query
-#+begin_src sql :engine \"mysql\" :dbhost \"%^{Host}\" :database \"%^{Database}\" :exports results
-%?%x
-#+end_src
-
-#+RESULTS: Output
-:END:"
+#+begin_src sql
+%?
+#+end_src"
 							 :clock-in t
 							 :clock-resume t))
