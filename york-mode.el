@@ -33,7 +33,7 @@
 		(message "york-mode deactivated")))
 
 (defcustom york-production-queue-path
-	"//192.168.250.223/f-drive/ProductionQueues/"
+	"//192.168.250.103/z-drive/ProductionQueues/"
 	"Path to prduction queue root folder."
 	:type 'string
 	:group 'york)
@@ -107,7 +107,8 @@
 
 (defun york--get-outputq-path ()
 	"Get the path to production output queues"
-	(concat york-production-queue-path "outputq/"))
+	(concat
+	 york-production-queue-path "outputq/"))
 
 (defun york--get-queue-path (queuekey)
 	"Convert queue key to queue path."
