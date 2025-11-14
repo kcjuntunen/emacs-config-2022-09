@@ -174,8 +174,8 @@
 	"After saving a screenshot insert it as an inline image."
 	(interactive)
 	(let ((most-recent-screenshot-path
-				 (last (directory-files york-screenshot-searchpath t "^Screenshot.*png$" t))))
-				(insert (format "[[file:%s]]" (car most-recent-screenshot-path)))))
+				 (car (directory-files york-screenshot-searchpath t "^Screenshot.*png$" t))))
+				(insert (format "[[file:%s]]" most-recent-screenshot-path))))
 
 ;; Bindings
 
