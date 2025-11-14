@@ -65,13 +65,14 @@
 	 org-clock-continuously t
 	 org-clock-out-remove-zero-time-clocks t
 	 org-log-done 'time
+	 org-refile-use-cache t
 	 org-refile-targets
 	 (quote ((nil :maxlevel . 1) (kc/org-all-agenda-files :maxlevel . 2)))
 	 org-catch-invisible-edits 'smart
 	 org-agenda-clockreport-parameter-plist
 	 '(:link t :maxlevel 4 :fileskip0 t
 					 :properties
-					 ("ClientAccount" "Request" "Phase" "Task"))
+					 ("ClientAccount" "Request" "Phase"))
 	 org-deadline-warning-days 45
 	 org-agenda-window-setup 'current-window
 	 org-agenda-skip-scheduled-if-done t
