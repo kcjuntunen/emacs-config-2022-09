@@ -15,3 +15,4 @@
 (setq dired-listing-switches "-alhGF --group-directories-first")
 ;; (setq dired-listing-switches "-alF --group-directories-first")
 
+(provide 'dired-config)

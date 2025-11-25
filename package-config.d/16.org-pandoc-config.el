@@ -11,3 +11,4 @@
 				(?m "as Markdown." org-pandoc-export-as-markdown)
 				(?M "to Markdown." org-pandoc-export-to-markdown)))
 
+(provide 'pandoc-config)

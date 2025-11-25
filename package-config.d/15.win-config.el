@@ -77,3 +77,5 @@ getting in the way of selecting the buffers I do want."
 		(message "Killed %s buffer(s)" cnt)))
 
 (add-hook 'minibuffer-mode-hook #'my-minibuffer-set-font)
+
+(provide 'win-config)

@@ -14,3 +14,5 @@
 ;; (load-theme 'gruvbox-dark-soft t)
 ;; (load-theme 'green-phosphor t)
 ;; (load-theme 'darcula t)
+
+(provide 'theme-config)

@@ -15,3 +15,5 @@ for that."
   (-> (auth-source-search :host host)
       car
       (plist-get key)))
+
+(provide 'auth-config)
