@@ -8,7 +8,9 @@
 
 (set-face-attribute 'cursor nil :background "OrangeRed1")
 (set-face-attribute 'fixed-pitch-serif nil :font "Victor Mono")
+(set-face-attribute 'fixed-pitch nil :font "Victor Mono")
 (set-face-attribute 'variable-pitch nil :font "Cambria")
+(set-face-attribute 'default nil :font "Victor Mono")
 (set-face-attribute 'org-table nil :height 0.9)
 (set-face-attribute 'org-drawer nil :height 0.7)
 (set-face-attribute 'org-meta-line nil :height 0.7)
