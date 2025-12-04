@@ -11,7 +11,7 @@
 ;; load package config
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 (mapc #'(lambda (f) (load f kc/quiet-errors kc/quiet-message))
-			(directory-files "~/.emacs.d/package-config.d" t "[0-9]\\{2\\}\\..*el$" nil))
+			(directory-files "~/.emacs.d/package-config.d" t "^[0-9]\\{2\\}\\..*el$" nil))
 
 (load "~/.emacs.d/keybindings.el" kc/quiet-errors kc/quiet-message)
 (load "~/.emacs.d/abbrevs.el" kc/quiet-errors kc/quiet-message)
