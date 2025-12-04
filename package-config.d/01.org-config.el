@@ -31,7 +31,7 @@
 (load "~/.emacs.d/roman-numerals.el" kc/quiet-errors kc/quiet-message)
 
 (setq org-directory
-			(if not-win
+			(if (not at-work)
 					(concat org-directory-root (roman-year))
 				(concat org-directory-root (format-time-string "%Y"))))
 

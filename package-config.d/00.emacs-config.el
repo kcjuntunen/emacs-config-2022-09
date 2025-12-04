@@ -23,16 +23,8 @@
 ;; 
 
 ;;; Code:
-(defvar not-win (eq system-type 'gnu/linux)
-	"If NOT-WIN is non-nil, then we're not in MS-Windows.")
-
-(defvar at-work (not not-win)
+(defvar at-work (string-equal (downcase (system-name)) "smyrno")
 	"Smyrno is the machine at work.")
-
-(defvar kc/vp-font (if not-win
-											 "IBM Plex Serif Text"
-										 "Calibri")
-	"My variable pitch font varies based on my OS.")
 
 (defun kc/set-up-emacs ()
 	(setq-default blink-cursor-delay .2
@@ -74,7 +66,7 @@
 			(message "kc/set-up-emacs has been executed")))
 
 ;; This is here so PLINK can find my private key.
-(when not-win
+(when (not at-work)
 	(eval-after-load "tramp"
 		'(setf (cadr (assq 'tramp-login-args (cdr (assoc "plink" tramp-methods))))
 					 '(("-l" "%u") ("-P" "%p") ("-i ~/.ssh/id_rsa.ppk")
