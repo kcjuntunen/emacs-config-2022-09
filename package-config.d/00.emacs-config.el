@@ -23,9 +23,6 @@
 ;; 
 
 ;;; Code:
-(defvar at-work (string-equal (downcase (system-name)) "smyrno")
-	"Smyrno is the machine at work.")
-
 (defun kc/set-up-emacs ()
 	(setq-default blink-cursor-delay .2
 								blink-cursor-interval .2
