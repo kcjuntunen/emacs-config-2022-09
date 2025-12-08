@@ -33,6 +33,7 @@
 		(set-face-attribute 'org-block-begin-line nil :height 0.7)
 		(set-face-attribute 'org-block-end-line nil :height 0.7)))
 
+(require 'org)
 (kc/set-theme)
 (global-set-key (kbd "C-c t") 'kc/set-theme)
 
