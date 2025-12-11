@@ -25,7 +25,7 @@
 			(set-face-attribute 'default nil :font "Victor Mono"))
 		(if (not (find-font (font-spec :name "Cambria")))
 				(message "No Cambria")
-		(set-face-attribute 'variable-pitch nil :font "Cambria"))
+			(set-face-attribute 'variable-pitch nil :font "Cambria"))
 		(set-face-attribute 'cursor nil :background "OrangeRed1")
 		(set-face-attribute 'org-table nil :height 0.9)
 		(set-face-attribute 'org-drawer nil :height 0.7)
