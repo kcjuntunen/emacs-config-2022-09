@@ -148,7 +148,7 @@
 
 (define-auto-insert '(org-mode . "Org")
 	'("\\.[Oo][Rr][Gg]"
-		" #+title: Account" \n
+		"#+title: Account" \n
 		"#+setupfile: ../word-default.setup" \n
 		"#+options: ^:nil" \n
 		"#+columns: %Item %Effort %Clocksum" \n
