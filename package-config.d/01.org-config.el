@@ -135,5 +135,26 @@
 
 (kc/set-up-org)
 
+;; Stolen from <https://pages.sachachua.com/.emacs.d/>
+(defun kc/org-check-agenda ()
+	"Peek at agenda."
+	(interactive)
+	(cond
+	 ((derived-mode-p 'org-agenda-mode)
+		(if (window-parent) (delete-window) (bury-buffer)))
+	 ((get-buffer "*Org Agenda*")
+		(switch-to-buffer (get-buffer "*Org Agenda*")))
+	 (t (org-agenda nil "a"))))
+
+(define-auto-insert '(org-mode . "Org")
+	'("\\.[Oo][Rr][Gg]"
+		" #+title: Account" \n
+		"#+setupfile: ../word-default.setup" \n
+		"#+options: ^:nil" \n
+		"#+columns: %Item %Effort %Clocksum" \n
+		"#+export_options: brokenlinks:t" \n \n))
+
+(auto-insert-mode)
+
 (provide 'org-setup)
 ;;; org-setup.el ends here

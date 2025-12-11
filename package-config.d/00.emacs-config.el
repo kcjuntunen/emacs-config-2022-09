@@ -75,17 +75,6 @@
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 (savehist-mode 1)
 
-;; Stolen from <https://pages.sachachua.com/.emacs.d/>
-(defun kc/org-check-agenda ()
-	"Peek at agenda."
-	(interactive)
-	(cond
-	 ((derived-mode-p 'org-agenda-mode)
-		(if (window-parent) (delete-window) (bury-buffer)))
-	 ((get-buffer "*Org Agenda*")
-		(switch-to-buffer (get-buffer "*Org Agenda*")))
-	 (t (org-agenda nil "a"))))
-
 (kc/set-up-emacs)
 
 (provide 'emacs-config)
