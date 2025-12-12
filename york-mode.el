@@ -21,6 +21,7 @@
 	:lighter " ☥"
 	:keymap (let ((map (make-sparse-keymap)))
 						(define-key map (kbd "C-c r") 'york-get-request-data)
+						(define-key map (kbd "C-c n") 'york-get-incident-data)
 						(define-key map (kbd "C-c q") 'york-copy-queue-to-workarea)
 						(define-key map (kbd "C-c Q") 'york-copy-queue-to-workarea-and-open)
 						(define-key map (kbd "C-c s") 'york-store-repo-name)
@@ -52,8 +53,12 @@
 
 (defcustom york-request-looker-upper-path
 	"C:/Users/k.c.juntunen/source/repos/Viewer.Etc/Experimental/bin/Debug/Experimental.exe"
-	;; "D:/Source/Repos/Viewer.Etc/Experimental/bin/Debug/Experimental.exe"
-	;; "D:/Source/C#-Production/Viewer/Experimental/bin/Debug/Experimental.exe"
+	"The program that pulls in Projects/Phases/Tasks in Org format."
+	:type 'string
+	:group 'york)
+
+(defcustom york-incident-looker-upper-path
+	"C:/Users/k.c.juntunen/source/repos/Viewer.Etc/InsertIncident/bin/Release/net10.0/InsertIncident.exe"
 	"The program that pulls in Projects/Phases/Tasks in Org format."
 	:type 'string
 	:group 'york)
@@ -92,6 +97,13 @@
 	(insert (shell-command-to-string
 					 (format "%s %s"
 									 york-request-looker-upper-path request-number))))
+
+(defun york-get-incident-data (incident-number)
+	"Insert incident data into buffer in Org format."
+	(interactive "sIncident Number: ")
+	(insert (shell-command-to-string
+					 (format "%s %s"
+									 york-incident-looker-upper-path incident-number))))
 
 (defun york--get-inputq-path ()
 	"Get the path to production input queues"
