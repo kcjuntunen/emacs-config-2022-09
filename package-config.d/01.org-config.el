@@ -67,7 +67,7 @@
 	 org-log-done 'time
 	 org-refile-use-cache t
 	 org-refile-targets
-	 (quote ((nil :maxlevel . 1) (kc/org-all-agenda-files :maxlevel . 2)))
+	 (quote ((nil :maxlevel . 1) (kc/org-all-agenda-files :maxlevel . 1)))
 	 org-catch-invisible-edits 'smart
 	 org-agenda-clockreport-parameter-plist
 	 '(:link t :maxlevel 4 :fileskip0 t
