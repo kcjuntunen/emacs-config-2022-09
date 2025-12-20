@@ -1,7 +1,9 @@
-(add-to-list 'org-capture-templates
-						 '("i" "Interuption" entry
-							 (file kc/interruption-file)
-							 "* %^{Heading} [%(churchhill-datetime)]
+(if (not at-work)
+		(message "Not adding interruption capture template.")
+	(add-to-list 'org-capture-templates
+							 '("i" "Interuption" entry
+								 (file kc/interruption-file)
+								 "* %^{Heading} [%(churchhill-datetime)]
 :PROPERTIES:
 :CUSTOM_ID: %(time-stamp--format \"%Y%m%d%H%M\" (org-read-date nil t \"+0d\"))
 :Captured: %U
@@ -17,5 +19,5 @@
 %x
 #+end_src
 :END:"
-							 :clock-in t
-							 :clock-resume t))
+								 :clock-in t
+								 :clock-resume t)))
