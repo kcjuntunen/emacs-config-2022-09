@@ -107,6 +107,8 @@
 					 ("WIP" ("WAITING") ("CANCELLED") ("HOLD"))
 					 ("DONE" ("WAITING") ("CANCELLED") ("HOLD"))))
 	 kc/interruption-file (concat org-directory "/unscheduled.org")
+	 kc/incident-file (concat org-directory "/incidents.org")
+	 kc/monitor-file (concat org-directory "/monitor_duty.org")
 	 kc/refile-file (concat org-directory "/refile.org")
 	 kc/diary-file (concat org-personal-directory "/diary.org")
 	 kc/personal-notes-file (concat org-personal-directory "/notes.org")
