@@ -1,7 +1,9 @@
-(add-to-list 'org-capture-templates
-						 '("q" "Query" entry
-							 (file kc/interruption-file)
-							 "* %^{Heading} [%(churchhill-datetime)]
+(if (not at-work)
+		(message "Not adding query capture template.")
+	(add-to-list 'org-capture-templates
+							 '("q" "Query" entry
+								 (file kc/interruption-file)
+								 "* %^{Heading} [%(churchhill-datetime)]
 :PROPERTIES:
 :CUSTOM_ID: %(time-stamp--format \"%Y%m%d%H%M\" (org-read-date nil t \"+0d\"))
 :Captured: %U
@@ -18,5 +20,5 @@
 #+begin_src sql
 %?
 #+end_src"
-							 :clock-in t
-							 :clock-resume t))
+								 :clock-in t
+								 :clock-resume t)))
