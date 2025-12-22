@@ -1,4 +1,4 @@
-if (not at-work)
+(if (not at-work)
 		(message "Not adding incident capture template.")
 	(defun kc/incident-wrapper ()
 		"Call `york-get-incident-data' interactively."
