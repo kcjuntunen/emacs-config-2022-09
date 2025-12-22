@@ -59,7 +59,13 @@
 
 (defcustom york-incident-looker-upper-path
 	"C:/Users/k.c.juntunen/source/repos/Viewer.Etc/InsertIncident/bin/Release/net10.0/InsertIncident.exe"
-	"The program that pulls in Projects/Phases/Tasks in Org format."
+	"The program that pulls in Incidents in Org format."
+	:type 'string
+	:group 'york)
+
+(defcustom york-hang-looker-upper-path
+	"C:/Users/k.c.juntunen/source/repos/Viewer.Etc/InsertMessedUpServerStates/bin/Release/net10.0/InsertMessedUpServerStates.exe"
+	"The program that pulls in hung programs in Org format."
 	:type 'string
 	:group 'york)
 
@@ -104,6 +110,11 @@
 	(insert (shell-command-to-string
 					 (format "%s %s"
 									 york-incident-looker-upper-path incident-number))))
+
+(defun york-get-hang-data ()
+	"Insert incident data into buffer in Org format."
+	(interactive)
+	(insert (shell-command-to-string york-hang-looker-upper-path)))
 
 (defun york--get-inputq-path ()
 	"Get the path to production input queues"
