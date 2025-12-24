@@ -10,7 +10,7 @@
 	(add-to-list 'org-capture-templates
 							 '("e" "Incident"
 								 entry
-								 (file kc/interruption-file)
+								 (file kc/incident-file)
 								 "* %?%(kc/incident-wrapper)"
 								 :clock-in t
 								 :clock-resume t)))
