@@ -12,11 +12,11 @@
 
 (when (or (eq system-type 'windows-nt) (eq system-type 'msdos))
 	(when at-work
-		(setenv "PATH" (concat "C:/Users/k.c.juntunen/bin/PortableGit/usr/bin" (getenv "PATH")))
+		;; (setenv "PATH" (concat "C:/Users/k.c.juntunen/bin/PortableGit/usr/bin" (getenv "PATH")))
 		(setq find-program "C:/Users/k.c.juntunen/bin/PortableGit/usr/bin/find.exe"
 					grep-program "C:/Users/k.c.juntunen/opt/ripgrep-13.0.0-x86_64-pc-windows-gnu/rg.exe"))
 	(when (not at-work)
-		(setenv "PATH" (concat "C:/Users/k.c.juntunen/bin/PortableGit/usr/bin" (getenv "PATH")))
+		;; (setenv "PATH" (concat "C:/Users/k.c.juntunen/bin/PortableGit/usr/bin" (getenv "PATH")))
 		(setq find-program "c:/\"Program Files\"/Git/usr/bin/find.exe"
 					grep-program "c:/ProgramData/chocolatey/bin/rg.exe")))
 
