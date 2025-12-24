@@ -76,33 +76,37 @@
 ;; simple package config
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 (savehist-mode 1)
-(if at-work
-		(setq kc/exec-path
-					'("C:/Program Files/ImageMagick-7.1.0-Q16"
-						"C:/Program Files/nodejs/"
-						"C:/Users/k.c.juntunen/emax64/bin"
-						"C:/Users/k.c.juntunen/bin/PortableGit/bin"
-						"C:/Users/k.c.juntunen/.dotnet/tools"
-						"C:/Users/k.c.juntunen/AppData/Local/Programs/Fiddler"
-						"C:/Program Files (x86)/Gpg4win/bin"
-						"C:/Users/k.c.juntunen/opt/Hunspell/bin"
-						"C:/Program Files/Java/jdk1.8.0_333/bin"
-						"C:/Users/k.c.juntunen/opt/apache-maven-3.8.6/bin"
-						"C:/Users/k.c.juntunen/AppData/Local/Pandoc/"
-						"C:/Users/k.c.juntunen/opt/ripgrep-13.0.0-x86_64-pc-windows-gnu"
-						"C:/Users/k.c.juntunen/opt/fd-v8.4.0-x86_64-pc-windows-gnu"
-						"C:/Users/k.c.juntunen/AppData/Local/Microsoft/WindowsApps"
-						"C:/Program Files/nodejs"
-						"C:/Program Files/Azure Data Studio/bin"
-						"C:/Program Files/MariaDB 11.2/bin"
-						"C:/Users/k.c.juntunen/opt/fakeerp"
-						"C:/Users/k.c.juntunen/bin/PortableGit/usr/bin"
-						"C:/Users/k.c.juntunen/opt/php"
-						"C:/Users/k.c.juntunen/AppData/Roaming/npm"
-						"C:/Users/k.c.juntunen/AppData/Local/PowerToys/DSCModules/"))
+(if (not at-work)
+		(message "Leaving paths alone")
+	(setq kc/exec-path
+				'("C:/Program Files/ImageMagick-7.1.0-Q16"
+					"C:/Program Files/nodejs/"
+					"C:/Users/k.c.juntunen/emax64/bin"
+					"C:/Users/k.c.juntunen/bin/PortableGit/bin"
+					"C:/Users/k.c.juntunen/.dotnet/tools"
+					"C:/Users/k.c.juntunen/AppData/Local/Programs/Fiddler"
+					"C:/Program Files (x86)/Gpg4win/bin"
+					"C:/Users/k.c.juntunen/opt/Hunspell/bin"
+					"C:/Program Files/Java/jdk1.8.0_333/bin"
+					"C:/Users/k.c.juntunen/opt/apache-maven-3.8.6/bin"
+					"C:/Users/k.c.juntunen/AppData/Local/Pandoc/"
+					"C:/Users/k.c.juntunen/opt/ripgrep-13.0.0-x86_64-pc-windows-gnu"
+					"C:/Users/k.c.juntunen/opt/fd-v8.4.0-x86_64-pc-windows-gnu"
+					"C:/Users/k.c.juntunen/AppData/Local/Microsoft/WindowsApps"
+					"C:/Program Files/nodejs"
+					"C:/Program Files/Azure Data Studio/bin"
+					"C:/Program Files/MariaDB 11.2/bin"
+					"C:/Users/k.c.juntunen/opt/fakeerp"
+					"C:/Users/k.c.juntunen/bin/PortableGit/usr/bin"
+					"C:/Users/k.c.juntunen/opt/php"
+					"C:/Users/k.c.juntunen/AppData/Roaming/npm"
+					"C:/Users/k.c.juntunen/AppData/Local/PowerToys/DSCModules/"))
 	(let ((path (string-join kc/exec-path ";")))
 		(setenv "PATH" path)
-		(setq exec-path kc/exec-path)))
+		(setq exec-path kc/exec-path))
+	;; how'd it come out?
+	(message (string-replace ";" "\n" (getenv "PATH"))))
+
 
 (kc/set-up-emacs)
 
