@@ -12,7 +12,9 @@
 								(auto-revert-mode 1)
 							(message "Buffer name is %s" (buffer-name)))))
 
-(setq dired-listing-switches "-alhGF --group-directories-first")
+(if (not (string-equal system-type "darwin"))
+		(setq dired-listing-switches "-lhGF --group-directories-first")
+	(setq dired-listing-switches "-alh"))
 ;; (setq dired-listing-switches "-alF --group-directories-first")
 
 (provide 'dired-config)
