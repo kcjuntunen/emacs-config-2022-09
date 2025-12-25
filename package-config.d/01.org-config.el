@@ -38,8 +38,10 @@
 (defvar org-personal-root
 	(if at-work
 			"C:/Users/k.c.juntunen/Documents/org/"
-		"~/Dropbox/org/")
-	"Where to store non-work-related Org files.")
+		(if (string-equal system-type "darwin")
+				"/Users/k.c.juntunen/Library/Mobile Documents/com~apple~CloudDocs/org/"
+			"~/Dropbox/org/")
+		"Where to store non-work-related Org files."))
 
 (defvar org-personal-directory
 	(concat org-personal-root (roman-year))
