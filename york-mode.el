@@ -200,6 +200,60 @@
 				 (car (directory-files york-screenshot-searchpath t "^Screenshot.*png$" t))))
 				(insert (format "[[file:%s]]" most-recent-screenshot-path))))
 
+(defun kc/kill-buffers-commonly-in-my-way ()
+	"Sometimes I have a bunch of buffers open which I don't need anymore but are
+getting in the way of selecting the buffers I do want."
+	(interactive)
+	(let ((cnt 0))
+		(dolist (b (buffer-list))
+			(if (string-match-p "[Ll]og\\|repo" (buffer-name b))
+					(progn (kill-buffer b)
+								 (setq cnt (+ 1 cnt)))))
+		(message "Killed %s buffer(s)" cnt)))
+
+(defun kc/hostname-at-point ()
+  "Return a hostname-like word at point, or nil if none.
+Allowed characters: letters, digits, dot, hyphen."
+  (let ((chars "A-Za-z0-9.-"))
+    (save-excursion
+      (skip-chars-backward chars)
+      (let ((start (point)))
+        (skip-chars-forward chars)
+        (let ((end (point)))
+          (when (< start end)
+            (buffer-substring-no-properties start end)))))))
+
+(defun kc/rdp-prompt-for-server ()
+  "Prompt for a server name using completion."
+  (completing-read "RDP server: " kc/rdp-server-list nil nil))
+
+(defun kc/rdp-open (server)
+  "Start a Remote Desktop session to SERVER as a non-blocking process."
+  (let ((cmd (list "c:/windows/system32/mstsc.exe" (concat "/v:" server))))
+    (apply #'start-process "rdp-session" nil cmd)))
+
+(defun kc/rdp-open-at-point ()
+  "Start a Remote Desktop session using the word at point as the server name."
+  (interactive)
+  (let ((server (kc/hostname-at-point)))
+    (unless server
+      (setq server (kc/rdp-prompt-for-server)))
+    (kc/rdp-open server)))
+
+(defun kc/rdp-open-from-org-property (&optional property)
+  "Start a Remote Desktop session using PROPERTY (default: SERVER) from the nearest Org property drawer."
+  (interactive)
+  (let* ((prop (or property "SERVER"))
+         (value (org-entry-get (point) prop t)))
+    (unless value
+      (setq value (kc/rdp-prompt-for-server))
+			(org-set-property prop value))
+    (kc/rdp-open value)))
+
+(global-set-key (kbd "C-c y p") #'kc/rdp-open-at-point)
+(with-eval-after-load 'org
+  (define-key org-mode-map (kbd "C-c y o") #'kc/rdp-open-from-org-property))
+
 ;; Bindings
 
 ;; TODO: Figure out why this works everywherem instead of only in org.

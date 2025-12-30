@@ -69,17 +69,6 @@
   (setq-local my-minibuffer-font-remap-cookie
               (face-remap-add-relative 'default 'my-minibuffer-default)))
 
-(defun kc/kill-buffers-commonly-in-my-way ()
-	"Sometimes I have a bunch of buffers open which I don't need anymore but are
-getting in the way of selecting the buffers I do want."
-	(interactive)
-	(let ((cnt 0))
-		(dolist (b (buffer-list))
-			(if (string-match-p "[Ll]og\\|repo" (buffer-name b))
-					(progn (kill-buffer b)
-								 (setq cnt (+ 1 cnt)))))
-		(message "Killed %s buffer(s)" cnt)))
-
 (add-hook 'minibuffer-mode-hook #'my-minibuffer-set-font)
 
 (provide 'win-config)
