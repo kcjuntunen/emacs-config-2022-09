@@ -20,14 +20,14 @@
 	"A container for handy, York-related functions."
 	:lighter " ☥"
 	:keymap (let ((map (make-sparse-keymap)))
-						(define-key map (kbd "C-c r") 'york-get-request-data)
-						(define-key map (kbd "C-c n") 'york-get-incident-data)
-						(define-key map (kbd "C-c q") 'york-copy-queue-to-workarea)
-						(define-key map (kbd "C-c Q") 'york-copy-queue-to-workarea-and-open)
-						(define-key map (kbd "C-c s") 'york-store-repo-name)
-						(define-key map (kbd "C-c g") 'york-open-local-repo-name)
-						(define-key map (kbd "C-c G") 'york-open-remote-repo-name)
-						(define-key map (kbd "C-c i") 'york-org-insert-last-screenshot)
+						(define-key map (kbd "C-c y r") 'york-get-request-data)
+						(define-key map (kbd "C-c y n") 'york-get-incident-data)
+						(define-key map (kbd "C-c y q") 'york-copy-queue-to-workarea)
+						(define-key map (kbd "C-c y Q") 'york-copy-queue-to-workarea-and-open)
+						(define-key map (kbd "C-c y s") 'york-store-repo-name)
+						(define-key map (kbd "C-c y g") 'york-open-local-repo-name)
+						(define-key map (kbd "C-c y G") 'york-open-remote-repo-name)
+						(define-key map (kbd "C-c y i") 'york-org-insert-last-screenshot)
 						map)
 	(if york-mode
 			(message "york-mode activated")
