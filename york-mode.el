@@ -126,12 +126,11 @@
 
 (defun york--get-reprocessq-path ()
 	"Get the path to production reprocess queues"
-	(concat york-production-queue-path "reprocessq/"))
+	(concat "//192.168.250.224/M-drive/" "reprocessq/"))
 
 (defun york--get-outputq-path ()
 	"Get the path to production output queues"
-	(concat
-	 york-production-queue-path "outputq/"))
+	(concat "//192.168.250.225/productionQueues/Outputq/" "outputq/"))
 
 (defun york--get-queue-path (queuekey)
 	"Convert queue key to queue path."
