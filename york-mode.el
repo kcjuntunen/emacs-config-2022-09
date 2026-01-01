@@ -20,14 +20,14 @@
 	"A container for handy, York-related functions."
 	:lighter " ☥"
 	:keymap (let ((map (make-sparse-keymap)))
-						(define-key map (kbd "C-c r") 'york-get-request-data)
-						(define-key map (kbd "C-c n") 'york-get-incident-data)
-						(define-key map (kbd "C-c q") 'york-copy-queue-to-workarea)
-						(define-key map (kbd "C-c Q") 'york-copy-queue-to-workarea-and-open)
-						(define-key map (kbd "C-c s") 'york-store-repo-name)
-						(define-key map (kbd "C-c g") 'york-open-local-repo-name)
-						(define-key map (kbd "C-c G") 'york-open-remote-repo-name)
-						(define-key map (kbd "C-c i") 'york-org-insert-last-screenshot)
+						(define-key map (kbd "C-c y r") 'york-get-request-data)
+						(define-key map (kbd "C-c y n") 'york-get-incident-data)
+						(define-key map (kbd "C-c y q") 'york-copy-queue-to-workarea)
+						(define-key map (kbd "C-c y Q") 'york-copy-queue-to-workarea-and-open)
+						(define-key map (kbd "C-c y s") 'york-store-repo-name)
+						(define-key map (kbd "C-c y g") 'york-open-local-repo-name)
+						(define-key map (kbd "C-c y G") 'york-open-remote-repo-name)
+						(define-key map (kbd "C-c y i") 'york-org-insert-last-screenshot)
 						map)
 	(if york-mode
 			(message "york-mode activated")
@@ -126,12 +126,11 @@
 
 (defun york--get-reprocessq-path ()
 	"Get the path to production reprocess queues"
-	(concat york-production-queue-path "reprocessq/"))
+	(concat "//192.168.250.224/M-drive/" "reprocessq/"))
 
 (defun york--get-outputq-path ()
 	"Get the path to production output queues"
-	(concat
-	 york-production-queue-path "outputq/"))
+	(concat "//192.168.250.225/productionQueues/Outputq/" "outputq/"))
 
 (defun york--get-queue-path (queuekey)
 	"Convert queue key to queue path."
@@ -199,6 +198,60 @@
 	(let ((most-recent-screenshot-path
 				 (car (directory-files york-screenshot-searchpath t "^Screenshot.*png$" t))))
 				(insert (format "[[file:%s]]" most-recent-screenshot-path))))
+
+(defun kc/kill-buffers-commonly-in-my-way ()
+	"Sometimes I have a bunch of buffers open which I don't need anymore but are
+getting in the way of selecting the buffers I do want."
+	(interactive)
+	(let ((cnt 0))
+		(dolist (b (buffer-list))
+			(if (string-match-p "[Ll]og\\|repo" (buffer-name b))
+					(progn (kill-buffer b)
+								 (setq cnt (+ 1 cnt)))))
+		(message "Killed %s buffer(s)" cnt)))
+
+(defun kc/hostname-at-point ()
+  "Return a hostname-like word at point, or nil if none.
+Allowed characters: letters, digits, dot, hyphen."
+  (let ((chars "A-Za-z0-9.-"))
+    (save-excursion
+      (skip-chars-backward chars)
+      (let ((start (point)))
+        (skip-chars-forward chars)
+        (let ((end (point)))
+          (when (< start end)
+            (buffer-substring-no-properties start end)))))))
+
+(defun kc/rdp-prompt-for-server ()
+  "Prompt for a server name using completion."
+  (completing-read "RDP server: " kc/rdp-server-list nil nil))
+
+(defun kc/rdp-open (server)
+  "Start a Remote Desktop session to SERVER as a non-blocking process."
+  (let ((cmd (list "c:/windows/system32/mstsc.exe" (concat "/v:" server))))
+    (apply #'start-process "rdp-session" nil cmd)))
+
+(defun kc/rdp-open-at-point ()
+  "Start a Remote Desktop session using the word at point as the server name."
+  (interactive)
+  (let ((server (kc/hostname-at-point)))
+    (unless server
+      (setq server (kc/rdp-prompt-for-server)))
+    (kc/rdp-open server)))
+
+(defun kc/rdp-open-from-org-property (&optional property)
+  "Start a Remote Desktop session using PROPERTY (default: SERVER) from the nearest Org property drawer."
+  (interactive)
+  (let* ((prop (or property "SERVER"))
+         (value (org-entry-get (point) prop t)))
+    (unless value
+      (setq value (kc/rdp-prompt-for-server))
+			(org-set-property prop value))
+    (kc/rdp-open value)))
+
+(global-set-key (kbd "C-c y p") #'kc/rdp-open-at-point)
+(with-eval-after-load 'org
+  (define-key org-mode-map (kbd "C-c y o") #'kc/rdp-open-from-org-property))
 
 ;; Bindings
 
