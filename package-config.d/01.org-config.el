@@ -30,18 +30,18 @@
 
 (load "~/.emacs.d/roman-numerals.el" kc/quiet-errors kc/quiet-message)
 
-(setq org-directory
-			(if (not at-work)
-					(concat org-directory-root (roman-year))
-				(concat org-directory-root (format-time-string "%Y"))))
-
 (defvar org-personal-root
 	(if at-work
 			"C:/Users/k.c.juntunen/Documents/org/"
 		(if (string-equal system-type "darwin")
 				"/Users/k.c.juntunen/Library/Mobile Documents/com~apple~CloudDocs/org/"
-			"~/Dropbox/org/")
-		"Where to store non-work-related Org files."))
+			"~/Dropbox/org/"))
+		"Where to store non-work-related Org files.")
+
+(setq org-directory
+			(if (not at-work)
+					(concat org-personal-root (roman-year))
+				(concat org-personal-root (format-time-string "%Y"))))
 
 (defvar org-personal-directory
 	(concat org-personal-root (roman-year))

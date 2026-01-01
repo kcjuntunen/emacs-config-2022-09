@@ -23,7 +23,7 @@
 ;; 
 
 ;;; Code:
-(if (version< emacs-version "29")
+(if (version< emacs-version "35")
 		(message "ligature-mode not supported by %s" emacs-version)
 	(load "~/git/ligature.el/ligature.el" kc/quiet-errors kc/quiet-message)
 	(require 'ligature)
