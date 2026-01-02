@@ -25,18 +25,18 @@
 ;;; Code:
 (require 'package)
 
-;; (unless (assoc-default "melpa" package-archives)
-;; 	(add-to-list 'package-archives
-;; 							 '("melpa" . "https://stable.melpa.org/packages/") t))
-;; (unless (assoc-default "nongnu" package-archives)
-;; 	(add-to-list 'package-archives
-;; 							 '("nongnu" . "https://elpa.nongnu.org/nongnu/") t))
+(unless (assoc-default "melpa" package-archives)
+	(add-to-list 'package-archives
+							 '("melpa" . "https://stable.melpa.org/packages/") t))
+(unless (assoc-default "nongnu" package-archives)
+	(add-to-list 'package-archives
+							 '("nongnu" . "https://elpa.nongnu.org/nongnu/") t))
 
-(unless (package-installed-p 'quelpa)
-  (with-temp-buffer
-    (url-insert-file-contents "https://raw.githubusercontent.com/quelpa/quelpa/master/quelpa.el")
-    (eval-buffer)
-    (quelpa-self-upgrade)))
+;; (unless (package-installed-p 'quelpa)
+;;   (with-temp-buffer
+;;     (url-insert-file-contents "https://raw.githubusercontent.com/quelpa/quelpa/master/quelpa.el")
+;;     (eval-buffer)
+;;     (quelpa-self-upgrade)))
 
 
 ;;; from purcell/emacs.d
