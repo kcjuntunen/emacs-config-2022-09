@@ -28,6 +28,8 @@
 						(define-key map (kbd "C-c y g") 'york-open-local-repo-name)
 						(define-key map (kbd "C-c y G") 'york-open-remote-repo-name)
 						(define-key map (kbd "C-c y i") 'york-org-insert-last-screenshot)
+						(define-key map (kbd "C-c y I") 'org-insert-window-screenshot)
+						(define-key map (kbd "C-c y o") 'kc/rdp-open-from-org-property)
 						map)
 	(if york-mode
 			(message "york-mode activated")
@@ -86,6 +88,18 @@
 	"The property under which we store and retrieve repo names."
 	:type 'string
 	:group 'york)
+;;; Screenshot integration for Org-mode on Windows
+
+(defcustom org-screenshot-save-directory "c:/Users/k.c.juntunen/OneDrive/org/2026"
+  "Directory where window screenshots will be saved.
+Should end with a slash. Will be created if it doesn't exist."
+  :type 'directory
+  :group 'org)
+
+(defcustom org-screenshot-executable "c:/Users/k.c.juntunen/source/repos/Viewer.Etc/winshot/bin/Release/net8.0-windows10.0.26100.0/winshot.exe"
+  "Full path to your C# window screenshot CLI executable."
+  :type 'file
+  :group 'org)
 
 (defgroup york nil
 	"Settings for `york-mode'."
@@ -243,36 +257,105 @@ Allowed characters: letters, digits, dot, hyphen."
   "Start a Remote Desktop session using PROPERTY (default: SERVER) from the nearest Org property drawer."
   (interactive)
   (let* ((prop (or property "SERVER"))
-         (value (org-entry-get (point) prop t)))
+				 (value (org-entry-get (point) prop t)))
     (unless value
       (setq value (kc/rdp-prompt-for-server))
 			(org-set-property prop value))
     (kc/rdp-open value)))
 
+;; (defun org-insert-window-screenshot ()
+;;   "Launch the window screenshotter and insert the captured image inline in the current Org buffer.
+;; Works reliably even if you switch buffers while waiting for the click."
+;;   (interactive)
+;;   (let* ((save-dir (expand-file-name org-screenshot-save-directory))
+;;          (exe-path (expand-file-name org-screenshot-executable))
+;;          (origin-buffer (current-buffer))
+;;          (origin-point (point))
+;;          (output-buffer (generate-new-buffer " *screenshot-output*"))
+;;          process)
+
+;;     (unless (file-exists-p exe-path)
+;;       (error "Screenshot executable not found: %s" exe-path))
+
+;;     (unless (file-directory-p save-dir)
+;;       (make-directory save-dir t))
+
+;;     (message "Screenshot tool launched. Click a window to capture... (ESC to cancel)")
+
+;;     (setq process
+;;           (start-process "window-screenshotter" output-buffer exe-path save-dir))
+
+;;     (set-process-sentinel
+;;      process
+;;      (lambda (proc event)                     ; ← use "proc" here
+;;        (when (and (eq (process-status proc) 'exit)
+;;                   (string-match-p "finished" event))
+;;          (with-current-buffer (process-buffer proc)  ; ← now proc is correctly bound
+;;            (goto-char (point-min))
+;;            (if (re-search-forward "^\\(.+\\.png\\)\\($\\|\\s-\\)" nil t)
+;;                (let ((full-path (match-string 1)))
+;;                  (with-current-buffer origin-buffer
+;;                    (save-excursion
+;;                      (goto-char origin-point)
+;;                      ;; Ensure nice spacing around the image
+;;                      (unless (looking-at-p "[[:space:]]*$")
+;;                        (insert "\n"))
+;;                      (insert "\n")
+;;                      (insert (format "[[file:%s]]\n"
+;;                                      (file-relative-name
+;;                                       full-path
+;;                                       (file-name-directory
+;;                                        (or buffer-file-name default-directory)))))
+;;                      ;; Refresh inline images in the region
+;;                      (org-redisplay-inline-images)))
+;;                  (message "Inserted screenshot: %s" (file-name-nondirectory full-path)))
+;;              (message "No screenshot captured (possibly canceled with ESC).")))
+;;          ;; Always clean up the output buffer
+;;          (kill-buffer output-buffer))))))
+
+(defun org-insert-window-screenshot ()
+  "Run the window screenshotter and insert its Org-ready output directly.
+The executable is expected to print lines like:
+#+caption: Window Title Here
+[[file:filename.png]]"
+  (interactive)
+  (let* ((save-dir (expand-file-name org-screenshot-save-directory))
+         (exe-path (expand-file-name org-screenshot-executable))
+         (origin-buffer (current-buffer))
+         (origin-point (point))
+         (output-buffer (generate-new-buffer " *screenshot-output*"))
+         process)
+
+    (unless (file-exists-p exe-path)
+      (error "Screenshot executable not found: %s" exe-path))
+
+    (unless (file-directory-p save-dir)
+      (make-directory save-dir t))
+
+    (message "Screenshot tool launched. Click a window to capture...")
+
+    (setq process (start-process "window-screenshotter" output-buffer exe-path save-dir))
+
+    (set-process-sentinel
+     process
+     (lambda (proc _event)
+       (when (eq (process-status proc) 'exit)
+         (with-current-buffer (process-buffer proc)
+           (let ((output (buffer-string)))
+             (with-current-buffer origin-buffer
+               (save-excursion
+                 (goto-char origin-point)
+                 ;; Add spacing if needed
+                 (unless (bobp)
+                   (insert "\n\n"))
+                 (insert (string-trim output))
+                 (insert "\n"))
+               ;; Refresh images in case the link was inserted
+               (org-redisplay-inline-images))
+             (message "Screenshot and caption inserted.")))
+         (kill-buffer output-buffer))))))
+
 (global-set-key (kbd "C-c y p") #'kc/rdp-open-at-point)
-(with-eval-after-load 'org
-  (define-key org-mode-map (kbd "C-c y o") #'kc/rdp-open-from-org-property))
-
-;; Bindings
-
-;; TODO: Figure out why this works everywherem instead of only in org.
-;; (map! :leader
-;;       :after york-mode
-;;       :map york-mode-map
-;;       :mode york-mode
-;;       (:prefix ("y" . "York")
-;;        (:prefix ("r" . "Requests")
-;;         :desc "Insert Request Data at point"
-;;         :n "g" #'york-get-request-data)
-;;        (:prefix ("s" . "Associated solution")
-;;         :desc "Associate solution in default program from local repo"
-;;         :n "s" #'york-store-repo-name)
-;;        (:prefix ("s" . "Associated solution")
-;;         :desc "Open associated solution in default program from local repo"
-;;         :n "l" #'york-open-local-repo-name)
-;;        (:prefix ("s" . "Associated solution")
-;;         :desc "Open associated remote repo in Magit"
-;;         :n "r" #'york-open-remote-repo-name)))
 
 ;;;###autoload
 (add-hook 'org-mode-hook 'york-mode)
