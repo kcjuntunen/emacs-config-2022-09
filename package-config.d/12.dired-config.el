@@ -13,7 +13,7 @@
 							(message "Buffer name is %s" (buffer-name)))))
 
 (if (not (string-equal system-type "darwin"))
-		(setq dired-listing-switches "-lhGF --group-directories-first")
+		(setq dired-listing-switches "-alhGF --dired --group-directories-first")
 	(setq dired-listing-switches "-alh"))
 ;; (setq dired-listing-switches "-alF --group-directories-first")
 
