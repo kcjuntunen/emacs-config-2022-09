@@ -32,11 +32,9 @@
 
 (defvar org-personal-root
 	(if at-work
-			"C:/Users/k.c.juntunen/Documents/org/"
-		(if (string-equal system-type "darwin")
-				"/Users/k.c.juntunen/Library/Mobile Documents/com~apple~CloudDocs/org/"
-			"~/Dropbox/org/"))
-		"Where to store non-work-related Org files.")
+			"C:/Users/k.c.juntunen/OneDrive/org/"
+		"~/Dropbox/org/")
+	"Where to store non-work-related Org files.")
 
 (setq org-directory
 			(if (not at-work)
