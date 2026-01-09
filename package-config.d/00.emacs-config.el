@@ -107,6 +107,15 @@
 	;; how'd it come out?
 	(message (string-replace ";" "\n" (getenv "PATH"))))
 
+(defun kc/save-org-buffers ()
+  (save-some-buffers t
+    (lambda ()
+      (eq major-mode 'org-mode))))
+
+(if (not (eq system-type 'windows-nt))
+		(insert "Don't have to worry about a broken OS.")
+	(run-with-idle-timer 30 t #'my/save-org-buffers)
+	(add-hook 'focus-out-hook #'my/save-org-buffers))
 
 (kc/set-up-emacs)
 
