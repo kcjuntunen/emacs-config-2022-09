@@ -110,12 +110,13 @@
 (defun kc/save-org-buffers ()
   (save-some-buffers t
     (lambda ()
+			(message "Saving Org buffers @ %s" (format-time-string "%H:%M:%S"))
       (eq major-mode 'org-mode))))
 
 (if (not (eq system-type 'windows-nt))
 		(insert "Don't have to worry about a broken OS.")
-	(run-with-idle-timer 30 t #'my/save-org-buffers)
-	(add-hook 'focus-out-hook #'my/save-org-buffers))
+	(run-with-idle-timer 30 t #'kc/save-org-buffers)
+	(add-hook 'focus-out-hook #'kc/save-org-buffers))
 
 (kc/set-up-emacs)
 
