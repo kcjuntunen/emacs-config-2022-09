@@ -114,7 +114,7 @@
       (eq major-mode 'org-mode))))
 
 (if (not (eq system-type 'windows-nt))
-		(insert "Don't have to worry about a broken OS.")
+		(message "Don't have to worry about a broken OS.")
 	(run-with-idle-timer 30 t #'kc/save-org-buffers)
 	(add-hook 'focus-out-hook #'kc/save-org-buffers))
 
