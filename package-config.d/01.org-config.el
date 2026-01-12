@@ -131,7 +131,8 @@
 	 'org-babel-load-languages
 	 '((sql . t)))
 	(add-hook 'org-mode-hook 'flyspell-mode)
-	(add-hook 'org-mode-hook 'emojify-mode)
+	(if (boundp 'emojify-mode)
+			(add-hook 'org-mode-hook 'emojify-mode))
 	(if (not kc/quiet-message)
 			(message "kc/set-up-org has been executed"))))
 
