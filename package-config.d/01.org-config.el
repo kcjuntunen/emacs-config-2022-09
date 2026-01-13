@@ -59,16 +59,17 @@
 	 org-agenda-span 'day
 	 org-fontify-quote-and-verse-blocks t
 	 org-use-fast-todo-selection t
-	 org-hide-emphasis-markers nil
+	 org-hide-emphasis-markers t
 	 org-treat-S-cursor-todo-selection-as-state-change nil
 	 org-ellipsis "⤵"
 	 org-clock-continuously t
 	 org-clock-out-remove-zero-time-clocks t
-	 org-log-done 'time
+	 org-log-done 'note
 	 org-refile-use-cache t
 	 org-refile-targets
 	 (quote ((nil :maxlevel . 1) (kc/org-all-agenda-files :maxlevel . 1)))
 	 org-catch-invisible-edits 'smart
+	 org-image-actual-width 640 ;; I don't like when inline images take up the whole screen.
 	 org-agenda-clockreport-parameter-plist
 	 '(:link t :maxlevel 4 :fileskip0 t
 					 :properties
