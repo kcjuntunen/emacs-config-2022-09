@@ -9,17 +9,19 @@
 
 (defun kc/set-other-stuff ()
 	"Set fonts according to descending preference."
-	(let* ((fixed-width-fonts '("Victor Mono" "Monaco" "Consolas"))
-				 (variable-width-fonts '("Publico Text" "Cambria"))
-				 (the-font (car fixed-width-fonts)))
+	(let* ((fixed-width-fonts '("Consolas" "Victor Mono" "Monaco"))
+				 (variable-width-fonts '("Cambria" "Publico Text"))
+				 (the-font (car fixed-width-fonts))
+				 ;; not sure what height I want @ home yet
+				 (default-height (if at-work 90 102)))
 		(cl-loop for fnt in fixed-width-fonts do
 						 (if (not (find-font (font-spec :name fnt)))
 								 (message "%s: Nope" fnt)
 							 (setq the-font fnt)))
-		(message "Using %s" the-font)
+		(message "Using %s with height %d" the-font default-height)
 		(set-face-attribute 'fixed-pitch-serif nil :font the-font)
 		(set-face-attribute 'fixed-pitch nil :font the-font)
-		(set-face-attribute 'default nil :font the-font)
+		(set-face-attribute 'default nil :font the-font :height default-height)
 		(cl-loop for fnt in variable-width-fonts do
 						 (if (not (find-font (font-spec :name fnt)))
 								 (message "%s: Nope" fnt)
