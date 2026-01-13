@@ -1,4 +1,4 @@
-;;; -*- lexical-binding: t; coding: utf-8-unix; -*-
+;;; theme-config.el --- various theme settings -*- lexical-binding: t; coding: utf-8-unix; -*-
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;; Theme
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
