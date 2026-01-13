@@ -211,7 +211,8 @@ Should end with a slash. Will be created if it doesn't exist."
 	(interactive)
 	(let ((most-recent-screenshot-path
 				 (car (directory-files york-screenshot-searchpath t "^Screenshot.*png$" t))))
-				(insert (format "[[file:%s]]" most-recent-screenshot-path))))
+		(insert (format "#+caption: %s\n[[file:%s]]"
+										(file-name-nondirectory most-recent-screenshot-path) most-recent-screenshot-path))))
 
 (defun kc/kill-buffers-commonly-in-my-way ()
 	"Sometimes I have a bunch of buffers open which I don't need anymore but are
