@@ -108,9 +108,9 @@
 	(message (string-replace ";" "\n" (getenv "PATH"))))
 
 (defun kc/save-org-buffers ()
+	(message "Saving Org buffers @ %s" (format-time-string "%H:%M:%S"))
   (save-some-buffers t
     (lambda ()
-			(message "Saving Org buffers @ %s" (format-time-string "%H:%M:%S"))
       (eq major-mode 'org-mode))))
 
 (if (not (eq system-type 'windows-nt))
