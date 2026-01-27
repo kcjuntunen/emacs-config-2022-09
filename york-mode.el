@@ -21,7 +21,7 @@
 	:lighter " ☥"
 	:keymap (let ((map (make-sparse-keymap)))
 						(define-key map (kbd "C-c y r") 'york-get-request-data)
-						(define-key map (kbd "C-c y n") 'york-get-incident-data)
+						(define-key map (kbd "C-c y e") 'york-get-incident-data)
 						(define-key map (kbd "C-c y q") 'york-copy-queue-to-workarea)
 						(define-key map (kbd "C-c y Q") 'york-copy-queue-to-workarea-and-open)
 						(define-key map (kbd "C-c y s") 'york-store-repo-name)
