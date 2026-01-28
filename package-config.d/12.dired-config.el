@@ -1,6 +1,9 @@
 (require 'dired)
-(autoload 'dired-async-mode "dired-async.el" nil t)
-(dired-async-mode 1)
+
+(if (eq system-type 'windows-nt)
+		(message "dired-async is broken in Windows")
+	(autoload 'dired-async-mode "dired-async.el" nil t)
+	(dired-async-mode 1))
 
 (add-hook #'dired-mode-hook
 					(lambda ()
