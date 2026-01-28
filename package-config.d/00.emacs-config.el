@@ -109,14 +109,19 @@
 
 (defun kc/save-org-buffers ()
 	(message "Saving Org buffers @ %s" (format-time-string "%H:%M:%S"))
-  (save-some-buffers t
-    (lambda ()
-      (eq major-mode 'org-mode))))
+	(save-some-buffers t
+										 (lambda ()
+											 (let* ((year (format-time-string "%Y"))
+															(searchstring (format ".*org/%s.*" year)))
+												 (and (eq major-mode 'org-mode)
+															(string-match-p searchstring buffer-file-name))))))
+
 
 (if (not (eq system-type 'windows-nt))
 		(message "Don't have to worry about a broken OS.")
+	(message "Bad OS. Deploying data loss prevention measures.")
 	(run-with-idle-timer 30 t #'kc/save-org-buffers)
-	(add-hook 'focus-out-hook #'kc/save-org-buffers))
+	(add-function :after after-focus-change-function #'kc/save-org-buffers))
 
 (kc/set-up-emacs)
 
