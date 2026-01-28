@@ -32,6 +32,7 @@
 (define-key dired-mode-map (kbd "C-c C-w") 'wdired-change-to-wdired-mode)
 
 ;; I know these keys have handy default functions, but they just confuse me.
+(require 'org-agenda)
 (add-hook 'org-mode-hook
 					#'(lambda ()
 							(define-key org-agenda-mode-map (kbd "h") 'backward-char)
