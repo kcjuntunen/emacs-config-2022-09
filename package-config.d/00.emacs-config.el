@@ -125,5 +125,7 @@
 
 (kc/set-up-emacs)
 
+(global-hl-line-mode)
+
 (provide 'emacs-config)
 ;;; emacs-config.el ends here
