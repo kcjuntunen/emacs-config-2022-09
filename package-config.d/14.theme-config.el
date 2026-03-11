@@ -13,7 +13,7 @@
 				 (variable-width-fonts '("Cambria" "Publico Text"))
 				 (the-font (car fixed-width-fonts))
 				 ;; not sure what height I want @ home yet
-				 (default-height (if at-work 90 102)))
+				 (default-height (if at-work 102 102)))
 		(cl-loop for fnt in fixed-width-fonts do
 						 (if (not (find-font (font-spec :name fnt)))
 								 (message "%s: Nope" fnt)
@@ -30,6 +30,7 @@
 		(set-face-attribute 'variable-pitch nil :font the-font)
 		(set-face-attribute 'cursor nil :background "OrangeRed1")
 		(set-face-attribute 'org-table nil :height 0.9)
+		(set-face-attribute 'org-date nil :height 0.9)
 		(set-face-attribute 'org-drawer nil :height 0.7)
 		(set-face-attribute 'org-meta-line nil :height 0.7)
 		(set-face-attribute 'org-block-begin-line nil :height 0.7)
