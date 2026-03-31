@@ -144,7 +144,11 @@ Should end with a slash. Will be created if it doesn't exist."
 
 (defun york--get-outputq-path ()
 	"Get the path to production output queues"
-	(concat "//192.168.250.225/productionQueues/Outputq/" "outputq/"))
+	(concat "//192.168.250.225/productionQueues/" "outputq/"))
+
+(defun york--get-arcoutq-path ()
+	"Get the path to production output queues"
+	(concat "//192.168.250.225/productionQueues/" "Arcoutq/"))
 
 (defun york--get-queue-path (queuekey)
 	"Convert queue key to queue path."
@@ -152,7 +156,8 @@ Should end with a slash. Will be created if it doesn't exist."
 				 (qpath (cond ((string-equal queue-type "I") (york--get-inputq-path))
 											((string-equal queue-type "P") (york--get-processq-path))
 											((string-equal queue-type "R") (york--get-reprocessq-path))
-											((string-equal queue-type "O") (york--get-outputq-path)))))
+											((string-equal queue-type "O") (york--get-outputq-path))
+											((string-equal queue-type "A") (york--get-arcoutq-path)))))
 		(concat qpath queuekey ".dat")))
 
 (defun york--get-local-repo-name ()
@@ -195,12 +200,34 @@ Should end with a slash. Will be created if it doesn't exist."
 			(message "Copying %s to %s" file-to-copy york-workarea)
 			(copy-file file-to-copy york-workarea))))
 
+(defun york-insert-queue (queuekey)
+	"Insert queue contents into current buffer at point."
+	(interactive "sQueue Key: ")
+	(let* ((file-to-insert (york--get-queue-path queuekey))
+				 (fa (file-attributes file-to-insert))
+				 (temp (generate-new-buffer " *queue-temp*")))
+		(if (not (file-exists-p file-to-insert))
+				(message "Couldn't find %s" file-to-insert)
+			(if (not (y-or-n-p
+								(format "Really insert %s file into %s? "
+												(file-size-human-readable
+												 (file-attribute-size fa))
+												(current-buffer))))
+					(message "Not inserting")
+				(message "Inserting %s in %s" file-to-insert (buffer-name))
+				(with-current-buffer temp
+					(insert (format "#+caption: %s\n#+begin_src text\n" file-to-insert))
+					(goto-char (point-max))
+					(insert-file-contents file-to-insert)
+					(goto-char (point-max))
+					(insert "\n#+end_src"))
+				(insert-buffer-substring temp)))))
+
 (defun york-copy-queue-to-workarea-and-open (queuekey)
 	"Copy payload indicated by QUEUEKEY to workarea."
 	(interactive "sQueue Key: ")
-	(let ((file-to-copy (york--get-queue-path queuekey)))
-		(york-copy-queue-to-workarea queuekey)
-		(find-file (concat york-workarea queuekey ".dat"))))
+	(york-copy-queue-to-workarea queuekey)
+	(find-file (concat york-workarea queuekey ".dat")))
 
 (defun york-copy-queues-to-workarea (queue-keys)
 	(cl-loop for queue-key in queue-keys
@@ -255,7 +282,8 @@ Allowed characters: letters, digits, dot, hyphen."
     (kc/rdp-open server)))
 
 (defun kc/rdp-open-from-org-property (&optional property)
-  "Start a Remote Desktop session using PROPERTY (default: SERVER) from the nearest Org property drawer."
+  "Start a Remote Desktop session using PROPERTY (default: SERVER) from the
+nearest Org property drawer."
   (interactive)
   (let* ((prop (or property "SERVER"))
 				 (value (org-entry-get (point) prop t)))
