@@ -187,7 +187,7 @@ Should end with a slash. Will be created if it doesn't exist."
 				(error (format "Directory `%s' not found" thing-to-open))
 			(save-excursion
 				(cd thing-to-open)
-				(magit-status)))
+				(magit-status-setup-buffer here)))
 		(cd here)))
 
 (defun york-copy-queue-to-workarea (queuekey)
