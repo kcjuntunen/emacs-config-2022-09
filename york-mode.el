@@ -71,6 +71,12 @@
 	:type 'string
 	:group 'york)
 
+(defcustom york-path-finder
+	"C:/Users/k.c.juntunen/source/repos/Viewer.Etc/GetQPath/bin/Release/GetQPath.exe"
+	"The program that find Queue paths."
+	:type 'string
+	:group 'york)
+
 (defcustom york-remote-repo-path
 	"G:/"
 	"The location of remote git repos."
@@ -150,15 +156,19 @@ Should end with a slash. Will be created if it doesn't exist."
 	"Get the path to production output queues"
 	(concat "//192.168.250.225/productionQueues/" "Arcoutq/"))
 
+;; (defun york--get-queue-path (queuekey)
+;; 	"Convert queue key to queue path."
+;; 	(let* ((queue-type (substring queuekey 0 1))
+;; 				 (qpath (cond ((string-equal queue-type "I") (york--get-inputq-path))
+;; 											((string-equal queue-type "P") (york--get-processq-path))
+;; 											((string-equal queue-type "R") (york--get-reprocessq-path))
+;; 											((string-equal queue-type "O") (york--get-outputq-path))
+;; 											((string-equal queue-type "A") (york--get-arcoutq-path)))))
+;; 		(concat qpath queuekey ".dat")))
+
 (defun york--get-queue-path (queuekey)
 	"Convert queue key to queue path."
-	(let* ((queue-type (substring queuekey 0 1))
-				 (qpath (cond ((string-equal queue-type "I") (york--get-inputq-path))
-											((string-equal queue-type "P") (york--get-processq-path))
-											((string-equal queue-type "R") (york--get-reprocessq-path))
-											((string-equal queue-type "O") (york--get-outputq-path))
-											((string-equal queue-type "A") (york--get-arcoutq-path)))))
-		(concat qpath queuekey ".dat")))
+	(shell-command-to-string (format "%s %s" york-path-finder queuekey)))
 
 (defun york--get-local-repo-name ()
 	"Get the local repo for the associated code."
