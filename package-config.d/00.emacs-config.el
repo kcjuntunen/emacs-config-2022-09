@@ -123,6 +123,24 @@
 	(run-with-idle-timer 30 t #'kc/save-org-buffers)
 	(add-function :after after-focus-change-function #'kc/save-org-buffers))
 
+(defun kc/extract-unique-matches (regexp)
+  "Extract all matches for REGEXP in current buffer into *Rx-Matches*, deduped."
+  (interactive "sRegexp: ")
+  (let ((out (get-buffer-create "*Rx-Matches*")))
+    (with-current-buffer out
+      (erase-buffer))
+    (save-excursion
+      (goto-char (point-min))
+      (while (re-search-forward regexp nil t)
+        (let ((m (match-string 0)))   ;; capture in source buffer
+          (with-current-buffer out
+            (goto-char (point-max))
+            (insert m "\n")))))
+    (with-current-buffer out
+      (goto-char (point-min))
+      (delete-duplicate-lines (point-min) (point-max)))
+    (pop-to-buffer out)))
+
 (kc/set-up-emacs)
 
 (global-hl-line-mode)

@@ -30,6 +30,7 @@
 						(define-key map (kbd "C-c y i") 'york-org-insert-last-screenshot)
 						(define-key map (kbd "C-c y I") 'org-insert-window-screenshot)
 						(define-key map (kbd "C-c y o") 'kc/rdp-open-from-org-property)
+						(define-key map (kbd "C-c y m") 'kc/extract-unique-matches)
 						map)
 	(if york-mode
 			(message "york-mode activated")
