@@ -30,7 +30,6 @@
 						(define-key map (kbd "C-c y i") 'york-org-insert-last-screenshot)
 						(define-key map (kbd "C-c y I") 'org-insert-window-screenshot)
 						(define-key map (kbd "C-c y o") 'kc/rdp-open-from-org-property)
-						(define-key map (kbd "C-c y m") 'kc/extract-unique-matches)
 						map)
 	(if york-mode
 			(message "york-mode activated")
@@ -395,7 +394,22 @@ The executable is expected to print lines like:
              (message "Screenshot and caption inserted.")))
          (kill-buffer output-buffer))))))
 
+(defun kc/find-workarea-projects ()
+	"Find VS solutions cloned to my fastrack directory."
+	(interactive)
+	(kc/find-dired-named "c:/fastrack/" "-iname \"*sln*\"" "*Fastrack Projects*"))
+
+(defun kc/find-dired-named (dir args name)
+	"Dired-Find stuff with a unique name so it stays put."
+	(interactive)
+	(find-dired dir args)
+	(let ((buf (get-buffer "*Find*")))
+		(switch-to-buffer buf)
+		(rename-buffer name)))
+
 (global-set-key (kbd "C-c y p") #'kc/rdp-open-at-point)
+(global-set-key (kbd "C-c y m") 'kc/extract-unique-matches)
+(global-set-key (kbd "C-c y s") 'kc/find-workarea-projects)
 
 ;;;###autoload
 (add-hook 'org-mode-hook 'york-mode)
