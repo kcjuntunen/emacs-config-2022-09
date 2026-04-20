@@ -402,10 +402,13 @@ The executable is expected to print lines like:
 (defun kc/find-dired-named (dir args name)
 	"Dired-Find stuff with a unique name so it stays put."
 	(interactive)
-	(find-dired dir args)
-	(let ((buf (get-buffer "*Find*")))
-		(switch-to-buffer buf)
-		(rename-buffer name)))
+	(let ((buf (get-buffer name)))
+		(if buf
+				(switch-to-buffer buf)
+			(find-dired dir args)
+			(let ((buf (get-buffer "*Find*")))
+				(rename-buffer name)
+				(switch-to-buffer buf)))))
 
 (global-set-key (kbd "C-c y p") #'kc/rdp-open-at-point)
 (global-set-key (kbd "C-c y m") 'kc/extract-unique-matches)
