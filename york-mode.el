@@ -302,56 +302,6 @@ nearest Org property drawer."
 			(org-set-property prop value))
     (kc/rdp-open value)))
 
-;; (defun org-insert-window-screenshot ()
-;;   "Launch the window screenshotter and insert the captured image inline in the current Org buffer.
-;; Works reliably even if you switch buffers while waiting for the click."
-;;   (interactive)
-;;   (let* ((save-dir (expand-file-name org-screenshot-save-directory))
-;;          (exe-path (expand-file-name org-screenshot-executable))
-;;          (origin-buffer (current-buffer))
-;;          (origin-point (point))
-;;          (output-buffer (generate-new-buffer " *screenshot-output*"))
-;;          process)
-
-;;     (unless (file-exists-p exe-path)
-;;       (error "Screenshot executable not found: %s" exe-path))
-
-;;     (unless (file-directory-p save-dir)
-;;       (make-directory save-dir t))
-
-;;     (message "Screenshot tool launched. Click a window to capture... (ESC to cancel)")
-
-;;     (setq process
-;;           (start-process "window-screenshotter" output-buffer exe-path save-dir))
-
-;;     (set-process-sentinel
-;;      process
-;;      (lambda (proc event)                     ; ← use "proc" here
-;;        (when (and (eq (process-status proc) 'exit)
-;;                   (string-match-p "finished" event))
-;;          (with-current-buffer (process-buffer proc)  ; ← now proc is correctly bound
-;;            (goto-char (point-min))
-;;            (if (re-search-forward "^\\(.+\\.png\\)\\($\\|\\s-\\)" nil t)
-;;                (let ((full-path (match-string 1)))
-;;                  (with-current-buffer origin-buffer
-;;                    (save-excursion
-;;                      (goto-char origin-point)
-;;                      ;; Ensure nice spacing around the image
-;;                      (unless (looking-at-p "[[:space:]]*$")
-;;                        (insert "\n"))
-;;                      (insert "\n")
-;;                      (insert (format "[[file:%s]]\n"
-;;                                      (file-relative-name
-;;                                       full-path
-;;                                       (file-name-directory
-;;                                        (or buffer-file-name default-directory)))))
-;;                      ;; Refresh inline images in the region
-;;                      (org-redisplay-inline-images)))
-;;                  (message "Inserted screenshot: %s" (file-name-nondirectory full-path)))
-;;              (message "No screenshot captured (possibly canceled with ESC).")))
-;;          ;; Always clean up the output buffer
-;;          (kill-buffer output-buffer))))))
-
 (defun org-insert-window-screenshot ()
   "Run the window screenshotter and insert its Org-ready output directly.
 The executable is expected to print lines like:
