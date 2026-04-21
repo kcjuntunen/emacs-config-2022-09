@@ -116,6 +116,17 @@
 												 (and (eq major-mode 'org-mode)
 															(string-match-p searchstring buffer-file-name))))))
 
+(defun kc/fix-windows-paths-on-yank (orig-fun &rest args)
+  (let* ((raw (current-kill 0 t))
+         (text (string-trim raw "\"" "\"")))
+    (cond
+     ((string-match-p "^\\([A-Z]:\\|\\\\\\).*" text)
+      (let* ((converted (replace-regexp-in-string "\\\\" "/" text)))
+        (kill-new converted)
+        (apply orig-fun args)
+        (kill-new raw)))
+     (t
+      (apply orig-fun args)))))
 
 (if (not (eq system-type 'windows-nt))
 		(message "Don't have to worry about a broken OS.")

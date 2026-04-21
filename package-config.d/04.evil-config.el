@@ -32,5 +32,11 @@
 (require 'evil)
 (evil-mode t)
 
+(if (not (eq system-type 'windows-nt))
+		(message "Paths are OK.")
+	(message "Replacing backslashes on yank.")
+	(advice-add 'evil-paste-after :around #'kc/fix-windows-paths-on-yank)
+	(advice-add 'evil-paste-before :around #'kc/fix-windows-paths-on-yank))
+
 (provide 'evil-config)
 ;;; evil.el ends here
