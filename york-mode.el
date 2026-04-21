@@ -411,8 +411,8 @@ The executable is expected to print lines like:
 				(switch-to-buffer buf)))))
 
 (global-set-key (kbd "C-c y p") #'kc/rdp-open-at-point)
-(global-set-key (kbd "C-c y m") 'kc/extract-unique-matches)
-(global-set-key (kbd "C-c y s") 'kc/find-workarea-projects)
+(global-set-key (kbd "C-c y m") #'kc/extract-unique-matches)
+(global-set-key (kbd "C-c y s") #'kc/find-workarea-projects)
 
 ;;;###autoload
 (add-hook 'org-mode-hook 'york-mode)
