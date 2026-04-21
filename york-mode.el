@@ -226,7 +226,8 @@ Should end with a slash. Will be created if it doesn't exist."
 					(message "Not inserting")
 				(message "Inserting %s in %s" file-to-insert (buffer-name))
 				(with-current-buffer temp
-					(insert (format "#+caption: %s\n#+begin_src text\n" file-to-insert))
+					(insert (format "#+caption: %s\n#+begin_src text :tangle \"%s\"\n" file-to-insert
+													(concat york-workarea (file-name-nondirectory file-to-insert))))
 					(goto-char (point-max))
 					(insert-file-contents file-to-insert)
 					(goto-char (point-max))
