@@ -118,7 +118,7 @@
 
 (defun kc/fix-windows-paths-on-yank (orig-fun &rest args)
   (let* ((raw (current-kill 0 t))
-         (text (string-trim raw "\"" "\"")))
+         (text (car (split-string raw "\n" nil "\""))))
     (cond
      ((string-match-p "^\\([A-Z]:\\|\\\\\\).*" text)
       (let* ((converted (replace-regexp-in-string "\\\\" "/" text)))
