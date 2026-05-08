@@ -100,7 +100,8 @@
 					"C:/Users/k.c.juntunen/bin/PortableGit/usr/bin"
 					"C:/Users/k.c.juntunen/opt/php"
 					"C:/Users/k.c.juntunen/AppData/Roaming/npm"
-					"C:/Users/k.c.juntunen/AppData/Local/PowerToys/DSCModules/"))
+					"C:/Users/k.c.juntunen/AppData/Local/PowerToys/DSCModules/"
+					"C:/Program Files/dotnet"))
 	(let ((path (string-join kc/exec-path ";")))
 		(setenv "PATH" path)
 		(setq exec-path kc/exec-path))
