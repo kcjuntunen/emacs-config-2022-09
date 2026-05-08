@@ -200,15 +200,52 @@ Should end with a slash. Will be created if it doesn't exist."
 				(magit-status-setup-buffer here)))
 		(cd here)))
 
+(defun york-find-queue-directly (queuekey)
+	"Insert queue contents into current buffer at point."
+	(interactive "sQueue Key: ")
+	(let* ((file-to-insert (york--get-queue-path queuekey))
+				 (fa (file-attributes file-to-insert)))
+		(if (not (file-exists-p file-to-insert))
+				(message "Couldn't find %s" file-to-insert)
+			(if (not (y-or-n-p
+								(format "Really open %s file? "
+												(file-size-human-readable
+												 (file-attribute-size fa)))))
+					(message "Not opening %s" queuekey)
+				(find-file file-to-insert)))))
+
+
 (defun york-copy-queue-to-workarea (queuekey)
 	"Copy payload indicated by QUEUEKEY to workarea."
 	(interactive "sQueue Key: ")
-	(let ((file-to-copy (york--get-queue-path queuekey))
-				(destination (concat york-workarea queuekey ".dat")))
+	(let* ((file-to-copy (york--get-queue-path queuekey))
+				 (destination (concat york-workarea queuekey ".dat"))
+				 (file-to-insert (york--get-queue-path queuekey))
+				 (fa (file-attributes file-to-insert)))
 		(if (file-exists-p destination)
 				(message "%s already exists" destination)
-			(message "Copying %s to %s" file-to-copy york-workarea)
-			(copy-file file-to-copy york-workarea))))
+			(if (not (y-or-n-p
+								(format "Really copy %s file to %s? "
+												(file-size-human-readable
+												 (file-attribute-size fa))
+												destination)))
+					(message "Not copying %s" queuekey)
+				(message "Copying %s to %s" file-to-copy york-workarea)
+				(copy-file file-to-copy york-workarea)))))
+
+(defun york-find-queue-directly (queuekey)
+	"Insert queue contents into current buffer at point."
+	(interactive "sQueue Key: ")
+	(let* ((file-to-insert (york--get-queue-path queuekey))
+				 (fa (file-attributes file-to-insert)))
+		(if (not (file-exists-p file-to-insert))
+				(message "Couldn't find %s" file-to-insert)
+			(if (not (y-or-n-p
+								(format "Really open %s file? "
+												(file-size-human-readable
+												 (file-attribute-size fa)))))
+					(message "Not opening %s" queuekey)
+				(find-file file-to-insert)))))
 
 (defun york-insert-queue (queuekey)
 	"Insert queue contents into current buffer at point."
