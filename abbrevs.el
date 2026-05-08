@@ -7,6 +7,8 @@
 		("ddd" "↓")
 		("tu" "👍")
 		("td" "👎")
+		("llb" "【")
+		("rlb" "】")
 		("chm" "✓")
 		("MSD" "Mid-States")
 		("RK" "Rural King")
