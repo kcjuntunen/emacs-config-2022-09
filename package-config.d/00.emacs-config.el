@@ -101,6 +101,7 @@
 					"C:/Users/k.c.juntunen/opt/php"
 					"C:/Users/k.c.juntunen/AppData/Roaming/npm"
 					"C:/Users/k.c.juntunen/AppData/Local/PowerToys/DSCModules/"
+					"c:/Program Files/Microsoft Visual Studio/18/Professional/MSBuild/Current/Bin"
 					"C:/Program Files/dotnet"))
 	(let ((path (string-join kc/exec-path ";")))
 		(setenv "PATH" path)
