@@ -154,6 +154,12 @@
       (delete-duplicate-lines (point-min) (point-max)))
     (pop-to-buffer out)))
 
+(when (and (executable-find "hunspell")
+					 (string-equal system-type "darwin"))
+	(setq ispell-program-name "hunspell")
+	(setq ispell-dictionary "en_US")
+	(setenv "DICPATH" (concat (getenv "HOME") "/Library/Spelling")))
+
 (kc/set-up-emacs)
 
 (global-hl-line-mode)
