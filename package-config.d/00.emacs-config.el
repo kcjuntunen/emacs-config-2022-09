@@ -53,10 +53,9 @@
 	(global-auto-revert-mode t)
 	(prefer-coding-system 'utf-8)
 	(set-language-environment 'utf-8)
-	(if (version< emacs-version "29")
-			(add-hook 'prog-mode-hook 'linum-mode)
-		(add-hook 'prog-mode-hook 'display-line-numbers-mode))
+	(add-hook 'prog-mode-hook 'display-line-numbers-mode)
 	(add-hook 'text-mode-hook 'flyspell-mode)
+	(add-hook 'text-mode-hook 'display-line-numbers-mode)
 	(if at-work
 			(add-hook 'text-mode-hook 'auto-fill-mode)
 		(add-hook 'text-mode-hook 'visual-line-mode))
@@ -79,30 +78,29 @@
 (if (not at-work)
 		(message "Leaving paths alone")
 	(setq kc/exec-path
-				'("C:/Program Files/ImageMagick-7.1.0-Q16"
-					"C:/Program Files/nodejs/"
-					"C:/Users/k.c.juntunen/emax64/bin"
-					"C:/Users/k.c.juntunen/bin/PortableGit/bin"
-					"C:/Users/k.c.juntunen/.dotnet/tools"
-					"C:/Users/k.c.juntunen/AppData/Local/Programs/Fiddler"
-					"C:/Program Files (x86)/Gpg4win/bin"
+				'("C:/Users/k.c.juntunen/opt/gnupg-portable-win32-2.4.3-12/app/bin"
+					"C:/Users/k.c.juntunen/opt/emacs-30.2/bin"
+					;; "C:/Program Files (x86)/Gpg4win/bin"
 					"C:/Users/k.c.juntunen/opt/Hunspell/bin"
-					"C:/Program Files/Java/jdk1.8.0_333/bin"
-					"C:/Users/k.c.juntunen/opt/apache-maven-3.8.6/bin"
+					"C:/Users/k.c.juntunen/AppData/Local/Microsoft/WinGet/Packages/FSFhu.Hunspell_Microsoft.Winget.Source_8wekyb3d8bbwe"
 					"C:/Users/k.c.juntunen/AppData/Local/Pandoc/"
 					"C:/Users/k.c.juntunen/opt/ripgrep-13.0.0-x86_64-pc-windows-gnu"
 					"C:/Users/k.c.juntunen/opt/fd-v8.4.0-x86_64-pc-windows-gnu"
 					"C:/Users/k.c.juntunen/AppData/Local/Microsoft/WindowsApps"
 					"C:/Program Files/nodejs"
 					"C:/Program Files/Azure Data Studio/bin"
-					"C:/Program Files/MariaDB 11.2/bin"
+					"C:/Program Files/MariaDB 12.3/bin"
 					"C:/Users/k.c.juntunen/opt/fakeerp"
-					"C:/Users/k.c.juntunen/bin/PortableGit/usr/bin"
+					"C:/Users/k.c.juntunen/opt/PortableGit/usr/bin"
+					"C:/Users/k.c.juntunen/opt/PortableGit/bin"
 					"C:/Users/k.c.juntunen/opt/php"
 					"C:/Users/k.c.juntunen/AppData/Roaming/npm"
 					"C:/Users/k.c.juntunen/AppData/Local/PowerToys/DSCModules/"
 					"c:/Program Files/Microsoft Visual Studio/18/Professional/MSBuild/Current/Bin"
-					"C:/Program Files/dotnet"))
+					"C:/Program Files/dotnet"
+					"C:/Users/k.c.juntunen/.dotnet/tools"
+					"C:/Users/k.c.juntunen/AppData/Local/Programs/Fiddler"
+					))
 	(let ((path (string-join kc/exec-path ";")))
 		(setenv "PATH" path)
 		(setq exec-path kc/exec-path))
@@ -160,6 +158,21 @@
 	(setq ispell-dictionary "en_US")
 	(setenv "DICPATH" (concat (getenv "HOME") "/Library/Spelling")))
 
+(when (and (executable-find "hunspell")
+					 (string-equal system-type "windows-nt"))
+	(setenv "DICTIONARY" "en_US")
+	(setenv "DICPATH" "C:/Users/k.c.juntunen/Documents/Spelling")
+	(require 'ispell)
+	(setq ispell-program-name "hunspell")
+	(setq ispell-dictionary "en_US")
+	(setq ispell-hunspell-dict-paths-alist
+				'(("en_US" "C:/Users/k.c.juntunen/Documents/Spelling/en_US.aff"))))
+
+(setq package-gnupg-directory
+      "c:/Users/k.c.juntunen/.gnupg")
+
+;; Override if Emacs still computed a bad path
+(setq package--gnupg-dir package-gnupg-directory)
 (kc/set-up-emacs)
 
 (global-hl-line-mode)

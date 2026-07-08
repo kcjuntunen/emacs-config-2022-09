@@ -385,7 +385,7 @@ The executable is expected to print lines like:
 (defun kc/find-workarea-projects ()
 	"Find VS solutions cloned to my fastrack directory."
 	(interactive)
-	(kc/find-dired-named "c:/fastrack/" "-iname \"*sln*\"" "*Fastrack Projects*"))
+	(kc/find-dired-named "c:/fastrack/" "-iname \"*sln*\" -type f" "*Fastrack Projects*"))
 
 (defun kc/find-dired-named (dir args name)
 	"Dired-Find stuff with a unique name so it stays put."
@@ -401,6 +401,12 @@ The executable is expected to print lines like:
 (global-set-key (kbd "C-c y p") #'kc/rdp-open-at-point)
 (global-set-key (kbd "C-c y m") #'kc/extract-unique-matches)
 (global-set-key (kbd "C-c y s") #'kc/find-workarea-projects)
+
+
+(load-file "~/.emacs.d/x12-mode/x12-mode.el")
+(add-to-list 'auto-mode-alist '("\\.x12\\'" . x12-mode))
+(add-to-list 'auto-mode-alist '("\\.edi\\'" . x12-mode))
+(add-to-list 'auto-mode-alist '("\\.ansi\\'" . x12-mode))
 
 ;;;###autoload
 (add-hook 'org-mode-hook 'york-mode)
