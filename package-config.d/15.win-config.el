@@ -40,6 +40,10 @@
                (display-buffer-in-direction)
                (direction . below)))
 
+(when (eq system-type 'windows-nt)
+	(setq explicit-shell-file-name "C:/Windows/System32/WindowsPowerShell/v1.0/powershell.exe"
+				explicit-powershell.exe-args '("-InputFormat" "Text")))
+
 (setq diff-command "C:/Users/k.c.juntunen/bin/PortableGit/bin/git.exe diff --no-index")
 
 (defun find-first-non-ascii-char ()
