@@ -9,7 +9,7 @@
 
 (defun kc/set-other-stuff ()
 	"Set fonts according to descending preference."
-	(let* ((fixed-width-fonts '("Consolas" "Victor Mono" "Monaco"))
+	(let* ((fixed-width-fonts '("Consolas" "Victor Mono" "Monaco" "Noto Sans Mono"))
 				 (variable-width-fonts '("Cambria" "Publico Text"))
 				 (the-font (car fixed-width-fonts))
 				 ;; not sure what height I want @ home yet

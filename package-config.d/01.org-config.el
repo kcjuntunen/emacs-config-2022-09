@@ -36,6 +36,11 @@
 		"~/Dropbox/org/")
 	"Where to store non-work-related Org files.")
 
+(if (not (getenv "WSL_DISTRO_NAME"))
+		(message "Not in WSL")
+	(setq org-directory-root "/mnt/c/Users/k.c.juntunen/OneDrive/org/"
+				org-personal-root  "/mnt/c/Users/k.c.juntunen/OneDrive/org/"))
+
 (setq org-directory
 			(if (not at-work)
 					(concat org-personal-root (roman-year))

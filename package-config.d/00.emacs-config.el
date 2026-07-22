@@ -75,7 +75,23 @@
 ;; simple package config
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 (savehist-mode 1)
-(if (not at-work)
+(if (not (getenv "WSL_DISTRO_NAME"))
+		(message "Skipping WSL stuff.")
+	;; make clipboard behave better
+	(defun kc/wsl-copy (text)
+		(let ((process-connection-type nil))
+			(let ((proc (start-process "clip" nil "clip.exe")))
+				(process-send-string proc text)
+				(process-send-eof proc))))
+
+	(defun kc/wsl-paste ()
+		(string-trim
+		 (string-replace "" "" (shell-command-to-string "powershell.exe -command Get-Clipboard"))))
+
+	(setq interprogram-cut-function #'kc/wsl-copy)
+	(setq interprogram-paste-function #'kc/wsl-paste))
+
+(if (or (not at-work) (getenv "WSL_DISTRO_NAME"))
 		(message "Leaving paths alone")
 	(setq kc/exec-path
 				'("C:/Users/k.c.juntunen/opt/gnupg-portable-win32-2.4.3-12/app/bin"
@@ -176,6 +192,7 @@
 (kc/set-up-emacs)
 
 (global-hl-line-mode)
+(tool-bar-mode 0)
 
 (provide 'emacs-config)
 ;;; emacs-config.el ends here

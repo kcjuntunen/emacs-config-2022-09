@@ -20,6 +20,10 @@
 		(setq find-program "c:/\"Program Files\"/Git/usr/bin/find.exe"
 					grep-program "c:/ProgramData/chocolatey/bin/rg.exe")))
 
+(if (getenv "WSL_DISTRO_NAME")
+		(setq find-program "/usr/bin/find"
+					grep-program "/usr/bin/rg"))
+
 (add-to-list 'display-buffer-alist
              '("CAPTUR.*"
                (display-buffer-in-direction)

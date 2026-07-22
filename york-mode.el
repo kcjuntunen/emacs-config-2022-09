@@ -385,7 +385,10 @@ The executable is expected to print lines like:
 (defun kc/find-workarea-projects ()
 	"Find VS solutions cloned to my fastrack directory."
 	(interactive)
-	(kc/find-dired-named "c:/fastrack/" "-iname \"*sln*\" -type f" "*Fastrack Projects*"))
+	(let ((root (if (getenv "WSL_DISTRO_NAME")
+									"/mnt/c/fastrack/"
+								"c:/fastrack/")))
+		(kc/find-dired-named root "-iname \"*sln*\" -type f" "*Fastrack Projects*")))
 
 (defun kc/find-dired-named (dir args name)
 	"Dired-Find stuff with a unique name so it stays put."
