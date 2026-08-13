@@ -11,6 +11,9 @@
 							 '("e" "Incident"
 								 entry
 								 (file kc/incident-file)
-								 "* %?%(kc/incident-wrapper)"
+								 "* %?%(kc/incident-wrapper)
+:PROPERTIES:
+:EXPORT_FILE_NAME: c:/fastrack/workarea/%(time-stamp--format \"%Y%m%d%H%M\" (org-read-date nil t \"+0d\"))
+:END:"
 								 :clock-in t
 								 :clock-resume t)))

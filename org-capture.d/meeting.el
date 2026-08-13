@@ -10,6 +10,7 @@
 :ClientAccount: %^{ClientAccount}
 :TradingPartnerAccount: n/a
 :Captured: %U
+:EXPORT_FILE_NAME: c:/fastrack/workarea/%(time-stamp--format \"%Y%m%d%H%M\" (org-read-date nil t \"+0d\"))
 :END:
 %?"
 								 :clock-in t
