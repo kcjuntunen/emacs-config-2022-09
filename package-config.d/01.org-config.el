@@ -151,13 +151,33 @@
 		(switch-to-buffer (get-buffer "*Org Agenda*")))
 	 (t (org-agenda nil "a"))))
 
+(defun kc/org-renumber-property (&optional property start)
+  "Renumber PROPERTY (default \"Task\") on direct children of the current heading.
+START is the first number (default 1).
+Operates only on the immediate children, not deeper descendants."
+  (interactive)
+  (let ((prop (or property "Task"))
+        (n (or start 1))
+        (end (save-excursion (org-end-of-subtree t t))))
+    (save-excursion
+      (org-back-to-heading t)
+      (outline-next-heading)               ; first child
+      (while (and (< (point) end)
+                  (= (org-current-level) (1+ (org-current-level-at (org-back-to-heading t)))))
+        (org-entry-put (point) prop (number-to-string n))
+        (setq n (1+ n))
+        (outline-next-heading)))))
+
+(define-key org-mode-map (kbd "C-c C-x n") #'kc/org-renumber-property)
+
 (define-auto-insert '(org-mode . "Org")
 	'("\\.[Oo][Rr][Gg]"
 		"#+title: Account" \n
 		"#+setupfile: ../word-default.setup" \n
 		"#+options: ^:nil" \n
 		"#+columns: %Item %Effort %Clocksum" \n
-		"#+export_options: brokenlinks:t" \n \n))
+		"#+export_options: brokenlinks:t"
+		"#+export_file_name: c:/fastrack/workarea/account"\n \n))
 
 (auto-insert-mode)
 
