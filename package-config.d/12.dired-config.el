@@ -10,9 +10,11 @@
 						(dired-hide-details-mode)
 						;; (hl-line-mode 1)
 						(text-scale-adjust -1)
-						(if (or (string-equal (buffer-name) "workarea")
-										(string-equal (buffer-name) "fastrack"))
-								(auto-revert-mode 1))))
+						(if (not (or (string-equal (buffer-name) "workarea")
+										(string-equal (buffer-name) "fastrack")))
+								t
+							(auto-revert-mode 1)
+							(dired-sort-toggle))))
 
 (if (not (string-equal system-type "darwin"))
 		(setq dired-listing-switches "-alhGF --dired --group-directories-first")
