@@ -1,4 +1,13 @@
-;;; theme-config.el --- various theme settings -*- lexical-binding: t; coding: utf-8-unix; -*-
+;;; 14.theme-config.el --- various theme settings -*- lexical-binding: t; coding: utf-8-unix; -*-
+
+;;; Commentary:
+;; Theme selection (light/dark from the Windows setting) and font setup.
+
+;;; Code:
+
+(require 'cl-lib)
+(defvar at-work)   ; defined in early-init.el
+
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;; Theme
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
@@ -54,4 +63,5 @@
 (kc/set-theme)
 (global-set-key (kbd "C-c t") 'kc/set-theme)
 
-(provide 'theme-config)
+(provide '14.theme-config)
+;;; 14.theme-config.el ends here
