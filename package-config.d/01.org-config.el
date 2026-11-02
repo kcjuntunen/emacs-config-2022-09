@@ -129,14 +129,18 @@
 	(setq org-agenda-files kc/org-all-agenda-files)
 	(require 'time-stamp)
 	(mapc #'(lambda (f) (load f kc/quiet-errors kc/quiet-message)) (directory-files "~/.emacs.d/org-capture.d/" t "[a-z].*el$"))
+	(setq org-ditaa-jar-path "C:/Users/k.c.juntunen/opt/ditaa/ditaa-0.11.0-standalone.jar")
 	(org-babel-do-load-languages
 	 'org-babel-load-languages
-	 '((sql . t)))
+	 '((sql . t)
+	   (ditaa . t)))
 	(add-hook 'org-mode-hook 'flyspell-mode)
 	(if (boundp 'emojify-mode)
 			(add-hook 'org-mode-hook 'emojify-mode))
 	(if (not kc/quiet-message)
 			(message "kc/set-up-org has been executed"))))
+
+(setq org-babel-ditaa-java-cmd "C:/PROGRA~1/Java/jre1.8.0_503/bin/java.exe")
 
 (kc/set-up-org)
 
