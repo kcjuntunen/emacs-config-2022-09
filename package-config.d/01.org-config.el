@@ -185,7 +185,7 @@ Operates only on the immediate children, not deeper descendants."
 		"#+setupfile: ../word-default.setup" \n
 		"#+options: ^:nil" \n
 		"#+columns: %Item %Effort %Clocksum" \n
-		"#+export_options: brokenlinks:t"
+		"#+export_options: brokenlinks:t" \n
 		"#+export_file_name: c:/fastrack/workarea/account"\n \n))
 
 (auto-insert-mode)
