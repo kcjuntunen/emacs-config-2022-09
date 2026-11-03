@@ -17,7 +17,7 @@
 								default))
 
 (defun kc/set-other-stuff ()
-	"Set fonts according to descending preference."
+	"Set fonts according to ascending preference (last available wins)."
 	(let* ((fixed-width-fonts '("Consolas" "Victor Mono" "Monaco"))
 				 (variable-width-fonts '("Cambria" "Publico Text"))
 				 (the-font (car fixed-width-fonts))
