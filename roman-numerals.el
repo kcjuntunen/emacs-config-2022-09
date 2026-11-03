@@ -53,12 +53,13 @@
 (defun cool-date ()
 	"Big, long old-timey style date."
 	(let* ((dom (nth 3 (decode-time (current-time))))
-				 (ordinal (cond ((< (mod dom 10) 2) "st")
-												((< (mod dom 10) 3) "nd")
-												((< (mod dom 10) 4) "rd")
+				 (ordinal (cond ((memq dom '(11 12 13)) "th")
+												((= (mod dom 10) 1) "st")
+												((= (mod dom 10) 2) "nd")
+												((= (mod dom 10) 3) "rd")
 												(t "th"))))
 		(format-time-string
-		 (format "%%A, the %%d%s of %%B, the year of our Lord %s" ordinal
+		 (format "%%A, the %d%s of %%B, the year of our Lord %s" dom ordinal
 						 (roman-year)))))
 
 (provide 'roman-numerals)
