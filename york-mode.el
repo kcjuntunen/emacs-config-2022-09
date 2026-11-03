@@ -219,19 +219,21 @@ Should end with a slash. Will be created if it doesn't exist."
 	"Copy payload indicated by QUEUEKEY to workarea."
 	(interactive "sQueue Key: ")
 	(let* ((file-to-copy (york--get-queue-path queuekey))
-				 (destination (concat york-workarea queuekey ".dat"))
-				 (file-to-insert (york--get-queue-path queuekey))
-				 (fa (file-attributes file-to-insert)))
-		(if (file-exists-p destination)
-				(message "%s already exists" destination)
-			(if (not (y-or-n-p
-								(format "Really copy %s file to %s? "
-												(file-size-human-readable
-												 (file-attribute-size fa))
-												destination)))
-					(message "Not copying %s" queuekey)
-				(message "Copying %s to %s" file-to-copy york-workarea)
-				(copy-file file-to-copy york-workarea)))))
+				 (destination (concat york-workarea queuekey ".dat")))
+		(cond
+		 ((not (file-exists-p file-to-copy))
+			(message "Couldn't find %s" file-to-copy))
+		 ((file-exists-p destination)
+			(message "%s already exists" destination))
+		 ((not (y-or-n-p
+						(format "Really copy %s file to %s? "
+										(file-size-human-readable
+										 (file-attribute-size (file-attributes file-to-copy)))
+										destination)))
+			(message "Not copying %s" queuekey))
+		 (t
+			(message "Copying %s to %s" file-to-copy destination)
+			(copy-file file-to-copy destination)))))
 
 (defun york-find-queue-directly (queuekey)
 	"Insert queue contents into current buffer at point."
