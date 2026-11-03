@@ -168,7 +168,7 @@ Should end with a slash. Will be created if it doesn't exist."
 
 (defun york--get-queue-path (queuekey)
 	"Convert queue key to queue path."
-	(shell-command-to-string (format "%s %s" york-path-finder queuekey)))
+	(string-trim (shell-command-to-string (format "%s %s" york-path-finder queuekey))))
 
 (defun york--get-local-repo-name ()
 	"Get the local repo for the associated code."
