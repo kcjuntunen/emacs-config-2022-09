@@ -163,7 +163,8 @@ Operates only on the immediate children, not deeper descendants."
 	(let ((prop (or property "Task"))
 				(n (or start 1))
 				(parent-level (org-current-level))
-				(end (save-excursion (org-end-of-subtree t t))))
+				;; A marker, so it moves as property drawers are inserted.
+				(end (copy-marker (save-excursion (org-end-of-subtree t t)) t)))
 		(save-excursion
 			(org-back-to-heading t)
 			(outline-next-heading)               ; first child
@@ -172,7 +173,8 @@ Operates only on the immediate children, not deeper descendants."
 					(org-entry-put (point) prop (number-to-string n))
 					(message "%d.	%s" n (org-get-heading t t t t))
 					(setq n (1+ n)))
-				(outline-next-heading)))))
+				(outline-next-heading)))
+		(set-marker end nil)))
 
 (with-eval-after-load 'org
 	(define-key org-mode-map (kbd "C-c C-x n") #'kc/org-renumber-property))
