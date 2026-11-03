@@ -56,9 +56,7 @@
 
 (use-package dape
   ;; :load-path "z:/SharedVM/source/dape-master"
-  :init
-  ;; Set key prefix BEFORE loading dape
-  (setq dape-key-prefix (kbd "C-c d"))
+  ;; Use dape's default key prefix (C-x C-a); C-c d is ediff-buffers.
   :config
   ;; Define common configuration
   (defvar project-netcoredbg-path "C:/Users/k.c.juntunen/opt/netcoredbg/netcoredbg.exe"
