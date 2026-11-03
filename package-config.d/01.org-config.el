@@ -174,7 +174,8 @@ Operates only on the immediate children, not deeper descendants."
 					(setq n (1+ n)))
 				(outline-next-heading)))))
 
-(define-key org-mode-map (kbd "C-c C-x n") #'kc/org-renumber-property)
+(with-eval-after-load 'org
+	(define-key org-mode-map (kbd "C-c C-x n") #'kc/org-renumber-property))
 
 (define-auto-insert '(org-mode . "Org")
 	'("\\.[Oo][Rr][Gg]"
