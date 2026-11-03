@@ -57,6 +57,10 @@
 	;; is unreachable from the work network.
 	(slack-render-profile-images-p nil)
 	(slack-prefer-current-team t)
+	;; Show "[ York: <mentions>, <thread mentions> ]" in the mode line,
+	;; counting every conversation (no channels are subscribed).
+	(slack-enable-global-mode-string t)
+	(slack-modeline-count-only-subscribed-channel nil)
 	:config
 	(slack-register-team
 	 :name "York"
@@ -65,7 +69,8 @@
 					 :host kc/slack-host :user kc/slack-user)
 	 :cookie (auth-source-pick-first-password
 						:host kc/slack-host :user (concat kc/slack-user "^cookie"))
-	 :full-and-display-names t))
+	 :full-and-display-names t
+	 :modeline-enabled t))
 
 (provide '19.slack-config)
 ;;; 19.slack-config.el ends here
