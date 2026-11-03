@@ -53,6 +53,9 @@
 				 ("C-c S t" . slack-all-threads))
 	:custom
 	(slack-buffer-emojify nil)
+	;; Default avatars come from Gravatar's CDN (i0/i1/i2.wp.com), which
+	;; is unreachable from the work network.
+	(slack-render-profile-images-p nil)
 	(slack-prefer-current-team t)
 	:config
 	(slack-register-team
