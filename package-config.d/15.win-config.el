@@ -12,9 +12,16 @@
 
 (when (or (eq system-type 'windows-nt) (eq system-type 'msdos))
 	(when at-work
-		;; (setenv "PATH" (concat "C:/Users/k.c.juntunen/bin/PortableGit/usr/bin" (getenv "PATH")))
+		;; PATH comes from Windows (user PATH, set up 2026-11-05).  Windows
+		;; puts the machine PATH first, and that has System32 (find.exe) and
+		;; C:/Program Files/Git, so programs where the copy matters are
+		;; pinned here instead.
 		(setq find-program "C:/Users/k.c.juntunen/opt/PortableGit/usr/bin/find.exe"
-					grep-program "C:/Users/k.c.juntunen/opt/PortableGit/bin/rg.exe"))
+					grep-program "C:/Users/k.c.juntunen/opt/PortableGit/bin/rg.exe"
+					epg-gpg-program "C:/Users/k.c.juntunen/opt/gnupg-portable-win32-2.4.3-12/app/bin/gpg.exe"
+					magit-git-executable "C:/Users/k.c.juntunen/opt/PortableGit/bin/git.exe"
+					vc-git-program "C:/Users/k.c.juntunen/opt/PortableGit/bin/git.exe"
+					diff-command "C:/Users/k.c.juntunen/opt/PortableGit/bin/git.exe diff --no-index"))
 	(when (not at-work)
 		;; (setenv "PATH" (concat "C:/Users/k.c.juntunen/bin/PortableGit/usr/bin" (getenv "PATH")))
 		(setq find-program "c:/\"Program Files\"/Git/usr/bin/find.exe"
@@ -43,8 +50,6 @@
 (when (eq system-type 'windows-nt)
 	(setq explicit-shell-file-name "C:/Windows/System32/WindowsPowerShell/v1.0/powershell.exe"
 				explicit-powershell.exe-args '("-InputFormat" "Text")))
-
-(setq diff-command "C:/Users/k.c.juntunen/bin/PortableGit/bin/git.exe diff --no-index")
 
 (defun find-first-non-ascii-char ()
   "Find the first non-ascii character from point onwards."

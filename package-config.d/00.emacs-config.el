@@ -75,55 +75,6 @@
 ;; simple package config
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 (savehist-mode 1)
-(if (not at-work)
-		(message "Leaving paths alone")
-	;; This list *is* the PATH, in this order; the Windows PATH Emacs
-	;; started with is ignored.  The Windows folders go last so that
-	;; PortableGit/usr/bin's GNU find.exe and sort.exe win over System32's.
-	;; Folders that don't exist are skipped, as are duplicates.
-	(setq kc/exec-path
-				'("C:/Users/k.c.juntunen/opt/gnupg-portable-win32-2.4.3-12/app/bin"
-					"C:/Users/k.c.juntunen/opt/emacs-30.2/bin"
-					;; "C:/Program Files (x86)/Gpg4win/bin"
-					"C:/Users/k.c.juntunen/opt/Hunspell/bin"
-					"C:/Users/k.c.juntunen/AppData/Local/Microsoft/WinGet/Packages/FSFhu.Hunspell_Microsoft.Winget.Source_8wekyb3d8bbwe"
-					"C:/Users/k.c.juntunen/opt/pandoc-3.10"
-					"C:/Users/k.c.juntunen/opt/ripgrep-13.0.0-x86_64-pc-windows-gnu"
-					"C:/Users/k.c.juntunen/opt/sqlite3"
-					"C:/Users/k.c.juntunen/AppData/Local/Microsoft/WindowsApps"
-					"C:/Program Files/nodejs"
-					"C:/Program Files/Azure Data Studio/bin"
-					"C:/Program Files/MariaDB 12.3/bin"
-					"C:/Users/k.c.juntunen/opt/fakeerp"
-					"C:/Users/k.c.juntunen/opt/PortableGit/usr/bin"
-					"C:/Users/k.c.juntunen/opt/PortableGit/bin"
-					"C:/Users/k.c.juntunen/opt/php"
-					"C:/Users/k.c.juntunen/AppData/Roaming/npm"
-					"C:/Users/k.c.juntunen/AppData/Local/PowerToys/DSCModules/"
-					"c:/Program Files/Microsoft Visual Studio/18/Professional/MSBuild/Current/Bin"
-					"C:/Program Files/dotnet"
-					"C:/Users/k.c.juntunen/.dotnet/tools"
-					"C:/Users/k.c.juntunen/AppData/Local/Programs/Fiddler"
-					"C:/Program Files/Microsoft SQL Server/Client SDK/ODBC/170/Tools/Binn" ; sqlcmd
-					;; Windows itself: powershell, curl, ssh, where, ...
-					"C:/Windows/System32"
-					"C:/Windows"
-					"C:/Windows/System32/WindowsPowerShell/v1.0"
-					"C:/Windows/System32/OpenSSH"
-					))
-	(let ((seen (make-hash-table :test #'equal))
-				dirs)
-		(dolist (dir kc/exec-path)
-			(let* ((dir (directory-file-name (expand-file-name dir)))
-						 (key (downcase dir)))
-				(when (and (not (gethash key seen)) (file-directory-p dir))
-					(puthash key t seen)
-					(push dir dirs))))
-		(setq dirs (nreverse dirs))
-		(setenv "PATH" (string-join dirs path-separator))
-		(setq exec-path (append dirs (list exec-directory))))
-	;; how'd it come out?
-	(message (string-replace ";" "\n" (getenv "PATH"))))
 
 (defun kc/save-org-buffers ()
 	(message "Saving Org buffers @ %s" (format-time-string "%H:%M:%S"))
