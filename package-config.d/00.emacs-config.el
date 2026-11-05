@@ -77,11 +77,10 @@
 (savehist-mode 1)
 (if (not at-work)
 		(message "Leaving paths alone")
-	;; Searched first, in this order; the Windows PATH Emacs started with
-	;; follows, so System32 (powershell, curl, ssh, ...) is still found.
-	;; PortableGit/usr/bin must stay ahead of System32, whose find.exe and
-	;; sort.exe would otherwise shadow the GNU tools.  Folders that don't
-	;; exist are skipped, as are duplicates.
+	;; This list *is* the PATH, in this order; the Windows PATH Emacs
+	;; started with is ignored.  The Windows folders go last so that
+	;; PortableGit/usr/bin's GNU find.exe and sort.exe win over System32's.
+	;; Folders that don't exist are skipped, as are duplicates.
 	(setq kc/exec-path
 				'("C:/Users/k.c.juntunen/opt/gnupg-portable-win32-2.4.3-12/app/bin"
 					"C:/Users/k.c.juntunen/opt/emacs-30.2/bin"
@@ -105,11 +104,16 @@
 					"C:/Program Files/dotnet"
 					"C:/Users/k.c.juntunen/.dotnet/tools"
 					"C:/Users/k.c.juntunen/AppData/Local/Programs/Fiddler"
+					"C:/Program Files/Microsoft SQL Server/Client SDK/ODBC/170/Tools/Binn" ; sqlcmd
+					;; Windows itself: powershell, curl, ssh, where, ...
+					"C:/Windows/System32"
+					"C:/Windows"
+					"C:/Windows/System32/WindowsPowerShell/v1.0"
+					"C:/Windows/System32/OpenSSH"
 					))
 	(let ((seen (make-hash-table :test #'equal))
 				dirs)
-		(dolist (dir (append kc/exec-path
-												 (split-string (or (getenv "PATH") "") path-separator t)))
+		(dolist (dir kc/exec-path)
 			(let* ((dir (directory-file-name (expand-file-name dir)))
 						 (key (downcase dir)))
 				(when (and (not (gethash key seen)) (file-directory-p dir))
