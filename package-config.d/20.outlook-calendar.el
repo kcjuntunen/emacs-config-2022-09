@@ -59,7 +59,9 @@
 	(let ((file (kc/outlook-calendar-file)))
 		(when (and (listp org-agenda-files)
 							 (file-exists-p file)
-							 (not (member file (mapcar #'expand-file-name org-agenda-files))))
+							 ;; file-equal-p, not member: Windows paths can differ in
+							 ;; case ("C:/" vs "c:/") and still be the same file.
+							 (not (seq-some (lambda (f) (file-equal-p f file)) org-agenda-files)))
 			(setq org-agenda-files (append org-agenda-files (list file))))))
 
 (defun kc/outlook-calendar-refresh ()
