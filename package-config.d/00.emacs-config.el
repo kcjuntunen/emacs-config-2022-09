@@ -90,7 +90,6 @@
 					"C:/Users/k.c.juntunen/AppData/Local/Microsoft/WinGet/Packages/FSFhu.Hunspell_Microsoft.Winget.Source_8wekyb3d8bbwe"
 					"C:/Users/k.c.juntunen/opt/pandoc-3.10"
 					"C:/Users/k.c.juntunen/opt/ripgrep-13.0.0-x86_64-pc-windows-gnu"
-					"C:/Users/k.c.juntunen/opt/fd-v8.4.0-x86_64-pc-windows-gnu"
 					"C:/Users/k.c.juntunen/opt/sqlite3"
 					"C:/Users/k.c.juntunen/AppData/Local/Microsoft/WindowsApps"
 					"C:/Program Files/nodejs"
