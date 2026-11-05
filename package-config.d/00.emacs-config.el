@@ -77,6 +77,11 @@
 (savehist-mode 1)
 (if (not at-work)
 		(message "Leaving paths alone")
+	;; Searched first, in this order; the Windows PATH Emacs started with
+	;; follows, so System32 (powershell, curl, ssh, ...) is still found.
+	;; PortableGit/usr/bin must stay ahead of System32, whose find.exe and
+	;; sort.exe would otherwise shadow the GNU tools.  Folders that don't
+	;; exist are skipped, as are duplicates.
 	(setq kc/exec-path
 				'("C:/Users/k.c.juntunen/opt/gnupg-portable-win32-2.4.3-12/app/bin"
 					"C:/Users/k.c.juntunen/opt/emacs-30.2/bin"
@@ -102,9 +107,18 @@
 					"C:/Users/k.c.juntunen/.dotnet/tools"
 					"C:/Users/k.c.juntunen/AppData/Local/Programs/Fiddler"
 					))
-	(let ((path (string-join kc/exec-path ";")))
-		(setenv "PATH" path)
-		(setq exec-path kc/exec-path))
+	(let ((seen (make-hash-table :test #'equal))
+				dirs)
+		(dolist (dir (append kc/exec-path
+												 (split-string (or (getenv "PATH") "") path-separator t)))
+			(let* ((dir (directory-file-name (expand-file-name dir)))
+						 (key (downcase dir)))
+				(when (and (not (gethash key seen)) (file-directory-p dir))
+					(puthash key t seen)
+					(push dir dirs))))
+		(setq dirs (nreverse dirs))
+		(setenv "PATH" (string-join dirs path-separator))
+		(setq exec-path (append dirs (list exec-directory))))
 	;; how'd it come out?
 	(message (string-replace ";" "\n" (getenv "PATH"))))
 
