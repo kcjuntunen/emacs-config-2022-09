@@ -387,15 +387,18 @@ The executable is expected to print lines like:
 (defun kc/find-workarea-projects ()
 	"Find VS solutions cloned to my fastrack directory."
 	(interactive)
-	(kc/find-dired-named "c:/fastrack/" "-iname \"*sln*\" -type f" "*Fastrack Projects*"))
+	(kc/find-dired-named "c:/fastrack/" "-t f -i -g \"*sln*\"" "*Fastrack Projects*"))
 
 (defun kc/find-dired-named (dir args name)
-	"Dired-Find stuff with a unique name so it stays put."
+	"Run fd in DIR with ARGS, show the results in a Dired buffer called NAME.
+ARGS are fd arguments, not find ones.  -u (search hidden and ignored
+files, like find) and -l (ls-style listing, which Dired needs) are
+added.  If the buffer already exists it is just shown again."
 	(interactive)
 	(let ((buf (get-buffer name)))
 		(if buf
 				(switch-to-buffer buf)
-			(find-dired dir args)
+			(find-dired-with-command dir (format "fd -u -l %s" args))
 			(let ((buf (get-buffer "*Find*")))
 				(rename-buffer name)
 				(switch-to-buffer buf)))))
