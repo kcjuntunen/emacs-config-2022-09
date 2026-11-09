@@ -99,6 +99,21 @@ while ($null -ne $item) {
         if ($organizer) { [void]$sb.AppendLine(":ORGANIZER: $organizer") }
         $responseName = $responseNames[$response]
         if ($responseName) { [void]$sb.AppendLine(":RESPONSE: $responseName") }
+        # Attendees by OlMeetingRecipientType.  Names only: reading
+        # addresses can set off Outlook's security prompt.  The organizer
+        # is already in ORGANIZER.
+        $attendees = @{ 1 = @(); 2 = @(); 3 = @() }
+        foreach ($r in $item.Recipients) {
+            $name = Clean $r.Name
+            $type = [int]$r.Type
+            if ($name -and $name -ne $organizer -and $attendees.ContainsKey($type)) {
+                $attendees[$type] += $name
+            }
+        }
+        foreach ($t in @(@(1, 'REQUIRED'), @(2, 'OPTIONAL'), @(3, 'RESOURCES'))) {
+            $names = $attendees[$t[0]]
+            if ($names.Count) { [void]$sb.AppendLine(":$($t[1]): $($names -join '; ')") }
+        }
         [void]$sb.AppendLine(':END:')
         [void]$sb.AppendLine((Get-OrgTimestamp $item))
 
