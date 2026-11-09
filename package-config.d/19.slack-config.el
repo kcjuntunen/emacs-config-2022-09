@@ -64,6 +64,7 @@
 	:config
 	(slack-register-team
 	 :name "York"
+	 :modeline-name "ywt"
 	 :default t
 	 :token (auth-source-pick-first-password
 					 :host kc/slack-host :user kc/slack-user)
