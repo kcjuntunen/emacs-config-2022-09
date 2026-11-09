@@ -78,7 +78,8 @@
     ORDER BY CAST(t.TaskNbr AS INT) SEPARATOR '; ') AS descriptions,
   cr.Status AS status,
   cr.ClientAccount AS client,
-  cr.TradingPartnerAccount AS partner
+  cr.TradingPartnerAccount AS partner,
+  t.IsTaskCompletedInd AS iscomplete
 FROM resource_allocations ra
 LEFT JOIN clientrequests cr ON ra.RequestNbr = cr.RequestNbr
 LEFT JOIN tasks t ON ra.RequestNbr = t.RequestNbr
@@ -86,7 +87,6 @@ LEFT JOIN tasks t ON ra.RequestNbr = t.RequestNbr
 WHERE ra.ResourceKey = %d
   AND ra.AllocationDateTime BETWEEN (CURDATE() - INTERVAL %d DAY)
                                 AND (CURDATE() + INTERVAL %d DAY)
-  AND t.IsTaskCompletedInd <> 'Y'
 GROUP BY DATE(ra.AllocationDateTime), ra.RequestNbr
 ORDER BY DATE(ra.AllocationDateTime), ra.RequestNbr"
 	"Allocations query; format args are resource key, days back, days ahead.
@@ -164,10 +164,11 @@ Not H:MM: the agenda would read that as a time of day."
 												(kc/allocations--short-duration total)
 												(length entries) (if (= (length entries) 1) "" "s")
 												stamp))
-				(pcase-dolist (`(,_ ,minutes ,request ,tasks ,descriptions ,status ,client ,partner)
+				(pcase-dolist (`(,_ ,minutes ,request ,tasks ,descriptions ,status ,client ,partner ,iscomplete)
 											 entries)
 					(let ((minutes (string-to-number minutes)))
-						(insert (format "** [%s] %s %s — %s / %s\n"
+						(insert (format "** %s [%s] %s %s — %s / %s\n"
+														(if (string-equal-ignore-case IsComplete "Y") "DONE" "TODO")
 														(kc/allocations--short-duration minutes)
 														request
 														(or descriptions "(no description)")
