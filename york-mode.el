@@ -22,6 +22,7 @@
 	:keymap (let ((map (make-sparse-keymap)))
 						(define-key map (kbd "C-c y r") 'york-get-request-data)
 						(define-key map (kbd "C-c y e") 'york-get-incident-data)
+						(define-key map (kbd "C-c y x") 'york-export-swo)
 						(define-key map (kbd "C-c y q") 'york-insert-queue)
 						(define-key map (kbd "C-c y Q") 'york-copy-queue-to-workarea)
 						;; (define-key map (kbd "C-c y s") 'york-store-repo-name)
@@ -692,6 +693,7 @@ is skipped and reported.  With prefix arg NO-CONFIRM, don't ask."
 
 ;; Incident and system snapshot lookups.
 (load "~/.emacs.d/york-incidents.el")
+(load "~/.emacs.d/york-swo.el")
 
 (load-file "~/.emacs.d/x12-mode/x12-mode.el")
 (add-to-list 'auto-mode-alist '("\\.x12\\'" . x12-mode))
