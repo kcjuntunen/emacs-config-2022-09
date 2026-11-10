@@ -42,6 +42,9 @@
 (defconst kc/slack-user "k.c.juntunen@yorkwwt.com"
 	"Login used for the Slack entries in authinfo.")
 
+(defconst kc/rk-slack-host "rkdevelopers.slack.com"
+	"Slack workspace domain, also the authinfo machine name.")
+
 (use-package slack
 	:if at-work
 	:vc (:url "https://github.com/emacs-slack/emacs-slack" :rev :newest)
@@ -70,6 +73,16 @@
 					 :host kc/slack-host :user kc/slack-user)
 	 :cookie (auth-source-pick-first-password
 						:host kc/slack-host :user (concat kc/slack-user "^cookie"))
+	 :full-and-display-names t
+	 :modeline-enabled t)
+	(slack-register-team
+	 :name "Rural King"
+	 :modeline-name "rk"
+	 :default t
+	 :token (auth-source-pick-first-password
+					 :host kc/rk-slack-host :user kc/slack-user)
+	 :cookie (auth-source-pick-first-password
+						:host kc/rk-slack-host :user (concat kc/slack-user "^cookie"))
 	 :full-and-display-names t
 	 :modeline-enabled t))
 
