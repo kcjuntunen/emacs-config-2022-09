@@ -21,6 +21,7 @@
 ;;; Code:
 
 (require 'org)
+(require 'org-clock)
 (require 'calendar)
 (require 'seq)
 (require 'subr-x)
@@ -57,6 +58,16 @@
 				rate
 			(read-number "Hourly rate: "))))
 
+(defun york-swo--hours ()
+	"Return the hours of the task at point.
+A finished task counts the time clocked on it, to the hundredth of an
+hour; any other task, or a finished one without clocked time, counts
+its estimate."
+	(let ((minutes (if (org-entry-is-done-p) (org-clock-sum-current-item) 0)))
+		(if (> minutes 0)
+				(/ (fround (/ (* minutes 100) 60.0)) 100)
+			(string-to-number (or (york-swo--property "BillableHours") "0")))))
+
 (defun york-swo--task ()
 	"Return the task at point as a plist."
 	(list :number (or (york-swo--property "Task") (york-swo--property "TaskNbr"))
@@ -65,7 +76,7 @@
 				:completed (york-swo--property "dateCompleted")
 				:responsible (york-swo--property "Responsible")
 				:notes (york-swo--property "status")
-				:hours (string-to-number (or (york-swo--property "BillableHours") "0"))
+				:hours (york-swo--hours)
 				:timeline (or (york-swo--property "Timeline")
 											(and (org-entry-is-done-p) "Complete"))))
 
