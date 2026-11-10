@@ -114,18 +114,14 @@ Should end with a slash. Will be created if it doesn't exist."
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;; Request lookup: Project/Phase/Task data as an Org project plan
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+(require 'calendar)
 (require 'org-id)
 (require 'seq)
 (require 'subr-x)
 
-;; The connection settings and the mysql --batch unescaping are shared
-;; with package-config.d/22.allocations.el.
-(defvar kc/allocations-db-host)
-(defvar kc/allocations-database)
-(defvar kc/allocations-auth-host)
-(declare-function kc/allocations--unescape "22.allocations")
-(declare-function kc/auth-get-key "13.auth-config")
-(declare-function kc/auth-get-pwd "13.auth-config")
+;; Database access is in package-config.d/21.york-db.el.
+(declare-function york-db-query "21.york-db")
+(declare-function york-db-field "21.york-db")
 
 (defconst york--sql-datetime-regexp
 	"\\`[0-9]\\{4\\}-[0-9]\\{2\\}-[0-9]\\{2\\}\\(?: [0-9]\\{2\\}:[0-9]\\{2\\}:[0-9]\\{2\\}\\)?\\'"
@@ -138,53 +134,31 @@ Should end with a slash. Will be created if it doesn't exist."
 					" (string-to-number $-3));f2\n")
 	"Formula of the totals table; format args are table id, column (twice), table id.")
 
-(defun york--sql (query)
-	"Run QUERY with the mysql client.
-Return the rows as alists of (COLUMN-NAME . VALUE); VALUE is a
-string, or nil for NULL."
-	(let ((user (kc/auth-get-key kc/allocations-auth-host :user))
-				(pwd (kc/auth-get-pwd kc/allocations-auth-host)))
-		(unless (and user pwd)
-			(user-error "No %s entry in authinfo" kc/allocations-auth-host))
-		(with-temp-buffer
-			(let* ((coding-system-for-read 'utf-8)
-						 (coding-system-for-write 'utf-8)
-						 ;; MYSQL_PWD keeps the password off the command line.
-						 (process-environment (cons (concat "MYSQL_PWD=" pwd)
-																				process-environment))
-						 (status (call-process "mysql" nil t nil
-																	 "--batch" "--skip-ssl"
-																	 "--default-character-set=utf8mb4"
-																	 "--connect-timeout=15"
-																	 "--host" kc/allocations-db-host
-																	 "--user" user
-																	 "--database" kc/allocations-database
-																	 "--execute" query)))
-				(unless (eq status 0)
-					(error "mysql: %s" (string-trim (buffer-string))))
-				(when-let* ((lines (split-string (buffer-string) "\n" t))
-										(columns (split-string (car lines) "\t")))
-					(mapcar (lambda (line)
-										(seq-mapn #'cons columns
-															(mapcar #'kc/allocations--unescape
-																			(split-string line "\t"))))
-									(cdr lines)))))))
-
-(defun york--field (row column)
-	"Return the value of COLUMN in ROW, a row from `york--sql'."
-	(cdr (assoc column row)))
-
 (defun york--org-stamp (value &optional date-only)
 	"Format VALUE, a mysql DATE or DATETIME string, the way Org writes timestamps.
-The brackets are left to the caller.  With DATE-ONLY, leave the time out."
-	(pcase-let ((`(,sec ,min ,hour ,day ,month ,year) (parse-time-string value)))
-		(format-time-string
-		 (if date-only "%Y-%m-%d %a" "%Y-%m-%d %a %H:%M")
-		 (encode-time (list (or sec 0) (or min 0) (or hour 0) day month year
-												nil -1 nil)))))
+The brackets are left to the caller.  With DATE-ONLY, leave the time out.
+A VALUE that isn't a real date (NULL, 0000-00-00) is returned as it is.
+
+This doesn't go through `format-time-string': the database is full of
+0001-01-01 placeholder dates, which Windows can't convert."
+	(if (not (and value
+								(string-match
+								 (concat "\\`\\([0-9]\\{4\\}\\)-\\([0-9]\\{2\\}\\)-\\([0-9]\\{2\\}\\)"
+												 "\\(?: \\([0-9]\\{2\\}:[0-9]\\{2\\}\\)\\)?")
+								 value)))
+			(or value "")
+		(let ((year (string-to-number (match-string 1 value)))
+					(month (string-to-number (match-string 2 value)))
+					(day (string-to-number (match-string 3 value)))
+					(time (or (match-string 4 value) "00:00")))
+			(if (or (zerop year) (zerop month) (zerop day))
+					value
+				(concat (format "%04d-%02d-%02d %s" year month day
+												(calendar-day-name (list month day year) t))
+								(unless date-only (concat " " time)))))))
 
 (defun york--org-properties (row)
-	"Return every column of ROW as Org property lines.
+	"Return every column of ROW, a database row, as Org property lines.
 Columns named SomethingNbr are also written as Something."
 	(concat
 	 (format-time-string ":Captured: [%Y-%m-%d %a %H:%M]\n")
@@ -212,8 +186,8 @@ its last four digits, which stand for the newest request having them."
 			(when-let* ((digits (seq-find (lambda (s)
 																			(string-match-p "\\`[0-9]\\{4\\}\\'" s))
 																		(split-string query "[^0-9R]"))))
-				(york--field
-				 (car (york--sql
+				(york-db-field
+				 (car (york-db-query
 							 (format "SELECT RequestNbr FROM clientrequests
 WHERE RequestNbr LIKE '%%%s%%' ORDER BY RequestDate DESC LIMIT 1"
 											 digits)))
@@ -233,14 +207,14 @@ project's billable rate."
 (defun york--task-keyword (task notes phase request)
 	"Return the TODO keyword for TASK.
 NOTES are its status rows; PHASE and REQUEST the rows it belongs to."
-	(let ((complete (string-prefix-p "Y" (or (york--field task "IsTaskCompletedInd") ""))))
+	(let ((complete (string-prefix-p "Y" (or (york-db-field task "IsTaskCompletedInd") ""))))
 		(cond
 		 ;; Marked complete without anything logged against it.
 		 ((and complete (null notes)) "TODO")
 		 (complete "DONE")
 		 ((null notes) "TODO")
-		 ((and (string-search "Exam" (or (york--field phase "Description") ""))
-					 (string-search "Surgery" (or (york--field request "Status") "")))
+		 ((and (string-search "Exam" (or (york-db-field phase "Description") ""))
+					 (string-search "Surgery" (or (york-db-field request "Status") "")))
 			"DONE")
 		 (t "WIP"))))
 
@@ -249,15 +223,15 @@ NOTES are its status rows; PHASE and REQUEST the rows it belongs to."
 	(when notes
 		(insert ":LOGBOOK:\n")
 		(dolist (note notes)
-			(let* ((start (york--field note "StatusTime"))
-						 (minutes (string-to-number (or (york--field note "BillableMinutes") "0")))
+			(let* ((start (york-db-field note "StatusTime"))
+						 (minutes (string-to-number (or (york-db-field note "BillableMinutes") "0")))
 						 (end (format-time-string
 									 "%Y-%m-%d %H:%M:%S"
 									 (time-add (date-to-time start) (* 60 minutes)))))
 				(insert (format "- Note taken on [%s] \\\\\n" (york--org-stamp start))
 								(format "  %s -- %s\n"
-												(or (york--field note "Description") "")
-												(or (york--field note "StaffMember") ""))
+												(or (york-db-field note "Description") "")
+												(or (york-db-field note "StaffMember") ""))
 								(format "CLOCK: [%s]--[%s] => %02d:%02d\n\n"
 												(york--org-stamp start) (york--org-stamp end)
 												(/ minutes 60) (% minutes 60)))))
@@ -267,60 +241,60 @@ NOTES are its status rows; PHASE and REQUEST the rows it belongs to."
 	"Insert the details of ALLOCATION, a resource_allocations row.
 RATE is the project's billable rate."
 	(when allocation
-		(let ((hours (/ (string-to-number (york--field allocation "AllocatedMinutes"))
+		(let ((hours (/ (string-to-number (york-db-field allocation "AllocatedMinutes"))
 										60.0)))
 			(insert (format-time-string
 							 "\n**** Allocation Details as of [%Y-%m-%d %a] :noexport:\n")
 							(format "- Resource: %s <%s>\n"
-											(or (york--field allocation "Name") "")
-											(or (york--field allocation "Email") ""))
+											(or (york-db-field allocation "Name") "")
+											(or (york-db-field allocation "Email") ""))
 							(format "  - Default Rate: $%.2f\n"
 											(string-to-number
-											 (or (york--field allocation "DefaultHourlyRate") "0")))
+											 (or (york-db-field allocation "DefaultHourlyRate") "0")))
 							(format "- Allocation: %.2f hours @ $%.2f ($%.2f)\n"
 											hours rate (* hours rate))
 							(format "- Allocation Date: [%s]\n"
 											(york--org-stamp
-											 (york--field allocation "AllocationDateTime") t))))))
+											 (york-db-field allocation "AllocationDateTime") t))))))
 
 (defun york--request-org (query)
 	"Return the project plan of the request QUERY is about, as Org text."
 	(let* ((number (or (york--resolve-request-number query)
 										 (user-error "Couldn't find anything for %s" query)))
 				 (where (format "RequestNbr='%s'" number))
-				 (request (or (car (york--sql (format "SELECT * FROM clientrequests WHERE %s"
-																							where)))
+				 (request (or (car (york-db-query (format "SELECT * FROM clientrequests WHERE %s"
+																									where)))
 											(user-error "Couldn't find anything for %s" query)))
-				 (project (car (york--sql (format "SELECT BillableRate, Status FROM projects WHERE %s"
-																					where))))
-				 (phases (york--sql (format "SELECT * FROM phases WHERE %s
+				 (project (car (york-db-query (format "SELECT BillableRate, Status FROM projects WHERE %s"
+																							where))))
+				 (phases (york-db-query (format "SELECT * FROM phases WHERE %s
 ORDER BY CAST(PhaseNbr AS SIGNED)"
-																		where)))
-				 (tasks (york--sql (format "SELECT * FROM tasks WHERE %s
+																				where)))
+				 (tasks (york-db-query (format "SELECT * FROM tasks WHERE %s
 ORDER BY CAST(TaskNbr AS SIGNED)"
-																	 where)))
-				 (notes (york--sql (format "SELECT PhaseNbr, TaskNbr, StatusTime, Description,
+																			 where)))
+				 (notes (york-db-query (format "SELECT PhaseNbr, TaskNbr, StatusTime, Description,
 StaffMember, BillableMinutes FROM status WHERE %s ORDER BY StatusTime DESC"
-																	 where)))
+																			 where)))
 				 ;; Reversed, so that the last allocation of a task is found first.
 				 (allocations
 					(reverse
-					 (york--sql (format "SELECT ra.PhaseNbr, ra.TaskNbr, ra.AllocatedMinutes,
+					 (york-db-query (format "SELECT ra.PhaseNbr, ra.TaskNbr, ra.AllocatedMinutes,
 ra.AllocationDateTime, rm.Name, rm.Email, rm.DefaultHourlyRate
 FROM resource_allocations ra
 LEFT JOIN resource_master rm ON rm.Key1 = ra.ResourceKey
 WHERE ra.RequestNbr='%s' ORDER BY ra.ResourceKey, ra.AllocationDateTime"
-															number))))
-				 (number (york--field request "RequestNbr"))
-				 (description (or (york--field request "Description") ""))
-				 (rate (string-to-number (or (york--field project "BillableRate") "0")))
-				 (deadline (and (not (member (york--field request "ExternalDeadlineInd")
+																	number))))
+				 (number (york-db-field request "RequestNbr"))
+				 (description (or (york-db-field request "Description") ""))
+				 (rate (string-to-number (or (york-db-field project "BillableRate") "0")))
+				 (deadline (and (not (member (york-db-field request "ExternalDeadlineInd")
 																		 '(nil "" "N")))
-												(york--org-stamp (york--field request "ExternalDeadline") t)))
+												(york--org-stamp (york-db-field request "ExternalDeadline") t)))
 				 (same-task (lambda (phase-nbr task-nbr)
 											(lambda (row)
-												(and (equal (york--field row "PhaseNbr") phase-nbr)
-														 (equal (york--field row "TaskNbr") task-nbr)))))
+												(and (equal (york-db-field row "PhaseNbr") phase-nbr)
+														 (equal (york-db-field row "TaskNbr") task-nbr)))))
 				 (workarea york-workarea)
 				 (table-id (format "Y%sF" number)))
 		(with-temp-buffer
@@ -336,7 +310,7 @@ WHERE ra.RequestNbr='%s' ORDER BY ra.ResourceKey, ra.AllocationDateTime"
 							(york--org-properties request)
 							(format ":Task: %s %s\n" number description)
 							":TypeKey: 1\n"
-							(format ":ProjectStatus: %s\n" (or (york--field project "Status") ""))
+							(format ":ProjectStatus: %s\n" (or (york-db-field project "Status") ""))
 							(format ":EXPORT_FILE_NAME: %sDesign - %s {%s}\n"
 											workarea number description)
 							(format ":TABLE_EXPORT_FILE: %s%s.yorkformat.csv\n" workarea number)
@@ -351,8 +325,8 @@ WHERE ra.RequestNbr='%s' ORDER BY ra.ResourceKey, ra.AllocationDateTime"
 							"#+end:\n")
 			(york--insert-totals table-id 8 rate)
 			(dolist (phase phases)
-				(let* ((phase-nbr (york--field phase "PhaseNbr"))
-							 (phase-description (or (york--field phase "Description") ""))
+				(let* ((phase-nbr (york-db-field phase "PhaseNbr"))
+							 (phase-description (or (york-db-field phase "Description") ""))
 							 (table-id (format "%sRP%s" number phase-nbr)))
 					;; The phase.
 					(insert (format "** %s [%%]\n" phase-description)
@@ -372,20 +346,20 @@ WHERE ra.RequestNbr='%s' ORDER BY ra.ResourceKey, ra.AllocationDateTime"
 					(york--insert-totals table-id 4 rate)
 					;; Its tasks.
 					(dolist (task (seq-filter (lambda (row)
-																			(equal (york--field row "PhaseNbr") phase-nbr))
+																			(equal (york-db-field row "PhaseNbr") phase-nbr))
 																		tasks))
-						(let* ((mine (funcall same-task phase-nbr (york--field task "TaskNbr")))
+						(let* ((mine (funcall same-task phase-nbr (york-db-field task "TaskNbr")))
 									 (task-notes (seq-filter mine notes))
-									 (task-description (or (york--field task "Description") ""))
+									 (task-description (or (york-db-field task "Description") ""))
 									 (minutes (string-to-number
-														 (or (york--field task "EstimatedMinutes") "0"))))
+														 (or (york-db-field task "EstimatedMinutes") "0"))))
 							(insert (format "*** %s %s\n"
 															(york--task-keyword task task-notes phase request)
 															task-description))
-							(when (string-prefix-p "Y" (or (york--field task "IsTaskCompletedInd") ""))
+							(when (string-prefix-p "Y" (or (york-db-field task "IsTaskCompletedInd") ""))
 								(insert (format "CLOSED: [%s]\n"
 																(york--org-stamp
-																 (york--field task "TaskCompletionDate")))))
+																 (york-db-field task "TaskCompletionDate")))))
 							(insert ":PROPERTIES:\n"
 											(format ":ID: %s\n" (org-id-uuid))
 											(york--org-properties task)

@@ -21,15 +21,14 @@
 ;;; Commentary:
 
 ;; Work-only.  Runs the resource-allocations query against the
-;; generalhospital database with the mysql client and writes the open
+;; generalhospital database (see 21.york-db.el) and writes the open
 ;; (not completed) allocations to allocations.org in `org-directory',
 ;; which makes it one of the agenda files.  Each day gets a total entry
 ;; plus one entry per request, dated with an active timestamp so it
 ;; shows on that day in the agenda.
 ;;
 ;; The export runs in the background at startup and every 30 minutes;
-;; run `kc/allocations-refresh' to refresh by hand.  The database
-;; credentials come from the "yorkdb" entry in authinfo.gpg.
+;; run `kc/allocations-refresh' to refresh by hand.
 ;;
 ;; The file is regenerated each time, so don't take notes in it.
 
@@ -40,20 +39,10 @@
 (require 'subr-x)
 
 (defvar at-work)   ; defined in early-init.el
-(declare-function kc/auth-get-key "13.auth-config")
-(declare-function kc/auth-get-pwd "13.auth-config")
+(declare-function york-db-query-async "21.york-db")
 
 (defvar kc/allocations-resource-key 15
 	"Resource key (resource_master.Key1) whose allocations to export.")
-
-(defvar kc/allocations-db-host "proton"
-	"Database server.")
-
-(defvar kc/allocations-database "generalhospital"
-	"Database name.")
-
-(defvar kc/allocations-auth-host "yorkdb"
-	"Host name of the authinfo entry holding the database credentials.")
 
 (defvar kc/allocations-days-back 5
 	"How many days of past allocations to export.")
@@ -108,24 +97,6 @@ read by position in `kc/allocations--write'.")
 							 (not (seq-some (lambda (f) (file-equal-p f file)) org-agenda-files)))
 			(setq org-agenda-files (append org-agenda-files (list file))))))
 
-(defun kc/allocations--unescape (field)
-	"Undo mysql --batch escaping in FIELD and trim it; NULL becomes nil."
-	(unless (string= field "NULL")
-		(string-trim
-		 (replace-regexp-in-string
-			"\\\\\\(.\\)"
-			(lambda (m)
-				(pcase (aref m 1)
-					(?t "\t") (?n " ") (?r "") (?0 "")
-					(c (string c))))
-			field t t))))
-
-(defun kc/allocations--parse (output)
-	"Parse mysql --batch OUTPUT into a list of rows, skipping the header."
-	(mapcar (lambda (line)
-						(mapcar #'kc/allocations--unescape (split-string line "\t")))
-					(cdr (split-string output "\n" t))))
-
 (defun kc/allocations--duration (minutes)
 	"Format MINUTES as H:MM, the way Org writes efforts."
 	(format "%d:%02d" (/ minutes 60) (% minutes 60)))
@@ -168,7 +139,7 @@ Not H:MM: the agenda would read that as a time of day."
 											 entries)
 					(let ((minutes (string-to-number minutes)))
 						(insert (format "** %s [%s] %s %s — %s / %s\n"
-														(if (string-equal-ignore-case IsComplete "Y") "DONE" "TODO")
+														(if (string-equal-ignore-case iscomplete "Y") "DONE" "TODO")
 														(kc/allocations--short-duration minutes)
 														request
 														(or descriptions "(no description)")
@@ -195,50 +166,29 @@ would hide the new allocations."
 (defun kc/allocations-refresh ()
 	"Export open allocations to Org in the background."
 	(interactive)
-	(let ((interactive-p (called-interactively-p 'interactive))
-				(user (kc/auth-get-key kc/allocations-auth-host :user))
-				(pwd (kc/auth-get-pwd kc/allocations-auth-host)))
-		(cond
-		 ((not (file-directory-p org-directory))
-			(message "Allocations: %s doesn't exist" org-directory))
-		 ((not (and user pwd))
-			(message "Allocations: no %s entry in authinfo" kc/allocations-auth-host))
-		 (t
-			(let ((buf (get-buffer-create " *allocations*"))
-						;; MYSQL_PWD keeps the password off the command line.
-						(process-environment (cons (concat "MYSQL_PWD=" pwd)
-																			 process-environment)))
-				(with-current-buffer buf (erase-buffer))
-				(make-process
-				 :name "allocations"
-				 :buffer buf
-				 :noquery t
-				 :coding 'utf-8
-				 :connection-type 'pipe
-				 :command (list "mysql" "--batch" "--skip-ssl"
-												"--default-character-set=utf8mb4"
-												"--connect-timeout=15"
-												"--host" kc/allocations-db-host
-												"--user" user
-												"--database" kc/allocations-database
-												"--execute"
-												(format kc/allocations--query
-																kc/allocations-resource-key
-																kc/allocations-days-back
-																kc/allocations-days-ahead))
-				 :sentinel
-				 (lambda (proc _event)
-					 (when (memq (process-status proc) '(exit signal))
-						 (let ((output (with-current-buffer (process-buffer proc)
-														 (buffer-string))))
-							 (if (zerop (process-exit-status proc))
-									 (let ((file (kc/allocations-file)))
-										 (kc/allocations--write (kc/allocations--parse output) file)
-										 (kc/allocations--revert-buffer file)
-										 (kc/allocations--add-to-agenda)
-										 (when interactive-p
-											 (message "Allocations refreshed")))
-								 (message "Allocations: %s" (string-trim output))))))))))))
+	(let ((interactive-p (called-interactively-p 'interactive)))
+		(if (not (file-directory-p org-directory))
+				(message "Allocations: %s doesn't exist" org-directory)
+			(condition-case err
+					(york-db-query-async
+					 (format kc/allocations--query
+									 kc/allocations-resource-key
+									 kc/allocations-days-back
+									 kc/allocations-days-ahead)
+					 (lambda (rows)
+						 (let ((file (kc/allocations-file)))
+							 ;; `kc/allocations--write' reads the columns by position.
+							 (kc/allocations--write
+								(mapcar (lambda (row) (mapcar #'cdr row)) rows)
+								file)
+							 (kc/allocations--revert-buffer file)
+							 (kc/allocations--add-to-agenda)
+							 (when interactive-p
+								 (message "Allocations refreshed"))))
+					 (lambda (output)
+						 (message "Allocations: %s" output)))
+				;; No credentials in authinfo.
+				(user-error (message "Allocations: %s" (error-message-string err)))))))
 
 (when at-work
 	(when (timerp kc/allocations--timer)
