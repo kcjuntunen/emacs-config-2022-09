@@ -30,11 +30,14 @@
 ;;   machine yorkworldwide-vbl9255.slack.com login k.c.juntunen@yorkwwt.com password xoxc-...
 ;;   machine yorkworldwide-vbl9255.slack.com login k.c.juntunen@yorkwwt.com^cookie password xoxd-...
 ;;
-;; Start with C-c S s (or M-x slack-start).
+;; Start with C-c S s, which connects every registered team.  Commands
+;; act on the current team, York at first; C-c S T changes it.
 
 ;;; Code:
 
 (defvar at-work)   ; defined in early-init.el
+
+(declare-function slack-start "slack")
 
 (defconst kc/slack-host "yorkworldwide-vbl9255.slack.com"
 	"Slack workspace domain, also the authinfo machine name.")
@@ -45,11 +48,18 @@
 (defconst kc/rk-slack-host "rkdevelopers.slack.com"
 	"Slack workspace domain, also the authinfo machine name.")
 
+(defun kc/slack-start-all ()
+	"Connect to every registered Slack team.
+Called as a command, `slack-start' connects only the current team."
+	(interactive)
+	(slack-start))
+
 (use-package slack
 	:if at-work
 	:vc (:url "https://github.com/emacs-slack/emacs-slack" :rev :newest)
 	:commands (slack-start)
-	:bind (("C-c S s" . slack-start)
+	:bind (("C-c S s" . kc/slack-start-all)
+				 ("C-c S T" . slack-change-current-team)
 				 ("C-c S c" . slack-channel-select)
 				 ("C-c S i" . slack-im-select)
 				 ("C-c S u" . slack-select-unread-rooms)
@@ -75,10 +85,11 @@
 						:host kc/slack-host :user (concat kc/slack-user "^cookie"))
 	 :full-and-display-names t
 	 :modeline-enabled t)
+	;; Only York is :default: the last team registered with it becomes the
+	;; current one.
 	(slack-register-team
 	 :name "Rural King"
 	 :modeline-name "rk"
-	 :default t
 	 :token (auth-source-pick-first-password
 					 :host kc/rk-slack-host :user kc/slack-user)
 	 :cookie (auth-source-pick-first-password
