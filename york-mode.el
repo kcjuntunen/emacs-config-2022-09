@@ -403,6 +403,71 @@ added.  If the buffer already exists it is just shown again."
 				(rename-buffer name)
 				(switch-to-buffer buf)))))
 
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;; Daily workarea rotation
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+(require (quote dired))
+
+(defun york--start-of-today ()
+	"Return the time value for local midnight today."
+	(let ((now (decode-time)))
+		(encode-time (list 0 0 0
+											 (decoded-time-day now)
+											 (decoded-time-month now)
+											 (decoded-time-year now)
+											 nil -1 nil))))
+
+(defun york-rotate-workarea (&optional no-confirm)
+	"Move everything in `york-workarea' last modified before today into
+a sibling folder named after today's date (e.g. C:/fastrack/2026-11-10).
+Files and folders touched today stay put.  If today's folder already
+exists it is reused; anything that would collide with an existing name
+is skipped and reported.  With prefix arg NO-CONFIRM, don't ask."
+	(interactive "P")
+	(let* ((workarea (file-name-as-directory (expand-file-name york-workarea)))
+				 (parent   (file-name-directory (directory-file-name workarea)))
+				 (target   (expand-file-name (format-time-string "%Y-%m-%d") parent))
+				 (cutoff   (york--start-of-today))
+				 (old      (seq-filter
+										(lambda (f)
+											(time-less-p (file-attribute-modification-time
+																		(file-attributes f))
+																	 cutoff))
+										(directory-files workarea t directory-files-no-dot-files-regexp)))
+				 (moved 0)
+				 (skipped nil))
+		(cond
+		 ((null old)
+			(message "Workarea: nothing older than today."))
+		 ((or no-confirm
+					(y-or-n-p (format "Move %d item(s) from %s to %s? "
+														(length old) workarea target)))
+			(make-directory target t)
+			(dolist (f old)
+				(let ((dest (expand-file-name (file-name-nondirectory f) target)))
+					(if (file-exists-p dest)
+							(push (file-name-nondirectory f) skipped)
+						(condition-case err
+								(progn (rename-file f dest)
+											 (setq moved (1+ moved)))
+							;; e.g. a file still open in Excel
+							(file-error (push (format "%s [%s]" (file-name-nondirectory f)
+																		(error-message-string err))
+															skipped))))))
+			;; Refresh any Dired buffers showing either folder.
+			(dolist (dir (list workarea target))
+				(when-let ((buf (dired-find-buffer-nocreate dir)))
+					(with-current-buffer buf (revert-buffer))))
+			(message "Workarea: moved %d item(s) to %s%s"
+							 moved target
+							 (if skipped
+									 (format "; skipped %d: %s"
+													 (length skipped)
+													 (string-join (nreverse skipped) ", "))
+								 ""))))))
+
+(global-set-key (kbd "C-c y w") #'york-rotate-workarea)
+
 (global-set-key (kbd "C-c y p") #'kc/rdp-open-at-point)
 (global-set-key (kbd "C-c y m") #'kc/extract-unique-matches)
 (global-set-key (kbd "C-c y s") #'kc/find-workarea-projects)
