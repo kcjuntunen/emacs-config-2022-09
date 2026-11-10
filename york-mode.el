@@ -53,18 +53,6 @@
 	:type 'string
 	:group 'york)
 
-(defcustom york-incident-looker-upper-path
-	"C:/Users/k.c.juntunen/source/repos/Viewer.Etc/InsertIncident/bin/Release/net10.0/InsertIncident.exe"
-	"The program that pulls in Incidents in Org format."
-	:type 'string
-	:group 'york)
-
-(defcustom york-hang-looker-upper-path
-	"C:/Users/k.c.juntunen/source/repos/Viewer.Etc/InsertMessedUpServerStates/bin/Release/net10.0/InsertMessedUpServerStates.exe"
-	"The program that pulls in hung programs in Org format."
-	:type 'string
-	:group 'york)
-
 (defcustom york-path-finder
 	"C:/Users/k.c.juntunen/source/repos/Viewer.Etc/GetQPath/bin/Release/GetQPath.exe"
 	"The program that find Queue paths."
@@ -124,7 +112,7 @@ Should end with a slash. Will be created if it doesn't exist."
 (declare-function york-db-field "21.york-db")
 
 (defconst york--sql-datetime-regexp
-	"\\`[0-9]\\{4\\}-[0-9]\\{2\\}-[0-9]\\{2\\}\\(?: [0-9]\\{2\\}:[0-9]\\{2\\}:[0-9]\\{2\\}\\)?\\'"
+	"\\`[0-9]\\{4\\}-[0-9]\\{2\\}-[0-9]\\{2\\}\\(?: [0-9]\\{2\\}:[0-9]\\{2\\}:[0-9]\\{2\\}\\(?:\\.[0-9]+\\)?\\)?\\'"
 	"Matches a DATE or DATETIME value as the mysql client prints it.")
 
 (defconst york--totals-formula
@@ -378,18 +366,6 @@ WHERE ra.RequestNbr='%s' ORDER BY ra.ResourceKey, ra.AllocationDateTime"
 REQUEST-NUMBER is a request number, or the last four digits of one."
 	(interactive "sRequestNbr: ")
 	(insert (york--request-org request-number)))
-
-(defun york-get-incident-data (incident-number)
-	"Insert incident data into buffer in Org format."
-	(interactive "sIncident Number: ")
-	(insert (shell-command-to-string
-					 (format "%s %s"
-									 york-incident-looker-upper-path incident-number))))
-
-(defun york-get-hang-data ()
-	"Insert incident data into buffer in Org format."
-	(interactive)
-	(insert (shell-command-to-string york-hang-looker-upper-path)))
 
 (defun york--get-inputq-path ()
 	"Get the path to production input queues"
@@ -713,6 +689,9 @@ is skipped and reported.  With prefix arg NO-CONFIRM, don't ask."
 (global-set-key (kbd "C-c y m") #'kc/extract-unique-matches)
 (global-set-key (kbd "C-c y s") #'kc/find-workarea-projects)
 
+
+;; Incident and system snapshot lookups.
+(load "~/.emacs.d/york-incidents.el")
 
 (load-file "~/.emacs.d/x12-mode/x12-mode.el")
 (add-to-list 'auto-mode-alist '("\\.x12\\'" . x12-mode))
