@@ -60,12 +60,12 @@
 
 (defun york-swo--hours ()
 	"Return the hours of the task at point.
-A finished task counts the time clocked on it, to the hundredth of an
+A finished task counts the time clocked on it, to the nearest quarter
 hour; any other task, or a finished one without clocked time, counts
 its estimate."
 	(let ((minutes (if (org-entry-is-done-p) (org-clock-sum-current-item) 0)))
 		(if (> minutes 0)
-				(/ (fround (/ (* minutes 100) 60.0)) 100)
+				(/ (fround (/ minutes 15.0)) 4)
 			(string-to-number (or (york-swo--property "BillableHours") "0")))))
 
 (defun york-swo--task ()
