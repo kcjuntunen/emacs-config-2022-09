@@ -21,15 +21,20 @@
 	(setq dired-listing-switches "-alh"))
 ;; (setq dired-listing-switches "-alF --group-directories-first")
 
-;; There's no zip.exe or 7z.exe on Windows, but the bundled bsdtar can
-;; write both (-a picks the format from the suffix).  Use its full path,
-;; because Git's GNU tar comes first on `exec-path' and can't.
+;; There's no zip, unzip or 7z on Windows, but the bundled bsdtar can
+;; read and write both formats (-a picks the format from the suffix).
+;; Use its full path, because Git's GNU tar comes first on `exec-path'
+;; and can't.  When extracting, %o is a folder named after the archive;
+;; bsdtar won't create it, so cmd's mkdir does (quietly, if it exists).
 (when (eq system-type 'windows-nt)
 	(with-eval-after-load 'dired-aux
-		(let ((bsdtar (concat (shell-quote-argument
-													 (expand-file-name "System32/tar.exe" (getenv "SystemRoot")))
-													" -a -cf %o %i")))
-			(setf (alist-get "\\.zip\\'" dired-compress-files-alist nil nil #'equal) bsdtar)
-			(setf (alist-get "\\.7z\\'" dired-compress-files-alist nil nil #'equal) bsdtar))))
+		(let* ((bsdtar (shell-quote-argument
+										(expand-file-name "System32/tar.exe" (getenv "SystemRoot"))))
+					 (pack (concat bsdtar " -a -cf %o %i"))
+					 (unpack (concat "mkdir %o 2>nul & " bsdtar " -xf %i -C %o")))
+			(dolist (re '("\\.zip\\'" "\\.7z\\'"))
+				(setf (alist-get re dired-compress-files-alist nil nil #'equal) pack)
+				(setf (alist-get re dired-compress-file-suffixes nil nil #'equal)
+							(list "" unpack))))))
 
 (provide 'dired-config)
