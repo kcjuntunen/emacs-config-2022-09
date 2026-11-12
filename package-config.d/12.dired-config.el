@@ -21,6 +21,24 @@
 	(setq dired-listing-switches "-alh"))
 ;; (setq dired-listing-switches "-alF --group-directories-first")
 
+;; When gzip fails on a file (e.g. a name Windows can't pass to it),
+;; `dired-compress-file' assumes the old `compress' ran and returns
+;; FILE.z, which doesn't exist.  `dired-compress' then reverts the
+;; buffer mid-walk, the walk restarts from the top with the marks on the
+;; new names, and Z compresses and uncompresses the same files forever.
+;; Report the failure instead.
+(defun kc/dired-compress-file-check (orig file)
+	"Return nil if ORIG claims to have made FILE.z but didn't."
+	(let ((new (funcall orig file)))
+		(if (and new
+						 (string= new (concat file ".z"))
+						 (not (file-exists-p new)))
+				(progn (dired-log "Failed to compress %s\n" file) nil)
+			new)))
+
+(with-eval-after-load 'dired-aux
+	(advice-add 'dired-compress-file :around #'kc/dired-compress-file-check))
+
 ;;; Zip and 7z on Windows
 
 ;; Emacs can't pass non-ASCII names on a Windows command line intact, so
