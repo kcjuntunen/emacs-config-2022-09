@@ -1,0 +1,8 @@
+# LF on checkout for every text file, overriding Git for Windows'
+# system-wide core.autocrlf=true.  Binary files are detected and left alone.
+* text=auto eol=lf
+
+# Windows scripts that expect CRLF.
+*.bat text eol=crlf
+*.reg text eol=crlf
+*.vbs text eol=crlf

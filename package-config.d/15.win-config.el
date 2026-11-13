@@ -9,6 +9,8 @@
 		 'utf-16-le  ;; https://rufflewind.com/2014-07-20/pasting-unicode-in-emacs-on-windows
 	 'utf-8))
 (prefer-coding-system 'utf-8)
+;; New files get LF, not Windows' CRLF (see .gitattributes).
+(setq-default buffer-file-coding-system 'utf-8-unix)
 
 (when (or (eq system-type 'windows-nt) (eq system-type 'msdos))
 	(when at-work
