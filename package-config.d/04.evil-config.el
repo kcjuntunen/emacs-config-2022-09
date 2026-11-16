@@ -38,5 +38,13 @@
 	(advice-add 'evil-paste-after :around #'kc/fix-windows-paths-on-yank)
 	(advice-add 'evil-paste-before :around #'kc/fix-windows-paths-on-yank))
 
+(defun kc/evil-block-insert-without-flyspell (fn &rest args)
+	"Keep Flyspell's per-command delay out of Evil's block-insert replay.
+Evil replays the typed keys on each line of the block, and Flyspell
+would otherwise wait `flyspell-delay' seconds after every character."
+	(let ((flyspell-mode nil))
+		(apply fn args)))
+(advice-add 'evil-cleanup-insert-state :around #'kc/evil-block-insert-without-flyspell)
+
 (provide 'evil-config)
 ;;; evil.el ends here
