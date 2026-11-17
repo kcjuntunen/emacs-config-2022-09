@@ -8,6 +8,11 @@
 ;;   machine smtp.gmail.com login ADDRESS port 587 password APP-PASSWORD
 ;; The From address is the IMAP login, looked up when composing.
 ;; Nothing connects until M-x gnus.
+;;
+;; Also reads the GNU and Emacs mailing lists as newsgroups from Gmane
+;; (no account needed): subscribe from the server buffer (^), e.g. to
+;; gmane.emacs.bugs and gmane.emacs.devel.  M-x debbugs-gnu browses
+;; debbugs.gnu.org and opens each bug's thread in Gnus.
 
 ;;; Code:
 
@@ -15,6 +20,7 @@
 																	(nnimap-address "imap.gmail.com")
 																	(nnimap-server-port 993)
 																	(nnimap-stream ssl))
+			gnus-secondary-select-methods '((nntp "news.gmane.io"))
 
 			send-mail-function #'smtpmail-send-it
 			smtpmail-smtp-server "smtp.gmail.com"
@@ -45,6 +51,10 @@
 			;; Summary columns: marks, sent date, sender, thread tree, subject.
 			gnus-summary-line-format "%U%R%z %&user-date;  %(%-20,20f%)  %B%s\n"
 			gnus-user-date-format-alist '((t . "%Y-%m-%d %H:%M")))
+
+(use-package debbugs
+	:ensure t
+	:commands (debbugs-gnu debbugs-gnu-bugs debbugs-gnu-search))
 
 (provide 'gnus-config)
 ;;; 23.gnus-config.el ends here
