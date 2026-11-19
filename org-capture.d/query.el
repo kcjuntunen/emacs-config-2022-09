@@ -1,3 +1,4 @@
+;; -*- lexical-binding: t; -*-
 (if (not at-work)
 		(message "Not adding query capture template.")
 	(add-to-list 'org-capture-templates

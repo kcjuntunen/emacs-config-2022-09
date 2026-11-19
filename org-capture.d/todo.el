@@ -1,3 +1,4 @@
+;; -*- lexical-binding: t; -*-
 (add-to-list 'org-capture-templates
 						 '("t" "todo" entry
 							 (file kc/refile-file)

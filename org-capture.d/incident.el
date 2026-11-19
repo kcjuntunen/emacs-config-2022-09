@@ -1,3 +1,4 @@
+;; -*- lexical-binding: t; -*-
 (if (not at-work)
 		(message "Not adding incident capture template.")
 	(defun kc/incident-wrapper ()

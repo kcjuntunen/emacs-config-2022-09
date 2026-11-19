@@ -1,3 +1,4 @@
+;; -*- lexical-binding: t; -*-
 (add-to-list 'org-capture-templates
 						 '("b" "Bookmark" entry
 							 (file+headline kc/personal-notes-file "Bookmarks")

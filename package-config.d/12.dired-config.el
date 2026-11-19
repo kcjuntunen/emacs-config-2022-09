@@ -1,3 +1,4 @@
+;; -*- lexical-binding: t; -*-
 (require 'dired)
 
 (if (eq system-type 'windows-nt)
