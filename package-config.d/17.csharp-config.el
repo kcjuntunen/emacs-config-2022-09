@@ -26,7 +26,8 @@
 
 (require 'eglot)
 
-(setq eglot-server-programs '((csharp-mode . ("csharp-ls-vs"))))
+(add-to-list 'eglot-server-programs
+						 '((csharp-mode csharp-ts-mode) . ("csharp-ls-vs")))
 
 (setq eglot-ignored-server-capabilities
       '(
@@ -58,59 +59,24 @@
   ;; :load-path "z:/SharedVM/source/dape-master"
   ;; Use dape's default key prefix (C-x C-a); C-c d is ediff-buffers.
   :config
-  ;; Define common configuration
-  (defvar project-netcoredbg-path "C:/Users/k.c.juntunen/opt/netcoredbg/netcoredbg.exe"
-    "Path to netcoredbg executable.")
-  (defvar project-netcoredbg-log "c:/fastrack/woarkarea/netcoredbg.log"
-    "Path to netcoredbg log file.")
-  (defvar project-project-root "c:/fastrack/woarkarea"
-    "Root directory of PROJECT project.")
-  (defvar project-build-config "Debug"
-    "Build configuration (Debug or Release).")
-  (defvar project-target-arch "x64"
-    "Target architecture (x64, x86, or AnyCPU).")
+  ;; Use dape's built-in `netcoredbg' config (M-x dape RET netcoredbg).
+  ;; It guesses :program from bin/Debug/*/*.dll under the project root;
+  ;; edit it at the prompt when that guess is wrong.
+	(add-to-list 'exec-path "C:/Users/k.c.juntunen/opt/netcoredbg")
 
-  ;; Helper function to create component configs
-  (defun project-dape-config (component-name dll-name &optional stop-at-entry)
-    "Create a dape configuration for a component.
-COMPONENT-NAME is the component directory name
-DLL-NAME is the DLL filename without extension.
-STOP-AT-ENTRY if non-nil, stops at program entry point."
-    (let* ((component-dir (format "%s/%s" project-project-root component-name))
-           (bin-path (format "%s/bin/%s/%s/net9.0"
-                             component-dir
-                             project-target-arch
-                             project-build-config))
-           (dll-path (format "%s/%s.dll" bin-path dll-name))
-           (config-name (intern (format "netcoredbg-launch-%s" 
-                                        (downcase component-name)))))
-      `(,config-name
-        modes (csharp-mode csharp-ts-mode)
-        command ,project-netcoredbg-path
-        command-args (,(format "--interpreter=vscode")
-                      ,(format "--engineLogging=%s" project-netcoredbg-log))
-        normalize-path-separator 'windows
-        :type "coreclr"
-        :request "launch"
-        :program ,dll-path
-        :cwd ,component-dir
-        :console "externalTerminal"
-        :internalConsoleOptions "neverOpen"
-        :suppressJITOptimizations t
-        :requireExactSource nil
-        :justMyCode t
-        :stopAtEntry ,(if stop-at-entry t :json-false))))
+	;; netcoredbg on Windows leaves breakpoints pending forever unless
+	;; the source path uses backslashes; dape sends forward slashes.
+	(defun kc/dape-windows-separators (filename)
+		"Return FILENAME with backslash separators, for Windows adapters."
+		(if (stringp filename)
+				(subst-char-in-string ?/ ?\\ filename)
+			filename))
+	(when (eq system-type 'windows-nt)
+		(advice-add 'dape--file-name-remote :filter-return
+								#'kc/dape-windows-separators))
 
-  ;; Register all component configurations
-  (dolist (config (list
-                   (project-dape-config "DM" "DM.MSS" t)
-                   (project-dape-config "Demo" "Demo.MSS" t)
-                   (project-dape-config "Test_001" "Test" t)))
-    (add-to-list 'dape-configs config))
-  
   ;; Set buffer arrangement and other options
   (setq dape-buffer-window-arrangement 'gud)
-  (setq dape-debug t)
   (setq dape-repl-echo-shell-output t))
 
 (use-package corfu

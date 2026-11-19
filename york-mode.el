@@ -695,6 +695,9 @@ is skipped and reported.  With prefix arg NO-CONFIRM, don't ask."
 (load "~/.emacs.d/york-incidents.el")
 (load "~/.emacs.d/york-swo.el")
 
+;; Build, test, and debug .NET projects (C-c y d).
+(load "~/.emacs.d/york-dotnet.el")
+
 (load-file "~/.emacs.d/x12-mode/x12-mode.el")
 (add-to-list 'auto-mode-alist '("\\.x12\\'" . x12-mode))
 (add-to-list 'auto-mode-alist '("\\.edi\\'" . x12-mode))
