@@ -1,4 +1,4 @@
-;;; company-config.el --- company config          -*- lexical-binding: t; -*-
+;;; corfu-config.el --- corfu config          -*- lexical-binding: t; -*-
 
 ;; Copyright (C) 2022  K. C. Juntunen
 
@@ -20,13 +20,19 @@
 
 ;;; Commentary:
 
-;; 
+;; In-buffer completion popup.  Corfu shows `completion-at-point''s
+;; candidates, so it works with eglot without any glue.
 
 ;;; Code:
-(require-package 'company)
-(require 'company)
-(add-hook 'prog-mode-hook 'company-mode)
+(use-package corfu
+	:ensure t
+	:custom
+	(corfu-auto nil)         ; Manual completion trigger (C-M-i)
+	(corfu-cycle t)          ; Cycle through candidates
+	(corfu-preselect 'first)
+	:init
+	(global-corfu-mode))
 
 
-(provide 'company-config)
-;;; company-config.el ends here
+(provide 'corfu-config)
+;;; corfu-config.el ends here

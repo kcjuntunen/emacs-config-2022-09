@@ -79,13 +79,6 @@
   (setq dape-buffer-window-arrangement 'gud)
   (setq dape-repl-echo-shell-output t))
 
-(use-package corfu
-	:ensure t
-  :custom
-  (corfu-auto nil)         ; Manual completion trigger
-  (corfu-cycle t)          ; Cycle through candidates
-  (corfu-preselect 'first))
-
 (use-package ztree
 	:ensure t
   :config
@@ -100,6 +93,16 @@
   :bind (:map web-mode-map ("M-;" . nil)))
 
 (add-to-list 'auto-mode-alist '("\\.csproj\\'" . nxml-mode))
+
+;; Tree-sitter: open C# files in `csharp-ts-mode' once the grammar is
+;; installed.  Emacs 31 knows where to get it, but compiles it, so it
+;; needs a C compiler (gcc or cc) on `exec-path':
+;;   M-x treesit-install-language-grammar RET c-sharp RET
+;; Then restart Emacs.  Until then C# files keep `csharp-mode'.
+(when (treesit-available-p)
+	(if (treesit-language-available-p 'c-sharp)
+			(setopt treesit-enabled-modes '(csharp-ts-mode))
+		(message "No C# tree-sitter grammar; using csharp-mode.")))
 
 ;;; build script:
 

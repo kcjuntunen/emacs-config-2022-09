@@ -10,7 +10,7 @@
 					(lambda ()
 						(dired-hide-details-mode)
 						;; (hl-line-mode 1)
-						(text-scale-adjust -1)
+						(text-scale-decrease 1)
 						(if (not (or (string-equal (buffer-name) "workarea")
 										(string-equal (buffer-name) "fastrack")))
 								t

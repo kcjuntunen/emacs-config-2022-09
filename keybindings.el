@@ -28,18 +28,17 @@
 (define-key global-map (kbd "<f6>") 'org-capture)
 (define-key global-map (kbd "C-x c") 'calc)
 (define-key global-map (kbd "C-x E") 'eshell)
-(define-key global-map (kbd "C-x p") 'proced)
+;; Not C-x p: that's the prefix for project.el's commands.
+(define-key global-map (kbd "C-x P") 'proced)
 (define-key dired-mode-map (kbd "C-c C-w") 'wdired-change-to-wdired-mode)
 
 ;; I know these keys have handy default functions, but they just confuse me.
 (require 'org-agenda)
-(add-hook 'org-mode-hook
-					#'(lambda ()
-							(define-key org-agenda-mode-map (kbd "h") 'backward-char)
-							(define-key org-agenda-mode-map (kbd "l") 'forward-char)
-							(define-key org-agenda-mode-map (kbd "j") 'next-line)
-							(define-key org-agenda-mode-map (kbd "k") 'previous-line)
-							(define-key org-agenda-mode-map (kbd "L") 'org-agenda-log-mode)))
+(define-key org-agenda-mode-map (kbd "h") 'backward-char)
+(define-key org-agenda-mode-map (kbd "l") 'forward-char)
+(define-key org-agenda-mode-map (kbd "j") 'next-line)
+(define-key org-agenda-mode-map (kbd "k") 'previous-line)
+(define-key org-agenda-mode-map (kbd "L") 'org-agenda-log-mode)
 
 (evil-define-key 'normal org-mode-map (kbd "<tab>") #'org-cycle)
 (evil-define-key 'normal helpful-mode-map (kbd "q") #'quit-window)

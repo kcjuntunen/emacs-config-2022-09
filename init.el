@@ -5,8 +5,6 @@
 (defvar kc/quiet-errors t 
 	"So I can control how noisy (load) is.")
 
-(add-hook 'after-init-hook #'(lambda () (load custom-file kc/quiet-errors kc/quiet-message)))
-
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;; load package config
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
@@ -19,6 +17,8 @@
 (when at-work 
 	(load "~/.emacs.d/york-mode.el" kc/quiet-errors kc/quiet-message))
 
+;; Also `custom-file' (set in 00.emacs-config.el), so Custom's settings
+;; load here, once.
 (load "~/.personal" kc/quiet-errors kc/quiet-message)
 
 (require 'server)

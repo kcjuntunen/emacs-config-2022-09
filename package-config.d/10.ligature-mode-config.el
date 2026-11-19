@@ -23,9 +23,10 @@
 ;; 
 
 ;;; Code:
-(if (version< emacs-version "35")
+;; ligature.el needs Emacs 28's HarfBuzz text shaping.
+(if (version< emacs-version "28")
 		(message "ligature-mode not supported by %s" emacs-version)
-	(load "~/git/ligature.el/ligature.el" kc/quiet-errors kc/quiet-message)
+	(require-package 'ligature)
 	(require 'ligature)
 	(ligature-set-ligatures 't '("www"))
 	;; Enable traditional ligature support in eww-mode, if the
