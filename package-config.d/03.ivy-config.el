@@ -27,6 +27,16 @@
 (require 'ivy)
 (ivy-mode 1)
 
+;; Emacs 31's `cl-remove-if-not' calls PREDICATE even when it's nil
+;; (Emacs 30 kept everything), and ivy 0.15.1 passes nil whenever a
+;; caller like `org-set-property' gives `completing-read' a list of
+;; lists and no predicate: (void-function nil).  Fixed in ivy's master,
+;; so drop this once ELPA has a release newer than 0.15.1.
+(defun kc/cl-remove-if-not-nil-predicate (orig pred seq &rest keys)
+	"Call ORIG with PRED, SEQ and KEYS, but keep all of SEQ if PRED is nil."
+	(if pred (apply orig pred seq keys) seq))
+(when (version<= "31" emacs-version)
+	(advice-add 'cl-remove-if-not :around #'kc/cl-remove-if-not-nil-predicate))
 
 
 
