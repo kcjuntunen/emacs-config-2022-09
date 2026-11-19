@@ -1,7 +1,7 @@
 # Emacs config — notes for Claude
 
 ## Environment
-- GNU Emacs 30.2 (x86_64-w64-mingw32), native Windows build.
+- GNU Emacs 31.1 (build 1, x86_64-w64-mingw32) of 2026-09-16, native Windows build.
 - This folder is `~/.emacs.d` (`C:\Users\k.c.juntunen\AppData\Roaming\.emacs.d`), a git repo.
 - `at-work` (set in `early-init.el`) is true on the work machine, `pascal`.
 
