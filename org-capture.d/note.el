@@ -1,3 +1,4 @@
+;; -*- lexical-binding: t; -*-
 (add-to-list 'org-capture-templates
 						 '("n" "Note" entry
 							 (file kc/personal-notes-file)

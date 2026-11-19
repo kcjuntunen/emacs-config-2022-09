@@ -1,3 +1,4 @@
+;; -*- lexical-binding: t; -*-
 (add-to-list 'org-capture-templates
 						 '("j" "Journal" entry
 							 (file+olp+datetree kc/diary-file)

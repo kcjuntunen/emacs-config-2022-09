@@ -1,3 +1,4 @@
+;; -*- lexical-binding: t; -*-
 (defun kc/hang-wrapper ()
 	"Call `york-get-hang-data' interactively."
 	(with-temp-buffer

@@ -1,4 +1,4 @@
-;; (require-package 'ox-pandoc)
+;; (require-package 'ox-pandoc)  -*- lexical-binding: t; -*-
 (setq org-pandoc-menu-entry
 			'((?4 "to html5 and open." org-pandoc-export-to-html5-and-open)
 				(?$ "as html5." org-pandoc-export-as-html5)
