@@ -29,6 +29,23 @@
 (add-to-list 'eglot-server-programs
 						 '((csharp-mode csharp-ts-mode) . ("csharp-ls-vs")))
 
+;; In a CRLF file, Roslyn's code actions (generate method, etc.) send
+;; new text with CRLF line breaks.  Emacs keeps CRLF files as plain LF
+;; in the buffer and adds the CRs back on save, so eglot's verbatim
+;; insert leaves a ^M on every new line.  Drop the CRs before applying.
+(defun kc/eglot-strip-cr-from-edits (args)
+	"Remove carriage returns from the :newText of the edits in ARGS.
+ARGS are the arguments to `eglot--apply-text-edits'."
+	(cons (mapcar (lambda (edit)
+									(let ((text (plist-get edit :newText)))
+										(if (and (stringp text) (string-search "\r" text))
+												(plist-put (copy-sequence edit) :newText
+																	 (string-replace "\r\n" "\n" text))
+											edit)))
+								(car args))
+				(cdr args)))
+(advice-add 'eglot--apply-text-edits :filter-args #'kc/eglot-strip-cr-from-edits)
+
 (setq eglot-ignored-server-capabilities
       '(
         ;; :hoverProvider                    ; Documentation on hover
@@ -103,6 +120,26 @@
 	(if (treesit-language-available-p 'c-sharp)
 			(setopt treesit-enabled-modes '(csharp-ts-mode))
 		(message "No C# tree-sitter grammar; using csharp-mode.")))
+
+;; editorconfig knows `csharp-mode''s indent variable but not this one
+;; (Emacs 31 name; `csharp-ts-mode-indent-offset' is an obsolete alias).
+(with-eval-after-load 'editorconfig
+	(add-to-list 'editorconfig-indentation-alist
+							 '(csharp-ts-mode csharp-ts-indent-offset)))
+
+;; Work C# follows Visual Studio's defaults: 4 spaces, CRLF.  Roslyn
+;; uses the same defaults, so csharp-ls needs no .editorconfig; this
+;; makes Emacs match instead of using the global tabs and width 2.
+;; A repo's .editorconfig is applied after this, so it still wins.
+(defun york--csharp-style ()
+	"Use Visual Studio's C# whitespace: 4 spaces, CRLF for new files."
+	(setq-local indent-tabs-mode nil
+							tab-width 4)
+	(unless (and buffer-file-name (file-exists-p buffer-file-name))
+		(set-buffer-file-coding-system 'utf-8-dos)))
+(when at-work
+	(add-hook 'csharp-mode-hook #'york--csharp-style)
+	(add-hook 'csharp-ts-mode-hook #'york--csharp-style))
 
 ;;; build script:
 

@@ -145,5 +145,13 @@
 
 (global-hl-line-mode)
 
+;; Follow a project's .editorconfig (indent style and size, line
+;; endings, final newline).  Language servers like csharp-ls read the
+;; same file, so Emacs and their edits agree.
+(editorconfig-mode 1)
+;; With evil loaded, editorconfig also sets `evil-shift-width', which
+;; isn't marked safe, so Emacs asks before applying any of the settings.
+(put 'evil-shift-width 'safe-local-variable #'integerp)
+
 (provide 'emacs-config)
 ;;; emacs-config.el ends here
