@@ -43,5 +43,11 @@
 (evil-define-key 'normal org-mode-map (kbd "<tab>") #'org-cycle)
 (evil-define-key 'normal helpful-mode-map (kbd "q") #'quit-window)
 
+;; VS Code's "quick fix" key.  Normal state needs its own binding, or
+;; Evil's `evil-repeat-pop' on C-. wins over `eglot-mode-map'.
+(with-eval-after-load 'eglot
+	(define-key eglot-mode-map (kbd "C-.") #'eglot-code-actions)
+	(evil-define-key 'normal eglot-mode-map (kbd "C-.") #'eglot-code-actions))
+
 (provide 'keybindings)
 ;;; keybindings.el ends here
