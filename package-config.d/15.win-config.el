@@ -21,10 +21,15 @@
 		;; pinned here instead.
 		(setq find-program "C:/Users/k.c.juntunen/opt/PortableGit/usr/bin/find.exe"
 					grep-program "C:/Users/k.c.juntunen/opt/PortableGit/bin/rg.exe"
-					epg-gpg-program "C:/Users/k.c.juntunen/opt/gnupg-portable-win32-2.4.3-12/app/bin/gpg.exe"
 					magit-git-executable "C:/Users/k.c.juntunen/opt/PortableGit/bin/git.exe"
 					vc-git-program "C:/Users/k.c.juntunen/opt/PortableGit/bin/git.exe"
-					diff-command "C:/Users/k.c.juntunen/opt/PortableGit/bin/git.exe diff --no-index"))
+					diff-command "C:/Users/k.c.juntunen/opt/PortableGit/bin/git.exe diff --no-index")
+		;; EPG ignores `epg-gpg-program' unless it was set through Customize
+		;; (`setq' and `setopt' don't count) and falls back to the first gpg
+		;; on PATH: Git's MSYS gpg, which can't handle c:/ paths.
+		(customize-set-variable
+		 'epg-gpg-program
+		 "C:/Users/k.c.juntunen/opt/gnupg-portable-win32-2.4.3-12/app/bin/gpg.exe"))
 	(when (not at-work)
 		;; (setenv "PATH" (concat "C:/Users/k.c.juntunen/bin/PortableGit/usr/bin" (getenv "PATH")))
 		(setq find-program "c:/\"Program Files\"/Git/usr/bin/find.exe"
