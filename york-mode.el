@@ -674,7 +674,7 @@ is skipped and reported.  With prefix arg NO-CONFIRM, don't ask."
 															skipped))))))
 			;; Refresh any Dired buffers showing either folder.
 			(dolist (dir (list workarea target))
-				(when-let ((buf (dired-find-buffer-nocreate dir)))
+				(when-let* ((buf (dired-find-buffer-nocreate dir)))
 					(with-current-buffer buf (revert-buffer))))
 			(message "Workarea: moved %d item(s) to %s%s"
 							 moved target
