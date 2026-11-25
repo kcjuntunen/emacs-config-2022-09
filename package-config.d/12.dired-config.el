@@ -3,7 +3,8 @@
 
 (if (eq system-type 'windows-nt)
 		(message "dired-async is broken in Windows")
-	(autoload 'dired-async-mode "dired-async.el" nil t)
+	(require-package 'async)
+	(require 'dired-async)
 	(dired-async-mode 1))
 
 (add-hook 'dired-mode-hook
