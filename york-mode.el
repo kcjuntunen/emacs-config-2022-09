@@ -36,12 +36,6 @@
 			(message "york-mode activated")
 		(message "york-mode deactivated")))
 
-(defcustom york-production-queue-path
-	"//192.168.250.103/z-drive/ProductionQueues/"
-	"Path to prduction queue root folder."
-	:type 'string
-	:group 'york)
-
 (defcustom york-workarea
 	"C:/fastrack/workarea/"
 	"Path to workarea."
@@ -51,12 +45,6 @@
 (defcustom york-screenshot-searchpath
 	org-directory
 	"Where to search for screenshots to insert."
-	:type 'string
-	:group 'york)
-
-(defcustom york-path-finder
-	"C:/Users/k.c.juntunen/source/repos/Viewer.Etc/GetQPath/bin/Release/GetQPath.exe"
-	"The program that find Queue paths."
 	:type 'string
 	:group 'york)
 
@@ -104,6 +92,7 @@ Should end with a slash. Will be created if it doesn't exist."
 ;; Request lookup: Project/Phase/Task data as an Org project plan
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 (require 'calendar)
+(require 'cl-lib)
 (require 'org-id)
 (require 'seq)
 (require 'subr-x)
@@ -368,39 +357,87 @@ REQUEST-NUMBER is a request number, or the last four digits of one."
 	(interactive "sRequestNbr: ")
 	(insert (york--request-org request-number)))
 
-(defun york--get-inputq-path ()
-	"Get the path to production input queues"
-	(concat york-production-queue-path "incomeq/"))
+(defconst york--queue-kinds
+	'((?I "INCOMEQ"  nil       "incomeq"  "TimeReceived")
+		(?P "PROCESSQ" "PQPATHS" "processq" "TimeReceivedText")
+		(?O "OUTPUTQ"  "OQPATHS" "outputq"  "DateAdded")
+		(?A "ARCOUTQ"  "AQPATHS" "arcoutq"  "DateAdded"))
+	"Queue key sigils, as (SIGIL TOKEN REGISTRY-KEY TABLE DATE-COLUMN).
+TOKEN names the queue's roots in sysptr.pointer, REGISTRY-KEY its
+extra directories in the registry, and TABLE and DATE-COLUMN its
+Foundation table and the date its archive path is built from.")
 
-(defun york--get-processq-path ()
-	"Get the path to production process queues"
-	(concat york-production-queue-path "processq/"))
+(defun york--queue-dir (path)
+	"Return the Windows directory PATH with forward slashes and a final one."
+	(file-name-as-directory (subst-char-in-string ?\\ ?/ (string-trim path))))
 
-(defun york--get-reprocessq-path ()
-	"Get the path to production reprocess queues"
-	(concat "//192.168.250.224/M-drive/" "reprocessq/"))
+(defun york--queue-root (system token)
+	"Return the root directory of queue TOKEN for SYSTEM, or nil.
+SYSTEM is SLPRODUCTION for live queues, SLAGEING for archived ones."
+	(when-let* ((root (york-db-field
+										 (car (york-db-query
+													 (format "SELECT value1 FROM sysptr.pointer
+WHERE systemName = %s AND tokenName = %s"
+																	 (york-db-quote system) (york-db-quote token))
+													 'system))
+										 "value1")))
+		(york--queue-dir root)))
 
-(defun york--get-outputq-path ()
-	"Get the path to production output queues"
-	(concat "//192.168.250.225/productionQueues/" "outputq/"))
+(defun york--queue-registry-dirs (registry-key)
+	"Return the extra queue directories listed under REGISTRY-KEY."
+	(when-let* ((row (car (york-db-query
+												 (format "SELECT Value1, Value2 FROM registry
+WHERE Section = 'YORKSYS' AND Key1 = %s"
+																 (york-db-quote registry-key))
+												 'system))))
+		(mapcar #'york--queue-dir
+						(split-string (concat (or (york-db-field row "Value1") "") "|"
+																	(or (york-db-field row "Value2") ""))
+													"|" t "[ \t]+"))))
 
-(defun york--get-arcoutq-path ()
-	"Get the path to production output queues"
-	(concat "//192.168.250.225/productionQueues/" "Arcoutq/"))
-
-;; (defun york--get-queue-path (queuekey)
-;; 	"Convert queue key to queue path."
-;; 	(let* ((queue-type (substring queuekey 0 1))
-;; 				 (qpath (cond ((string-equal queue-type "I") (york--get-inputq-path))
-;; 											((string-equal queue-type "P") (york--get-processq-path))
-;; 											((string-equal queue-type "R") (york--get-reprocessq-path))
-;; 											((string-equal queue-type "O") (york--get-outputq-path))
-;; 											((string-equal queue-type "A") (york--get-arcoutq-path)))))
-;; 		(concat qpath queuekey ".dat")))
+(defun york--queue-archive-path (key table date-column root connection)
+	"Return where KEY of TABLE is archived under ROOT, or nil.
+CONNECTION is the Foundation database to look KEY up in."
+	(when-let* ((row (car (york-db-query
+												 (format "SELECT Key1, %s AS added FROM %s WHERE Key1 = %s"
+																 date-column table (york-db-quote key))
+												 connection)))
+							(added (york-db-field row "added"))
+							(_ (string-match "\\`\\([0-9]\\{4\\}\\)-[0-9]\\{2\\}-[0-9]\\{2\\}" added)))
+		(let ((year (match-string 1 added))
+					(day (match-string 0 added)))
+			(format "%s%s/%s/%s-%s.dat"
+							root year day (york-db-field row "Key1") day))))
 
 (defun york--get-queue-path (queuekey)
-	"Convert queue key to queue path."
-	(string-trim (shell-command-to-string (format "%s %s" york-path-finder queuekey))))
+	"Return the path of the payload for QUEUEKEY.
+Look where GetQPath did, in order: the live queue, the extra
+directories in the registry, and the archive, by the key's date in
+Foundation on Umbriel and then Oberon.  Return the first path that
+exists; signal a `user-error' if none does."
+	(let* ((key (upcase (string-trim queuekey)))
+				 (kind (or (and (not (string-empty-p key))
+												(alist-get (aref key 0) york--queue-kinds))
+									 (user-error "Unknown queue key %s (only I, P, O and A keys)"
+															 queuekey)))
+				 (tried 0))
+		(pcase-let ((`(,token ,registry-key ,table ,date-column) kind))
+			(cl-flet ((found (path)
+									(when path
+										(setq tried (1+ tried))
+										(and (file-exists-p path) path))))
+				(or (when-let* ((root (york--queue-root "SLPRODUCTION" token)))
+							(found (concat root key ".dat")))
+						(and registry-key
+								 (seq-some (lambda (dir) (found (concat dir key ".dat")))
+													 (york--queue-registry-dirs registry-key)))
+						(when-let* ((root (york--queue-root "SLAGEING" token)))
+							(seq-some (lambda (connection)
+													(found (york--queue-archive-path
+																	key table date-column root connection)))
+												'(foundation foundation-archive)))
+						(user-error "Couldn't find %s in %d place%s"
+												key tried (if (= tried 1) "" "s")))))))
 
 (defun york--get-local-repo-name ()
 	"Get the local repo for the associated code."

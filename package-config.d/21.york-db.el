@@ -31,7 +31,8 @@
 (defvar york-db-connections
 	'((generalhospital :host "proton"  :database "generalhospital" :auth "yorkdb")
 		(system          :host "Miranda" :database "System"          :auth "yorkdb-system")
-		(foundation      :host "Umbriel" :database "Foundation"      :auth "yorkdb-foundation"))
+		(foundation      :host "Umbriel" :database "Foundation"      :auth "yorkdb-foundation")
+		(foundation-archive :host "Oberon" :database "Foundation"    :auth "yorkdb-foundation"))
 	"The databases `york-db-query' can reach, as (NAME . PLIST).
 In PLIST, :host is the server, :database the database and :auth the
 host name of the authinfo entry holding the user and password.")
