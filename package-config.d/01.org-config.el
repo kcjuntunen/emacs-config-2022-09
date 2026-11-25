@@ -142,6 +142,10 @@
 
 (setq org-babel-ditaa-java-cmd "C:/PROGRA~1/Java/jre1.8.0_503/bin/java.exe")
 
+;; Allow "a." / "A)" bullets in ordered lists.  This affects parsing, so
+;; it must be set before Org loads (kc/set-up-org below loads it).
+(setq org-list-allow-alphabetical t)
+
 (kc/set-up-org)
 
 ;; Stolen from <https://pages.sachachua.com/.emacs.d/>
