@@ -32,8 +32,10 @@
 	:ensure t
 	:after org
 	:bind (:map org-mode-map
-							("C-c C-x t" . org-transclusion-add)
-							("C-c C-x T" . org-transclusion-mode)))
+					("C-c C-x t" . org-transclusion-add)
+					("C-c C-x T" . org-transclusion-mode))
+	:config
+	(setq org-transclusion-exclude-elements nil))
 
 (provide '24.org-transclusion-config)
 ;;; 24.org-transclusion-config.el ends here
