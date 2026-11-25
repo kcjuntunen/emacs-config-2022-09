@@ -13,10 +13,37 @@
 The clipboard's \"HTML Format\" wraps the selection in a header and a
 full document, and marks the selection with <!--StartFragment--> and
 <!--EndFragment-->.  Without the markers, return HTML from its first
-tag on."
-	(if (string-match "<!--StartFragment-->\\(\\(?:.\\|\n\\)*\\)<!--EndFragment-->" html)
-			(match-string 1 html)
-		(substring html (or (string-search "<" html) 0))))
+tag on.  Excel puts the markers inside <table>, around just the rows;
+those are wrapped back in a table."
+	(let* ((start-tag "<!--StartFragment-->")
+				 (start (string-search start-tag html))
+				 (end (and start (string-search "<!--EndFragment-->" html start)))
+				 (case-fold-search t))
+		(if (not end)
+				(substring html (or (string-search "<" html) 0))
+			(let ((fragment (substring html (+ start (length start-tag)) end)))
+				(if (and (string-match-p "<t[rd][ >]" fragment)
+								 (not (string-match-p "<table[ >]" fragment)))
+						(concat "<table>" fragment "</table>")
+					fragment)))))
+
+(defun kc/org--yank-media-prefer-html (mimetypes)
+	"Choose text/html from MIMETYPES when it holds more than an image.
+For `yank-media-preferred-types'.  Excel and Word also offer a picture
+of the selection, which `yank-media' would otherwise prefer.  HTML that
+is only an <img> (a copied image) is left to the image handler."
+	(when (memq 'text/html mimetypes)
+		(let ((html (gui-get-selection 'CLIPBOARD 'text/html)))
+			(when (and html
+								 (string-match-p
+									"[^[:space:]]"
+									(replace-regexp-in-string
+									 "<[^>]*>\\|&nbsp;" ""
+									 (kc/org--html-fragment
+										(if (multibyte-string-p html)
+												html
+											(decode-coding-string html 'utf-8))))))
+				'(text/html)))))
 
 (defun kc/org-html-to-org (html)
 	"Convert the string HTML to Org text with pandoc."
@@ -81,7 +108,10 @@ A `yank-media' handler for text/html."
 (defun kc/org-register-yank-html ()
 	"Let `yank-media' paste HTML into this Org buffer."
 	(when (fboundp 'yank-media-handler)
-		(yank-media-handler "text/html" #'kc/org-yank-html)))
+		(yank-media-handler "text/html" #'kc/org-yank-html)
+		(setq-local yank-media-preferred-types
+								(cons #'kc/org--yank-media-prefer-html
+											(default-value 'yank-media-preferred-types)))))
 
 (add-hook 'org-mode-hook #'kc/org-register-yank-html)
 
