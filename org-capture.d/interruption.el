@@ -15,11 +15,7 @@
 
 %?
 
-:CLIPBOARD:
-#+caption: Clipboard Content
-#+begin_src text
-%x
-#+end_src
-:END:"
+** Clipboard Contents
+%(kc/org-clipboard-as-org 3)"
 								 :clock-in t
 								 :clock-resume t)))

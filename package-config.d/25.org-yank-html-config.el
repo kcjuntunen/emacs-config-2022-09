@@ -32,14 +32,51 @@ tag on."
 				(error "pandoc failed (%s): %s" status (buffer-string)))
 			(string-trim (buffer-string)))))
 
+(defun kc/org--clipboard-html-to-org (data)
+	"Convert raw clipboard HTML DATA to Org text."
+	(kc/org-html-to-org
+	 (kc/org--html-fragment
+		(if (multibyte-string-p data)
+				data
+			(decode-coding-string data 'utf-8)))))
+
+(defun kc/org--demote-headings (org level)
+	"Shift the headings in the Org text ORG so the highest is at LEVEL."
+	(with-temp-buffer
+		(insert org)
+		(let ((top nil))
+			(goto-char (point-min))
+			(while (re-search-forward "^\\(\\*+\\) " nil t)
+				(setq top (min (or top most-positive-fixnum)
+											 (length (match-string 1)))))
+			(when top
+				(goto-char (point-min))
+				(while (re-search-forward "^\\(\\*+\\) " nil t)
+					(replace-match (make-string (+ (length (match-string 1)) (- level top)) ?*)
+												 t t nil 1))))
+		(buffer-string)))
+
+(defun kc/org-clipboard-as-org (&optional level)
+	"Return the clipboard as Org text, for a capture template's %(...).
+HTML is converted with pandoc, and its headings shifted so the
+highest is at LEVEL (default 3).  Plain text is returned in a text
+src block.  An empty clipboard gives \"\"."
+	(let ((html (gui-get-selection 'CLIPBOARD 'text/html))
+				(text (gui-get-selection 'CLIPBOARD 'UTF8_STRING)))
+		(cond
+		 (html
+			(kc/org--demote-headings (kc/org--clipboard-html-to-org html) (or level 3)))
+		 ((and text (not (string-empty-p text)))
+			(concat "#+begin_src text\n"
+							(org-escape-code-in-string (substring-no-properties text))
+							(if (string-suffix-p "\n" text) "" "\n")
+							"#+end_src"))
+		 (t ""))))
+
 (defun kc/org-yank-html (_mimetype data)
 	"Insert clipboard HTML DATA as Org.
 A `yank-media' handler for text/html."
-	(let ((html (kc/org--html-fragment
-							 (if (multibyte-string-p data)
-									 data
-								 (decode-coding-string data 'utf-8)))))
-		(insert (kc/org-html-to-org html) "\n")))
+	(insert (kc/org--clipboard-html-to-org data) "\n"))
 
 (defun kc/org-register-yank-html ()
 	"Let `yank-media' paste HTML into this Org buffer."
