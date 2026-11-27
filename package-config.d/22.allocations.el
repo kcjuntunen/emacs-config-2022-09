@@ -68,7 +68,7 @@
   cr.Status AS status,
   cr.ClientAccount AS client,
   cr.TradingPartnerAccount AS partner,
-  IF (t.IsTaskCompletedInd='N',(SELECT IF(COUNT(0) > 0,'WIP','TODO') END FROM status WHERE RequestNbr=ra.RequestNbr AND PhaseNbr=ra.PhaseNbr AND TaskNbr=ra.TaskNbr),'TODO')  AS todo
+  IF (t.IsTaskCompletedInd='N',(SELECT IF(COUNT(0) > 0,'WIP','TODO') END FROM status WHERE RequestNbr=ra.RequestNbr AND PhaseNbr=ra.PhaseNbr AND TaskNbr=ra.TaskNbr),'DONE')  AS todo
 FROM resource_allocations ra
 LEFT JOIN clientrequests cr ON ra.RequestNbr = cr.RequestNbr
 LEFT JOIN tasks t ON ra.RequestNbr = t.RequestNbr
