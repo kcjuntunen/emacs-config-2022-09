@@ -68,7 +68,7 @@
   cr.Status AS status,
   cr.ClientAccount AS client,
   cr.TradingPartnerAccount AS partner,
-  IF (t.IsTaskCompletedInd='N',(SELECT IF(COUNT(0) > 0,'W','N') END FROM status WHERE RequestNbr=ra.RequestNbr AND PhaseNbr=ra.PhaseNbr AND TaskNbr=ra.TaskNbr),'Y')  AS iscomplete
+  IF (t.IsTaskCompletedInd='N',(SELECT IF(COUNT(0) > 0,'WIP','TODO') END FROM status WHERE RequestNbr=ra.RequestNbr AND PhaseNbr=ra.PhaseNbr AND TaskNbr=ra.TaskNbr),'TODO')  AS todo
 FROM resource_allocations ra
 LEFT JOIN clientrequests cr ON ra.RequestNbr = cr.RequestNbr
 LEFT JOIN tasks t ON ra.RequestNbr = t.RequestNbr
@@ -135,17 +135,11 @@ Not H:MM: the agenda would read that as a time of day."
 									(kc/allocations--short-duration total)
 									(length entries) (if (= (length entries) 1) "" "s")
 									stamp))
-				(pcase-dolist (`(,_ ,minutes ,request ,tasks ,descriptions ,status ,client ,partner ,iscomplete)
+				(pcase-dolist (`(,_ ,minutes ,request ,tasks ,descriptions ,status ,client ,partner ,todo)
 												entries)
 					(let ((minutes (string-to-number minutes)))
 						(insert (format "** %s [%s] %s %s — %s / %s\n"
-											(cond
-												((string= iscomplete "Y")
-													"DONE")
-												((string= iscomplete "W")
-													"WIP")
-												((string= iscomplete "N")
-													"TODO"))
+											todo
 											(kc/allocations--short-duration minutes)
 											request
 											(or descriptions "(no description)")
